@@ -381,6 +381,10 @@ assert(
   "content grids should keep a capped width so cards do not press against the far-right edge",
 );
 assert(
+  /\.home-links\s*\{[^}]*width:\s*min\(100%,\s*48rem\);/.test(css),
+  "home page link cards should keep the same capped width so they do not press against the far-right edge",
+);
+assert(
   /\.home-hero__profile\s*\{[^}]*width:\s*20rem;/.test(css),
   "home hero portrait should use a fixed smaller footprint",
 );

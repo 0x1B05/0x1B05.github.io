@@ -538,6 +538,7 @@ HOME
 .home-links {
     display: grid;
     gap: 0.9rem;
+    width: min(100%, 48rem);
     margin: 1.35rem 0 2rem;
 }
 

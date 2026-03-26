@@ -1,0 +1,19 @@
+// Registry of docs series and standalone notes shown on the docs landing page.
+// Add a series: create docs/<slug>/series.typ, import it here, and list it in
+// series-registry. Add a note: append an entry to note-registry.
+// Thumbnails live in assets/content-thumbnails/.
+
+#let series-registry = (
+  // my-series,
+)
+
+#let note-registry = (
+  // (
+  //   id: "<note-id>",
+  //   title: "<note title>",
+  //   summary: "<one-line summary>",
+  //   route: "docs/<slug>/",
+  //   thumbnail: "<thumbnail.svg>",
+  //   label: "<card label>",
+  // ),
+)

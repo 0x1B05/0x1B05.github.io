@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="240" viewBox="0 0 860 240" role="img" aria-label="工具问题分工图">
+  <rect width="860" height="240" fill="#f6f1e8"/>
+  <rect x="44" y="42" width="236" height="156" rx="18" fill="#d6e4f2" stroke="#264653" stroke-width="3"/>
+  <rect x="312" y="42" width="236" height="156" rx="18" fill="#fde0c6" stroke="#9c6644" stroke-width="3"/>
+  <rect x="580" y="42" width="236" height="156" rx="18" fill="#dfead2" stroke="#386641" stroke-width="3"/>
+  <text x="162" y="78" text-anchor="middle" font-size="30" font-family="Georgia, serif" fill="#14213d">NEMU</text>
+  <text x="162" y="116" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#14213d">一条大致正确的</text>
+  <text x="162" y="142" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#14213d">全系统路径像什么？</text>
+  <text x="430" y="78" text-anchor="middle" font-size="30" font-family="Georgia, serif" fill="#5a3d2b">NPC</text>
+  <text x="430" y="116" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#5a3d2b">我自己的核有没有</text>
+  <text x="430" y="142" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#5a3d2b">真的满足这个前提？</text>
+  <text x="698" y="78" text-anchor="middle" font-size="30" font-family="Georgia, serif" fill="#1b4332">gem5</text>
+  <text x="698" y="116" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#1b4332">接下来该观察、</text>
+  <text x="698" y="142" text-anchor="middle" font-size="20" font-family="Georgia, serif" fill="#1b4332">变化或测量什么？</text>
+</svg>

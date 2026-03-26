@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="260" viewBox="0 0 860 260" role="img" aria-label="Fork snapshot loop diagram">
+  <rect width="860" height="260" fill="#f6f1e8"/>
+  <text x="70" y="46" font-size="24" font-family="Georgia, serif" fill="#5a3d2b">Parent simulation keeps moving</text>
+  <path d="M70 86H780" stroke="#8d6e63" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="180" cy="86" r="10" fill="#d6e4f2" stroke="#264653" stroke-width="2.5"/>
+  <circle cx="360" cy="86" r="10" fill="#d6e4f2" stroke="#264653" stroke-width="2.5"/>
+  <circle cx="540" cy="86" r="10" fill="#d6e4f2" stroke="#264653" stroke-width="2.5"/>
+  <circle cx="740" cy="86" r="11" fill="#f5dedd" stroke="#8d4f4f" stroke-width="2.5"/>
+  <text x="740" y="116" text-anchor="middle" font-size="15" font-family="Georgia, serif" fill="#8d4f4f">failure</text>
+  <path d="M180 96V164" stroke="#264653" stroke-width="3" stroke-dasharray="7 7"/>
+  <path d="M360 96V164" stroke="#264653" stroke-width="3" stroke-dasharray="7 7"/>
+  <path d="M540 96V164" stroke="#264653" stroke-width="3" stroke-dasharray="7 7"/>
+  <rect x="110" y="164" width="140" height="48" rx="16" fill="#d6e4f2" stroke="#264653" stroke-width="3"/>
+  <rect x="290" y="164" width="140" height="48" rx="16" fill="#d6e4f2" stroke="#264653" stroke-width="3"/>
+  <rect x="470" y="164" width="170" height="48" rx="16" fill="#fde0c6" stroke="#9c6644" stroke-width="3"/>
+  <text x="180" y="193" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#14213d">parked child A</text>
+  <text x="360" y="193" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#14213d">parked child B</text>
+  <text x="555" y="193" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">nearest child wakes</text>
+  <path d="M640 188H748" stroke="#7f5539" stroke-width="4"/>
+  <polygon points="748,188 734,180 734,196" fill="#7f5539"/>
+  <rect x="700" y="152" width="110" height="72" rx="16" fill="#dfead2" stroke="#386641" stroke-width="3"/>
+  <text x="755" y="184" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#1b4332">dump waves</text>
+  <text x="755" y="208" text-anchor="middle" font-size="16" font-family="Georgia, serif" fill="#1b4332">near failure</text>
+</svg>

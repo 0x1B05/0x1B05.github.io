@@ -1,90 +1,69 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "en", route: "docs/04-deploy/", title: "Deployment")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "en", route: "docs/04-deploy/", title: "A Working Checklist for Linux Bring-up")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/04-deploy/")
 
-= Deployment
+= A Working Checklist for Linux Bring-up
 
 #series-navbar("en", nav)
 
-You can deploy the generated bilingual site to GitHub Pages with a small workflow and the built-in Make targets.
+This chapter is deliberately written as a working checklist instead of a success report. I am still using it to organize my own bring-up thinking, so the goal is not to present a solved story. The goal is to keep the first-response checks short, visible, and easy to revisit.
 
-== Local Preview
+== Before kernel entry
 
-Before you publish, use:
+The first questions I want answered are about assumptions, not heroics:
 
-```sh
-make preview
-```
+- Which privilege mode am I in when control reaches the current stage?
+- Is there a clear firmware-to-payload handoff path?
+- Do the entry address, payload offset, and expected load addresses agree with each other?
+- Is the device tree the one this payload actually expects?
 
-That rebuilds the HTML output and serves `_site/` through Python's HTTP server so you can inspect `/`, `/en/`, and `/zh/` locally.
+If I cannot answer those cleanly, looking at later symptoms is often wasted effort.
 
-== Publishing Build
+== Firmware handoff
 
-When you need a GitHub Pages artifact, run:
+When OpenSBI is part of the flow, I want to check:
 
-```sh
-make pages
-```
+- how the payload was linked
+- whether the device tree path and payload path match the current build
+- whether the expected handoff convention is the one the firmware image was built for
+- whether the firmware stage can expose enough information to tell me that control really moved forward
 
-This rebuilds the static site into `_site/` and writes `_site/.nojekyll`, so the directory is ready for Pages publishing.
+At this stage, a wrong handoff can look very similar to a dead kernel, so I try not to collapse them into the same diagnosis too early.
 
-Before you deploy:
+== Device tree and memory map sanity
 
-1. If the repository itself is your Pages domain, leave `site-root = ""` in `config.typ`.
-2. If you are publishing a project site, set `site-root` in `config.typ` to `"/your-repository-name"` before running `make pages`.
+I also want a compact memory-map sanity check:
 
-== GitHub Actions
+- Is the payload placed where the current firmware build assumes?
+- Is any reserved region overlapping the area I expect Linux or my current boot payload to use?
+- Does the device tree describe the platform in a way that matches the actual run target?
+- If there is a checkpoint, initramfs, or payload wrapper involved, which address ranges did it implicitly claim?
 
-Create `.github/workflows/deploy.yml` with the following workflow:
+These questions are tedious, but they are exactly the sort of mismatch that can make bring-up fail in ways that look mysterious.
 
-```yaml
-name: Deploy
+== First signals of life
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+The first useful observations are usually small:
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+- a visible console message
+- a known transition point reached in logs
+- a trap that lands where I expect
+- a watchdog or timeout that at least tells me where the path stopped
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: typst-community/setup-typst@v4
-      - run: make pages
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
+I would rather collect one trustworthy sign of progress than immediately guess at a deeper root cause without evidence.
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
-```
+== When the boot flow stalls
 
-== Enable GitHub Pages
+When nothing obvious appears, the next questions I ask myself are:
 
-1. Open your repository on GitHub.
-2. Go to _Settings_ → _Pages_.
-3. Under _Build and deployment_, choose _GitHub Actions_ as the source.
+- Did control stop before the kernel, inside firmware, or after an early kernel transition?
+- Am I missing the signal because logging is absent, or because the transition never happened?
+- Which assumption can I verify cheaply before changing more code?
+- If I compare against a NEMU-based baseline, which part of the path diverges first?
 
-After that, every push to `main` can rebuild and publish the `_site/` directory.
+The checklist is intentionally boring. That is the point. I want a repeatable path to follow before I let frustration turn the whole problem into guesswork.
 
 #series-navbar("en", nav)

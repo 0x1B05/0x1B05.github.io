@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="240" viewBox="0 0 860 240" role="img" aria-label="Checkpoint handoff diagram">
+  <rect width="860" height="240" fill="#f6f1e8"/>
+  <rect x="40" y="54" width="220" height="132" rx="18" fill="#d6e4f2" stroke="#264653" stroke-width="3"/>
+  <rect x="320" y="40" width="220" height="160" rx="18" fill="#fde0c6" stroke="#9c6644" stroke-width="3"/>
+  <rect x="600" y="54" width="220" height="132" rx="18" fill="#dfead2" stroke="#386641" stroke-width="3"/>
+  <text x="150" y="92" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#14213d">Built payload</text>
+  <text x="150" y="122" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#14213d">kernel image</text>
+  <text x="150" y="146" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#14213d">device tree</text>
+  <text x="430" y="82" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#5a3d2b">LibCheckpoint</text>
+  <text x="430" y="112" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">restore state</text>
+  <text x="430" y="136" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">link next boot stage</text>
+  <text x="430" y="160" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">emit reusable artifact</text>
+  <text x="710" y="92" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#1b4332">gcpt.bin / reuse</text>
+  <text x="710" y="122" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#1b4332">direct boot</text>
+  <text x="710" y="146" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#1b4332">profiling or replay</text>
+  <path d="M260 120H310" stroke="#7f5539" stroke-width="4"/>
+  <polygon points="310,120 296,112 296,128" fill="#7f5539"/>
+  <path d="M540 120H590" stroke="#7f5539" stroke-width="4"/>
+  <polygon points="590,120 576,112 576,128" fill="#7f5539"/>
+</svg>

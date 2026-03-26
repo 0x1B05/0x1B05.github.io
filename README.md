@@ -1,57 +1,64 @@
 # 0x1B05.github.io
 
-Personal bilingual blog and notes site for `0x1B05`, built with Typst and exported as static HTML.
+Personal bilingual site for notes, blog posts, and profile pages, built with Typst and exported as static HTML.
 
-## Site
+Production URL: `https://0x1B05.github.io/`
 
-- Production: `https://0x1B05.github.io/`
-- Repository name: `0x1B05.github.io`
+## Requirements
 
-## Local Preview
+- `typst`
+- `make`
+- `python3` for local preview
 
-Build and serve the generated site locally:
+## Local Development
 
-```sh
-make preview
-```
-
-The preview server listens on `http://localhost:8000` by default. To change the port:
-
-```sh
-make preview PORT=9000
-```
-
-## Build
-
-Generate the static HTML output:
+Build the site:
 
 ```sh
 make html
 ```
 
-The build output is written to `_site/`.
+Preview the generated output locally:
 
-## Deploy To GitHub Pages
+```sh
+make preview
+```
 
-Prepare the Pages artifact locally:
+The preview server listens on `http://localhost:8000` by default. To use a different port:
+
+```sh
+make preview PORT=9000
+```
+
+## Deployment
+
+Build the GitHub Pages artifact locally:
 
 ```sh
 make pages
 ```
 
-This rebuilds the site and writes `_site/.nojekyll`.
+This writes the final output to `_site/` and creates `_site/.nojekyll`.
 
-The repository also includes a GitHub Actions workflow at `.github/workflows/deploy.yml` that publishes the site automatically on every push to `main`.
+Deployment is automated by [`.github/workflows/deploy.yml`](./.github/workflows/deploy.yml). Every push to `main` rebuilds the site and publishes `_site/` to GitHub Pages.
 
-## Project Structure
+Because this repository is the user-site repository `0x1B05.github.io`, the site is deployed at the root domain and paths are written against `/`, not a project subpath.
 
-- `content/`: bilingual site content
-- `assets/`: shared images, scripts, and styles
-- `config.typ`: shared site shell, routing, and localized labels
-- `Makefile`: build, preview, and Pages deployment commands
-- `tests/`: regression checks for generated HTML and shell behavior
+## Repository Layout
 
-## Notes
+- `content/`
+  Bilingual site content under `content/en/` and `content/zh/`
+- `assets/`
+  Shared CSS, JavaScript, logos, profile image, and thumbnail assets
+- `config.typ`
+  Shared site shell, routing helpers, localized copy, and reusable content helpers
+- `Makefile`
+  Build, preview, and Pages-oriented targets
+- `tests/`
+  Regression checks for generated shell behavior, build rules, and theme scripts
 
-- This site is configured for the root Pages URL `https://0x1B05.github.io/`, so `site-root` stays empty in `config.typ`.
-- If you ever move the site into a project repository instead of the root user site, update `site-root` before deploying.
+## Maintenance Notes
+
+- Add or edit pages under `content/en/` and `content/zh/`.
+- Shared shell behavior usually belongs in `config.typ` or `assets/tufted.css`.
+- If the site is ever moved out of the root user-site repository into a project repository, update the root-path assumptions before deploying.

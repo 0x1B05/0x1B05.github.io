@@ -80,7 +80,6 @@ const zhReferenceDocPath = path.join(
   "embedding-markdown",
   "index.html",
 );
-const zhCvPath = path.join(siteDir, "zh", "cv", "index.html");
 const homeDir = process.env.HOME || repoRoot;
 const defaultDataDir = path.join(homeDir, ".local", "share");
 const defaultCacheDir = path.join(homeDir, ".cache");
@@ -100,7 +99,6 @@ const requiredHtmlPaths = [
   zhDeployDocPath,
   enReferenceDocPath,
   zhReferenceDocPath,
-  zhCvPath,
 ];
 
 let fixtureBuilt = false;
@@ -199,7 +197,6 @@ function loadTemplateFixture() {
     zhDeployDocHtml: readHtmlIfExists(zhDeployDocPath),
     enReferenceDocHtml: readHtmlIfExists(enReferenceDocPath),
     zhReferenceDocHtml: readHtmlIfExists(zhReferenceDocPath),
-    zhCvHtml: readHtmlIfExists(zhCvPath),
     css: fs.readFileSync(path.join(templateDir, "assets", "tufted.css"), "utf8"),
   };
 }

@@ -1,77 +1,58 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "zh", route: "docs/03-styling/", title: "样式设计")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "zh", route: "docs/03-styling/", title: "我如何区分使用 NEMU、NPC 和 gem5")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/03-styling/")
 
-= 样式设计
+= 我如何区分使用 NEMU、NPC 和 gem5
 
 #series-navbar("zh", nav)
 
-这个双语站点的视觉表现主要由 CSS 控制，另外 `config.typ` 中还包含少量共享壳层标记。
+#tufted.margin-note[
+  参考资料 \
+  #link("https://www.gem5.org/about/")[What gem5 is] \
+  #link("https://www.gem5.org/documentation/learning_gem5/introduction")[Learning gem5]
+]
 
-== 默认样式表
+刚开始把这些工具放在一起看时，我很容易把它们理解成“几种不同的 RISC-V 运行方式”。但这个划分太粗了。更有用的做法，是把它们看成帮助我回答不同问题的不同入口。
 
-模板接受一个 `css` 参数，用来传入样式表 URL 或路径的数组。默认情况下会加载三份样式表：
-
-```typst
-#let page = site-web.with(
-  css: (
-    "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
-    site-url("assets/tufted.css"),
-    site-url("assets/custom.css"),
-  ),
+#figure(
+  image("imgs/tool-roles.svg"),
+  caption: [我当前把基线仿真、自己的核 bring-up 和面向观察的模拟器分别放在不同位置],
 )
-```
 
-更新后的共享壳层保留了这个顺序，并通过 `site-url(...)` 处理本地资源路径，方便 GitHub Pages 项目站点附加仓库前缀。
+== NEMU 更像一个可以对照的基线
 
-== `assets/tufted.css` 负责什么
+在我现在的工作流里，`NEMU` 更像是一生一芯语境下的教学型全系统模拟器，也是一个相对稳定的参考基线。它不一定意味着“简单”，但它能让我先回答一个更基础的问题：一个大致正确的全系统路径应该是什么样子？
 
-基础主题主要写在 `assets/tufted.css` 中，包括：
+所以当我先想确认软件栈的大方向时，NEMU 会是比较自然的起点。
 
-- light / dark / system 主题颜色
-- `logo-light.svg` 与 `logo-dark.svg` 的品牌标识切换
-- 语言切换器与主题切换器的布局
-- 本地化首页的头像排版
-- 博客与文档卡片样式
-- 页脚与链接样式
+== NPC 是把问题直接压到我自己的核上
 
-== 主题与语言脚本
+`NPC` 不一样，因为它是我自己实现和维护的 `RISC-V64` 核项目。这样一来，问题就不再只是“软件期望是什么”，而会直接变成“我自己的实现有没有真的把这些前提满足好”。同样是 bring-up，硬件边界一旦是自己的，很多假设都会立刻变得更具体。
 
-共享壳层的交互行为拆分为三个小脚本：
+这也是为什么我会把 NPC 当成真正的 bring-up 目标，而不是把它看成另一种“能跑程序的工具”。
 
-- `assets/theme-bootstrap.js` 在首屏渲染前应用保存的 light/dark 选择，减少闪烁。
-- `assets/theme-switcher.js` 驱动可见的主题切换控件并保存偏好。
-- `assets/language-switcher.js` 根据当前 `/en/` 或 `/zh/` 路径记录活跃语言。
+#figure(
+  image("imgs/tool-questions.svg"),
+  caption: [真正开始调试之前，我通常先问每个工具的那个核心问题],
+)
 
-根入口页还会额外加载 `assets/language-redirect.js`，用于把 `/` 自动跳转到偏好的语言前缀。
+== gem5 对我来说更像是下一阶段的方法工具
 
-== 如何自定义样式
+gem5 官方文档把它描述成一个模块化的 computer-system simulation platform，而 Learning gem5 的导论也很直白地提醒：要真正用好 gem5，不能只会抄命令，还得理解模拟器自身是怎么工作的。
 
-如果你想调整网站外观，直接修改 `assets/custom.css` 即可。由于它默认最后加载，你写的规则会覆盖共享壳层样式。
+这对我很有帮助，因为我现在想学 gem5 的动机，不只是“再跑一个程序”，而是希望未来围绕 workload 和微结构行为建立更稳定的观察方法。所以目前我更愿意把 gem5 写成“正在学习的方法工具”，而不是已经成熟掌握的工作流。
 
-例如，修改链接颜色：
+== 为什么我不把它们当成替代关系
 
-```css
-a {
-  color: #ff0000;
-}
-```
+现在这个划分对我最有帮助：
 
-== 覆盖默认样式表
+- `NEMU` 用来建立全系统行为的基线直觉
+- `NPC` 用来直接面对自己的核和 handoff 路径是否真的正确
+- `gem5` 用来逐步进入 workload 观察和微结构研究的方法空间
 
-如果你希望完全替换默认样式表堆栈，也可以在 `config.typ` 中传入自己的列表：
-
-```typst
-#let template(body) = {
-  let page = site-web.with(
-    css: (site-url("assets/style.css"),),
-  )
-
-  page[#body]
-}
-```
+这套分工还在继续调整，但已经比把它们统称为“几种 RISC-V 模拟工具”更有用得多。
 
 #series-navbar("zh", nav)

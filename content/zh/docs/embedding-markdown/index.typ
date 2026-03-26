@@ -1,39 +1,42 @@
 #import "../index.typ": template, tufted
-#import "@preview/cmarker:0.1.8"
-#import "@preview/mitex:0.2.6": mitex
-#show: template.with(locale: "zh", route: "docs/embedding-markdown/", title: "嵌入 Markdown")
+#show: template.with(locale: "zh", route: "docs/embedding-markdown/", title: "Bring-up 检查清单参考")
 
-= 嵌入 Markdown
+= Bring-up 检查清单参考
 
-你可以借助 `cmarker` 把 Markdown 内容嵌入到 Typst 文档中。当你已经有一篇 Markdown 文章，但仍然想把它放进双语 Typst 站点中统一渲染时，这种方式会非常方便。
+#tufted.margin-note[
+  一页可快速扫读的 \
+  bring-up 参考清单
+]
 
-```typst
-#import "@preview/cmarker:0.1.8"
-#import "@preview/mitex:0.2.6": mitex
+这一页是系列章节的扁平版补充。我希望它更像调试时随手翻的清单，而不是一篇完整叙述。
 
-#let md-content = read("tufted-titmouse.md")
+== 特权级前提
 
-#let def-dict = (
-  image: (source, alt: none, format: auto) => figure(image(
-    source,
-    alt: alt,
-    format: format,
-  )),
-)
+- 当前阶段由哪个 privilege mode 控制？
+- 下一次 trap 或 exception 预期落到哪一层？
+- 如果要返回，代码默认走的是哪条 `xRET` 路径？
 
-#cmarker.render(md-content, math: mitex, scope: def-dict)
-```
+== firmware handoff
 
-下面的内容就是从当前目录中的 Markdown 文件渲染出来的：
+- firmware 真的是为当前 payload 和 device tree 构建的吗？
+- payload 放置位置和 offset 假设是否仍与现在的镜像布局一致？
+- 有没有一个清晰的 handoff 点可以确认或插桩？
 
-#let md-content = read("tufted-titmouse.md")
+== memory map 与设备树
 
-#let def-dict = (
-  image: (source, alt: none, format: auto) => figure(image(
-    source,
-    alt: alt,
-    format: format,
-  )),
-)
+- firmware、checkpoint 工具或 initramfs 打包过程分别预留了哪些地址范围？
+- 当前 device tree 描述的平台信息，和实际启动目标是否一致？
+- 如果多层共享同一片内存区域，谁先默认拥有它？
 
-#cmarker.render(md-content, math: mitex, scope: def-dict)
+== 最早能看到的信号
+
+- 最早的一条 console 输出
+- 最早一个可信的 trap 落点
+- NEMU 和 NPC 首次出现分歧的位置
+- 日志开始沉默的第一个阶段
+
+== 低成本调试提示
+
+- 有没有什么可以先在不重构整条路径的前提下验证？
+- 哪一层最适合先拿已知基线做对比？
+- 现在缺的是信号，还是 transition 本身就没有发生？

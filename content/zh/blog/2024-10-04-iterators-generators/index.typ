@@ -2,55 +2,52 @@
 #show: template.with(
   locale: "zh",
   route: "blog/2024-10-04-iterators-generators/",
-  title: "Python 中的迭代器与生成器",
+  title: "我理解的 LightSSS 在优化什么",
 )
 
-= Python 中的迭代器与生成器
+= 我理解的 LightSSS 在优化什么
 
-Python 的迭代协议是写出高效、符合 Python 风格代码的基础。#footnote[迭代器协议在 Python 2.2（2001）中作为 PEP 234 的一部分引入。] 虽然迭代器和生成器关系紧密，但理解它们之间的差异，能帮助你在不同场景中做出更合适的选择。
+#tufted.margin-note[
+  参考链接 \
+  #link("https://docs.xiangshan.cc/zh-cn/latest/tools/lightsss/")[香山 LightSSS 文档] \
+  #link("https://docs.xiangshan.cc/zh-cn/latest/tools/difftest/")[DiffTest 文档]
+]
 
-== 什么是迭代器
+#tufted.margin-note[
+  #image("imgs/lightsss-window.svg")
+  最贵的往往不是知道错误已经发生，而是怎样尽快回到错误附近那段真正有调试价值的窗口。
+]
 
-凡是实现了 `__iter__()` 与 `__next__()` 方法的对象，都可以被视为迭代器。#footnote[_iterable_ 在调用 `__iter__()` 后返回迭代器，而真正的 _iterator_ 会从 `__iter__()` 返回自身，并通过 `__next__()` 按次产出值。] 当你遍历列表或元组时，Python 会在后台创建一个迭代器。你也可以通过自定义类来手动实现这一协议。
+我第一次看 LightSSS 文档时，最直接的感受是：它想优化的并不只是“保存一个 snapshot”这件事，而是长时间 RTL 调试里最痛的那段回放成本。真正昂贵的不是知道错误发生了，而是为了把错误附近那一小段信息重新拿回来，不得不把很长的仿真再跑一遍。
 
-```python
-class Counter:
-    def __init__(self, max):
-        self.max = max
-        self.current = 0
+== 为什么普通 snapshot 叙事不够
 
-    def __iter__(self):
-        return self
+LightSSS 文档先把问题讲得很实际：调试时并不需要完整过程的波形，更多时候只需要错误发生点前后那一小段窗口。传统 snapshot 功能当然有帮助，但文档也直接指出了两个限制：
 
-    def __next__(self):
-        if self.current >= self.max:
-            raise StopIteration
-        self.current += 1
-        return self.current
-```
+- 保存的往往主要是 RTL 状态，而不是整个仿真上下文
+- 电路规模一大，状态文件的存储开销会明显上升
 
-== 生成器登场
+这样一来，问题就不再只是“能不能存快照”，而是“什么样的快照方式，才真的能改善调试周转时间”。
 
-生成器用函数和 `yield` 关键字，以更简洁的方式创建迭代器。#footnote[Python 还支持形如 `(x * 2 for x in range(10))` 的生成器表达式，它像惰性版的列表推导。] 与其把状态放在类属性里，不如让生成器在多次调用之间自动保存执行位置和局部变量，这通常会让代码更短、更清晰。
+== `fork` 这个思路才是关键
 
-```python
-def counter(max):
-    current = 0
-    while current < max:
-        current += 1
-        yield current
-```
+文档给出的机制不是围绕“状态文件”展开，而是围绕“进程快照”展开。主仿真进程会周期性地 `fork` 子进程，子进程阻塞等待信号，相当于保留了父进程在某个时间点的仿真状态。等父进程真正出错时，再唤醒离错误点最近的那个子进程，去导出波形或 debug 信息。
 
-这个生成器函数能产出与前面的迭代器类相同的结果，但样板代码要少得多。#footnote[生成器会保存局部变量和执行位置，因此本质上是一种可恢复执行的函数。] 调用生成器函数时，会得到一个已经实现了迭代器协议的生成器对象。
+这就很说明问题了：它并不是在追求最一般意义上的状态归档，而是在追求“离错误点足够近，从而还能高效地把调试窗口拿回来”。
 
-== 内存效率
+#figure(
+  image("imgs/fork-snapshot-loop.svg"),
+  caption: [一个简化视图：长期运行的父进程、被挂起的子进程快照，以及失败点附近真正有价值的调试窗口],
+)
 
-迭代器和生成器都采用惰性求值：只有在需要时才产生下一个值，而不是一次性把所有数据放进内存。#footnote[`itertools` 模块提供了 `count()`、`cycle()` 等函数来创建无限迭代器。] 因此它们非常适合处理大规模数据集，甚至无限序列。一个生成十亿个数字的生成器只占用很少内存，而十亿个元素的列表往往会直接耗尽机器资源。
+== 为什么这对长时间 RTL 调试很有价值
 
-#figure(image("imgs/python.webp"), caption: [四个人抬着一条很长的蟒蛇])
+DiffTest 文档本身就一直在强调仿真和通信成本，因此我很容易把 LightSSS 看成同一类思路下的工具：不要把时间浪费在“把整段历史再支付一遍”上，而是尽量把恢复和观察集中在真正有价值的最后那一小段。
 
-== 什么时候用哪一个
+所以在我的理解里，LightSSS 优化的不是“快照”这个名词本身，而是失败点附近的调试回放效率。这很像体系结构实验室里常见的取舍：把机制收缩到真正浪费工程时间的那个位置上。
 
-在日常开发里，大多数情况下优先使用生成器，因为它更短也更好读。只有当你需要复杂状态管理、多个迭代接口，或一个可复用且行为更丰富的对象时，再考虑写自定义迭代器类。
+== 我现在的 takeaway
 
-理解这两种工具，会让你更容易写出优雅而高效的 Python 代码。
+- LightSSS 更像一个调试效率工具，而不只是泛化的 snapshot 功能。
+- `fork` 这套思路的价值在于把错误附近那一小段状态保留下来。
+- 就算不看具体实现，文档本身也已经很明确地告诉我，它想解决的是长仿真调试里的周转时间问题。

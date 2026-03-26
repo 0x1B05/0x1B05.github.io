@@ -1,8 +1,8 @@
 #import "../index.typ": template, tufted, content-card, locale-url, series-begin
-#import "../series.typ": series-registry
+#import "../series.typ": series-registry, getting-started-series
 #show: template.with(locale: "zh", route: "docs/getting-started/", title: "快速上手")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 
 #let chapter-thumbnail(chapter) = if chapter.order == 1 {
   "starter-series.svg"
@@ -14,15 +14,15 @@
   "deployment-notes.svg"
 }
 
-= 快速上手
+= 从 RISC-V 特权级到 Linux Bring-up
 
-这个系列会带你从一个刚初始化好的 Tufted 模板出发，走完本地预览、理解双语目录结构，以及整理出可发布站点所需的最小路径。
+这个系列更像是我当前用来连接“读规格”和“做 bring-up”的那条学习路径。它不再讲如何定制站点，而是顺着我现在真正绕不开的层次往下走：特权级、machine-mode firmware、工具分工，以及在 Linux bring-up 里反复使用的检查框架。
 
-它适合那些想把演示内容替换成自己的网站内容，同时又希望从一开始就把共享壳层、镜像路由和部署流程理清楚的人。
+它也不是把自己写成已经把整条链路都吃透了。更准确地说，这是一条“当前需要理解什么、为什么这一层会变重要、它和后面的问题怎么接起来”的显式路径。
 
 == 建议阅读方式
 
-第一次阅读时建议按顺序完成。每一章都会默认前一步已经准备好，所以顺序会从初始化开始，依次进入结构、样式，最后收束到部署发布。
+第一次读建议按顺序来。顺序会从特权模型进入，再到 OpenSBI、工具角色，最后落到一份更偏实践的 bring-up 检查框架。每一章都故意写得比较短，目的是先把路径理顺，而不是一次把所有细节讲满。
 
 == 包含章节
 

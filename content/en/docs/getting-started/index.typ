@@ -1,8 +1,8 @@
 #import "../index.typ": template, tufted, content-card, locale-url, series-begin
-#import "../series.typ": series-registry
+#import "../series.typ": series-registry, getting-started-series
 #show: template.with(locale: "en", route: "docs/getting-started/", title: "Getting Started")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 
 #let chapter-thumbnail(chapter) = if chapter.order == 1 {
   "starter-series.svg"
@@ -14,15 +14,15 @@
   "deployment-notes.svg"
 }
 
-= Getting Started
+= From RISC-V Privilege Levels to Linux Bring-up
 
-This series walks through the smallest path from a fresh Tufted checkout to a bilingual site you can preview locally and publish without reshaping the template.
+This series is the path I am currently using to connect architectural reading with system bring-up work. Instead of explaining how to customize the site, it follows the layers that have become hard to ignore while trying to boot Linux: privilege levels, machine-mode firmware, tool choice, and the checklist I keep returning to when something stalls.
 
-It is for people who want to replace the demo content with their own material while keeping the shared shell, mirrored routes, and deployment workflow understandable from the start.
+It is not written as if I have already solved every problem in that stack. The point is to keep the learning path explicit: what I need to understand, why each layer matters, and how the pieces fit together once the target is a real boot flow rather than an isolated toy program.
 
 == Recommended reading
 
-Read the chapters in order the first time through. Each one assumes the previous step is already in place, so the sequence moves from setup to structure, then styling, and finally deployment.
+Read the chapters in order the first time through. The sequence moves from the privilege model, to OpenSBI, to tool roles, and finally to a practical checklist. Each chapter is short on purpose, so the series stays closer to a guided map than to a full textbook.
 
 == Included Chapters
 

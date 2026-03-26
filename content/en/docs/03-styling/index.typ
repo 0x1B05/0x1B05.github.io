@@ -1,77 +1,58 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "en", route: "docs/03-styling/", title: "Styling")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "en", route: "docs/03-styling/", title: "How I Use NEMU, NPC, and gem5 Differently")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/03-styling/")
 
-= Styling
+= How I Use NEMU, NPC, and gem5 Differently
 
 #series-navbar("en", nav)
 
-The visual appearance of the bilingual site is controlled by CSS plus a small amount of shell markup in `config.typ`.
+#tufted.margin-note[
+  Sources \
+  #link("https://www.gem5.org/about/")[What gem5 is] \
+  #link("https://www.gem5.org/documentation/learning_gem5/introduction")[Learning gem5]
+]
 
-== Default Stylesheets
+When I first grouped these tools together, I implicitly treated them as alternative ways to do the same thing. That model is too vague to be useful. The more practical distinction is that each one helps me answer a different kind of question.
 
-The template accepts a `css` argument containing an array of stylesheet URLs or paths. By default, it loads three stylesheets:
-
-```typst
-#let page = site-web.with(
-  css: (
-    "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
-    site-url("assets/tufted.css"),
-    site-url("assets/custom.css"),
-  ),
+#figure(
+  image("imgs/tool-roles.svg"),
+  caption: [How I currently separate baseline emulation, direct core bring-up, and simulation-oriented observation],
 )
-```
 
-The refreshed shell keeps this order and routes local asset paths through `site-url(...)` so GitHub Pages project sites can add a repository prefix safely.
+== NEMU as the baseline I can reason against
 
-== What Lives In `assets/tufted.css`
+In my current workflow, `NEMU` is the educational full-system emulator that gives me a relatively stable reference point. It is not "simple" in the sense of being trivial, but it is simple in the sense that it helps me ask, "what should a working full-system path roughly look like?"
 
-The base theme now lives primarily in `assets/tufted.css`, including:
+That makes it useful when I want a baseline for software stack expectations instead of immediately debugging my own hardware implementation.
 
-- light / dark / system theme colors
-- top-left brand mark behavior for `logo-light.svg` and `logo-dark.svg`
-- the language-switcher and theme-switcher layout
-- localized home page profile layout
-- blog and docs entry-card styling
-- footer and link styling
+== NPC as the place where the assumptions hit my own core
 
-== Theme And Language Scripts
+`NPC` is different because it is my own `RISC-V64` core project. That means the interesting failures are no longer only about "does the software stack expect X?" but also about "did my own implementation actually provide X?" The same bring-up question becomes more concrete because the hardware boundary is mine.
 
-The shell behavior is split across three small scripts:
+That is why I treat NPC as the direct target for bring-up work rather than as just another simulator binary.
 
-- `assets/theme-bootstrap.js` applies the saved light/dark choice in the head before the first paint.
-- `assets/theme-switcher.js` powers the visible theme controls and updates the saved preference.
-- `assets/language-switcher.js` remembers the active locale from the current `/en/` or `/zh/` route.
+#figure(
+  image("imgs/tool-questions.svg"),
+  caption: [The different question I usually bring to each tool before I start debugging],
+)
 
-The root gateway additionally loads `assets/language-redirect.js` so `/` can forward readers toward the preferred locale.
+== gem5 as the simulator I am learning for a different purpose
 
-== Customizing Styles
+The gem5 documentation describes gem5 as a modular computer-system simulation platform, and the Learning gem5 material makes it clear that using it well requires understanding how the simulator works rather than just copying commands. That is a useful warning for me, because my interest in gem5 is less about immediate bring-up and more about eventually building a better workflow for workload and microarchitectural observation.
 
-To customize the look of your site, modify `assets/custom.css`. Because it loads last by default, your rules will override the shared shell styles.
+So for now I treat gem5 as part of my learning path, not as a mature workflow I already own.
 
-For example, to adjust link colors:
+== Why I do not treat them as substitutes
 
-```css
-a {
-  color: #ff0000;
-}
-```
+The current split that makes sense to me is:
 
-== Overriding Stylesheets
+- use `NEMU` when I want a baseline for full-system behavior
+- use `NPC` when I need to confront whether my own core and handoff path behave correctly
+- use `gem5` when the question becomes more about simulator-supported observation, workload study, or microarchitectural experimentation
 
-If you want to replace the default stylesheet stack entirely, provide your own list in `config.typ`:
-
-```typst
-#let template(body) = {
-  let page = site-web.with(
-    css: (site-url("assets/style.css"),),
-  )
-
-  page[#body]
-}
-```
+That separation is still evolving, but it is already much more useful than treating all three as generic "ways to run RISC-V code."
 
 #series-navbar("en", nav)

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="240" viewBox="0 0 320 240" role="img" aria-label="LightSSS debug window diagram">
+  <rect width="320" height="240" rx="22" fill="#f6f1e8"/>
+  <text x="42" y="44" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">Long run</text>
+  <path d="M42 76H278" stroke="#8d6e63" stroke-width="6" stroke-linecap="round"/>
+  <circle cx="96" cy="76" r="8" fill="#d6e4f2" stroke="#264653" stroke-width="2"/>
+  <circle cx="164" cy="76" r="8" fill="#d6e4f2" stroke="#264653" stroke-width="2"/>
+  <circle cx="222" cy="76" r="8" fill="#d6e4f2" stroke="#264653" stroke-width="2"/>
+  <text x="93" y="102" text-anchor="middle" font-size="12" font-family="Georgia, serif" fill="#264653">fork</text>
+  <text x="164" y="102" text-anchor="middle" font-size="12" font-family="Georgia, serif" fill="#264653">fork</text>
+  <text x="222" y="102" text-anchor="middle" font-size="12" font-family="Georgia, serif" fill="#264653">fork</text>
+  <rect x="194" y="128" width="96" height="44" rx="16" fill="#fde0c6" stroke="#9c6644" stroke-width="3"/>
+  <text x="242" y="154" text-anchor="middle" font-size="18" font-family="Georgia, serif" fill="#5a3d2b">useful tail</text>
+  <path d="M278 76V128" stroke="#7f5539" stroke-width="3" stroke-dasharray="6 6"/>
+  <circle cx="278" cy="76" r="9" fill="#f5dedd" stroke="#8d4f4f" stroke-width="2.5"/>
+  <text x="278" y="108" text-anchor="middle" font-size="12" font-family="Georgia, serif" fill="#8d4f4f">failure</text>
+  <text x="160" y="206" text-anchor="middle" font-size="14" font-family="Georgia, serif" fill="#6b5b4d">Snapshots matter because they keep the final window close.</text>
+</svg>

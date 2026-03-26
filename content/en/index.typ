@@ -12,48 +12,46 @@
 
 #html.div(class: "home-hero")[
   #html.div(class: "home-hero__copy")[
-    #html.span(class: "home-kicker")[Bilingual personal site]
+    #html.span(class: "home-kicker")[Architecture notes and work in progress]
 
-    == Build a deliberate personal site in Typst
+    == From CPU fundamentals to performance-oriented systems work
 
-    This site is a bilingual writing hub with mirrored `/en/` and `/zh/` routes, a visible language switcher, and a restrained shell for long-form writing, documentation, and profile pages.
+    I am an M.S. student in Electronic Information at ShanghaiTech University and a member of the One Student One Chip group. After completing the B-track of the training, my current foundation is strongest in CPU and digital systems fundamentals, and I am using this site to document how that base grows into more systematic architecture, systems, and performance work.
 
-    It is set up for `0x1B05.github.io`, with GitHub Pages deployment, local preview targets, and a structure that stays easy to extend as the archive grows.
+    Recently I have been trying to boot Linux on both `NEMU` and `NPC`. In this context, `NEMU` is the educational full-system emulator used in the YSYX workflow, while `NPC` is my own `RISC-V64` core project. In parallel, I am learning `gem5` so I can build a more repeatable way to study microarchitectural behavior and performance questions.
   ]
   #html.div(class: "home-hero__profile")[
     #profile-image()
   ]
 ]
 
-== What This Version Includes
+== Current Direction
 
-This site is organized around three practical sections:
+My near-term work is centered on a few connected goals:
 
-- essays and posts for the #link(locale-url("en", route: "blog/"))[Blog]
-- onboarding and how-to guides for the #link(locale-url("en", route: "docs/"))[Docs]
-- a lightweight long-form profile page in the #link(locale-url("en", route: "cv/"))[CV]
+- strengthen the path from CPU and digital systems fundamentals toward microarchitectural performance analysis
+- use Linux bring-up on `NEMU` and `NPC` as a concrete way to connect architecture, debugging, and systems behavior
+- prepare for my upcoming summer internship at XiangShan
+- grow from CPU-oriented performance questions toward AI workload and accelerator performance over time
 
 #html.div(class: "home-links")[
   #home-link(
     locale-url("en", route: "docs/"),
-    "Start with the docs",
-    "Learn the folder layout, localization hooks, styling controls, and deployment path before you customize the content.",
+    "Study notes and references",
+    "Keep architecture notes, bring-up records, and practical methodology pages that are easy to revisit when the workflow gets deeper.",
   )
   #home-link(
     locale-url("en", route: "blog/"),
-    "See the blog index",
-    "Browse article-style entries with summaries and thumbnails that can grow into a real bilingual writing archive.",
+    "Experiment logs and writing",
+    "Collect reading notes, short technical essays, and stage-by-stage writeups from ongoing systems and performance work.",
   )
   #home-link(
     locale-url("en", route: "cv/"),
-    "Review the profile page",
-    "Keep a concise professional page alongside the rest of the site without breaking the overall shell.",
+    "Profile and direction",
+    "See a compact summary of my background, current work, technical interests, and the directions I want to grow into next.",
   )
 ]
 
-== Maintenance Notes
+== What This Site Is For
 
-- Replace `assets/logo-light.svg` and `assets/logo-dark.svg` to update the top-left brand mark.
-- Replace `assets/profile.png` to change the home portrait shown in both locales.
-- Edit both `content/en/` and `content/zh/` when you want mirrored bilingual pages.
-- Keep `site-root = ""` in `config.typ` while the site is deployed from `0x1B05.github.io`.
+I want this site to stay small, readable, and useful both as a personal profile and as a technical notebook. The emphasis is less on presenting finished expertise and more on making current work, learning direction, and technical growth visible.

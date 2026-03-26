@@ -1,39 +1,44 @@
 #import "../index.typ": template, tufted
-#import "@preview/cmarker:0.1.8"
-#import "@preview/mitex:0.2.6": mitex
-#show: template.with(locale: "en", route: "docs/embedding-markdown/", title: "Embedding Markdown")
+#show: template.with(locale: "en", route: "docs/embedding-markdown/", title: "Bring-up Checklist Reference")
 
-= Embedding Markdown
+= Bring-up Checklist Reference
 
-You can embed Markdown content within your Typst documents using `cmarker`. This is useful when you want to preserve an existing Markdown article while still rendering it inside your bilingual Typst site.
+#tufted.margin-note[
+  Reusable prompts \
+  for when the boot flow \
+  stops before the story \
+  is clear
+]
 
-```typst
-#import "@preview/cmarker:0.1.8"
-#import "@preview/mitex:0.2.6": mitex
+This page is the flatter companion to the series chapter. I want it to behave like a page I can skim while debugging rather than a narrative explanation.
 
-#let md-content = read("tufted-titmouse.md")
+== Privilege assumptions
 
-#let def-dict = (
-  image: (source, alt: none, format: auto) => figure(image(
-    source,
-    alt: alt,
-    format: format,
-  )),
-)
+- Which privilege mode owns the current stage?
+- Which layer is supposed to receive the next trap or exception?
+- If control returns, which `xRET` path is the current code assuming?
 
-#cmarker.render(md-content, math: mitex, scope: def-dict)
-```
+== Firmware handoff
 
-The content below is rendered from a Markdown file stored beside this page:
+- Was the firmware built for the payload and device tree I am actually using?
+- Do payload placement and offset assumptions still match the current image layout?
+- Is there one clear handoff point I can instrument or confirm?
 
-#let md-content = read("tufted-titmouse.md")
+== Memory map and device tree
 
-#let def-dict = (
-  image: (source, alt: none, format: auto) => figure(image(
-    source,
-    alt: alt,
-    format: format,
-  )),
-)
+- Which address ranges are reserved by firmware, checkpoint tooling, or initramfs packaging?
+- Does the device tree describe the same platform configuration I am actually booting?
+- If memory is shared across multiple layers, who assumes ownership first?
 
-#cmarker.render(md-content, math: mitex, scope: def-dict)
+== First visible signals
+
+- earliest console output
+- earliest reliable trap location
+- first point where NEMU and NPC behavior diverge
+- first stage where logs become silent
+
+== Cheap debugging prompts
+
+- What can I verify without rebuilding everything?
+- Which layer can I compare against a known-good baseline?
+- Am I missing a signal, or missing the transition itself?

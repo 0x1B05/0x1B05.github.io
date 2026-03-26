@@ -17,7 +17,7 @@
 
 = Docs
 
-This section explains how the bilingual template is put together and which files you are most likely to edit first. Treat it as the operating manual for your site rather than a bare list of links.
+This section keeps the more structured side of my notes: architecture reading paths, software-stack references, and working checklists for Linux bring-up. I want it to stay useful as a place to revisit the privilege model, firmware handoff, and simulator roles without turning every topic into a long blog post.
 
 == Series
 

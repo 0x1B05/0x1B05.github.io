@@ -2,31 +2,48 @@
 #show: template.with(
   locale: "zh",
   route: "blog/2025-04-16-monkeys-apes/",
-  title: "猴子和猿：到底差在哪里",
+  title: "把 LibCheckpointAlpha 当作基础设施来读",
 )
 
-= 猴子和猿：到底差在哪里
+= 把 LibCheckpointAlpha 当作基础设施来读
 
-无论是在动物园还是在自然纪录片里，人们都很容易把 “monkey” 和 “ape” 混着说。#footnote[猴子和猿都属于灵长目（Primates），这一目在全球包含五百多种动物。] 但这两个词实际上指向的是两类不同的灵长类动物，它们在身体结构和进化关系上都有明显差异。
+#tufted.margin-note[
+  参考链接 \
+  #link("https://github.com/OpenXiangShan/LibCheckpointAlpha")[LibCheckpointAlpha README] \
+  #link("https://github.com/OpenXiangShan/LibCheckpoint")[LibCheckpoint README] \
+  #link("https://docs.xiangshan.cc/zh-cn/latest/workloads/opensbi-kernel-for-xs/")[香山 OpenSBI workload 文档]
+]
 
-#tufted.margin-note(
-  image("imgs/gorilla.webp"),
+我对 checkpoint 工具感兴趣，并不只是因为它能“恢复一个状态”，而是因为它往往会把很多本来分散在不同层里的事情拉到一起看：恢复、payload 链接、直接启动、重新进入执行流。只要一个项目把这些都放在同一个 README 里，它其实就在提醒我，启动链路并没有我原来想得那么线性。
+
+== 为什么 LibCheckpointAlpha 会引起我的注意
+
+`LibCheckpointAlpha` 的 README 非常直接：它把自己描述成 `LibCheckpoint` 的一个过渡版本，并且明确写出当前有两种用途：
+
+- 恢复 checkpoint 状态
+- 链接下一层 bootloader，例如 `riscv-pk` 或 `OpenSBI`
+
+这一点很有意思，因为它说明这个项目不是一个藏在工作流边角的 restore utility。它正好站在“恢复执行”和“把下一层启动起来”相交的那个位置上。
+
+== 香山 workload 文档把这个角色说得更具体
+
+香山关于 OpenSBI Linux workload 的文档，把这个 README 里的角色变成了可执行流程。文档在构建完 OpenSBI 之后，会明确要求克隆 `LibCheckpointAlpha`，设置 `GCPT_HOME`，再通过 `make GCPT_PAYLOAD_PATH=...` 生成 `gcpt.bin`，这个产物既可以直接启动，也可以拿去做 SimPoint profiling 和 checkpoint 相关 workload。
+
+这样一来，我很难再把它理解成一个“调试后处理小工具”。它更像一段真正的中间层基础设施：把已经构建好的 payload 组织成可重复使用的启动工件。
+
+#figure(
+  image("imgs/checkpoint-handoff.svg"),
+  caption: [我现在更愿意这样理解 checkpoint 工具：它站在 payload 构建产物、可复用启动工件和后续 bring-up 复用之间],
 )
 
-== 最直观的差别：尾巴
+== 更新后的 LibCheckpoint 又把重点放到了哪里
 
-最容易分辨的一点就是尾巴。猴子都有尾巴，只是有的很长而且能缠绕抓握，有的比较短，但总之都会有。#footnote[蜘蛛猴拥有非常强壮的卷握尾，甚至可以只靠尾巴悬挂全身重量。] 猿则完全没有尾巴。因此，如果你看到一只灵长类动物在树间移动时拖着或甩着尾巴，那它一定是猴子。
+新的 `LibCheckpoint` README 把标题写得更聚焦：它把自己定义成一个面向 `rvgcpt` checkpoint 的 restorer，重点是把内存中的体系结构状态恢复到寄存器里。但与此同时，它仍然保留了“链接下一层 bootloader”的使用方式。
 
-== 体型与智力
+所以我更愿意把它理解成：新的仓库把“恢复”这件事表达得更清楚了，但它作为基础设施连接点的角色并没有消失。
 
-猿通常比猴子体型更大，在很多认知能力上也更复杂。大型猿类，例如大猩猩、黑猩猩、倭黑猩猩和红毛猩猩，体重可达数百磅，并且表现出惊人的问题解决能力。#footnote[Koko 大猩猩据说理解超过 1,000 个美国手语手势，以及大约 2,000 个英语单词。] 长臂猿和合趾猿虽然体型较小，但同样没有尾巴，并与大型猿共享不少身体结构特征。
+== 为什么我会关心这种项目
 
-猴子当然也很聪明，但通常不会表现出同等水平的工具使用或符号学习能力。它们整体上也更小一些，不过像狒狒这样的物种依然可能相当强壮。
+这类项目会改变我对整条软件栈的理解。它提醒我，bring-up 不只是 CPU 核本身的事，也不只是 Linux image 本身的事。中间这些看起来很“土木”的工件同样决定了控制权怎么交接、状态怎么被组织、启动怎么被重新进入。
 
-== 进化关系
-
-从进化角度看，猿与人类的关系比猴子与人类更近。人类与黑猩猩、倭黑猩猩大约共享 98% 的 DNA。#footnote[人类与黑猩猩这一支系大约在 600 万到 700 万年前从共同祖先分化。] 这种亲缘关系也体现在猿更宽的胸腔、更直立的姿态，以及更灵活的肩关节上。
-
-猿通常还拥有更复杂的家庭与社会结构。更长的寿命和更久的幼年期，使它们能够进行更多学习，并在代际之间传递“文化”。
-
-理解猴子与猿的区别，不仅能帮助我们更好地认识灵长类动物的多样性，也能更清楚地理解人类自身在进化树中的位置。
+这种有点“无聊”、但真正决定路径是否可复用的基础设施，正是我现在想补齐理解的部分。

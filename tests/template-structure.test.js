@@ -67,9 +67,6 @@ const zhConfigurationDocPath = path.join(
   "02-configuration",
   "index.typ",
 );
-const legacyBlogDirPath = path.join(__dirname, "..", "content", "blog");
-const legacyCvDirPath = path.join(__dirname, "..", "content", "cv");
-const legacyDocsDirPath = path.join(__dirname, "..", "content", "docs");
 const enStylingDocPath = path.join(
   __dirname,
   "..",
@@ -88,6 +85,9 @@ const zhStylingDocPath = path.join(
   "03-styling",
   "index.typ",
 );
+const legacyBlogDirPath = path.join(__dirname, "..", "content", "blog");
+const legacyCvDirPath = path.join(__dirname, "..", "content", "cv");
+const legacyDocsDirPath = path.join(__dirname, "..", "content", "docs");
 const enDeployDocPath = path.join(
   __dirname,
   "..",
@@ -106,7 +106,6 @@ const zhDeployDocPath = path.join(
   "04-deploy",
   "index.typ",
 );
-
 const rootIndex = fs.existsSync(rootIndexPath)
   ? fs.readFileSync(rootIndexPath, "utf8")
   : "";
@@ -117,12 +116,6 @@ const enDocsIndex = fs.existsSync(enDocsIndexPath)
   : "";
 const zhDocsIndex = fs.existsSync(zhDocsIndexPath)
   ? fs.readFileSync(zhDocsIndexPath, "utf8")
-  : "";
-const enStylingDoc = fs.existsSync(enStylingDocPath)
-  ? fs.readFileSync(enStylingDocPath, "utf8")
-  : "";
-const zhStylingDoc = fs.existsSync(zhStylingDocPath)
-  ? fs.readFileSync(zhStylingDocPath, "utf8")
   : "";
 const enDocsSeries = fs.existsSync(enDocsSeriesPath)
   ? fs.readFileSync(enDocsSeriesPath, "utf8")
@@ -141,6 +134,12 @@ const enConfigurationDoc = fs.existsSync(enConfigurationDocPath)
   : "";
 const zhConfigurationDoc = fs.existsSync(zhConfigurationDocPath)
   ? fs.readFileSync(zhConfigurationDocPath, "utf8")
+  : "";
+const enStylingDoc = fs.existsSync(enStylingDocPath)
+  ? fs.readFileSync(enStylingDocPath, "utf8")
+  : "";
+const zhStylingDoc = fs.existsSync(zhStylingDocPath)
+  ? fs.readFileSync(zhStylingDocPath, "utf8")
   : "";
 const enDeployDoc = fs.existsSync(enDeployDocPath)
   ? fs.readFileSync(enDeployDocPath, "utf8")
@@ -283,10 +282,6 @@ assert(
   JSON.stringify(enChapterOrder) === JSON.stringify(expectedChapterOrder) &&
     JSON.stringify(zhChapterOrder) === JSON.stringify(expectedChapterOrder),
   "English and Chinese docs series metadata should keep the phase-1 chapter order fields aligned with the approved reading order",
-);
-assert(
-  enStylingDoc.includes("site-web.with(") && zhStylingDoc.includes("site-web.with("),
-  "localized styling docs should continue teaching overrides through the local site shell",
 );
 assert(
   !fs.existsSync(legacyDocsDirPath) &&

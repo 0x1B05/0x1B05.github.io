@@ -1,90 +1,69 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "zh", route: "docs/04-deploy/", title: "部署发布")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "zh", route: "docs/04-deploy/", title: "一份正在使用的 Linux Bring-up 检查框架")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/04-deploy/")
 
-= 部署发布
+= 一份正在使用的 Linux Bring-up 检查框架
 
 #series-navbar("zh", nav)
 
-你可以借助内置的 Make 目标和一个很小的工作流，把生成后的双语站点部署到 GitHub Pages。
+这一章故意写成一份工作中的检查框架，而不是“已经 bring-up 成功之后的总结”。我现在还在用它整理自己的思路，所以重点不是讲一个已经完全解决的故事，而是把最先该确认的检查点放在一个容易反复回看的地方。
 
-== 本地预览
+== 在进入内核之前
 
-发布前先运行：
+我最先想确认的是一些前提，而不是一上来就做英雄式猜测：
 
-```sh
-make preview
-```
+- 控制到达当前阶段时，hart 处在什么 privilege mode？
+- firmware 到 payload 的 handoff 路径是否明确？
+- entry address、payload offset 和预期加载地址之间是否彼此一致？
+- 当前 device tree 真的是这个 payload 预期看到的那个吗？
 
-这个命令会重新生成 HTML，并通过 Python 的 HTTP server 提供 `_site/`，方便你在本地检查 `/`、`/en/` 和 `/zh/` 的实际效果。
+如果这些问题都还说不清楚，再去解释后面的症状，往往会很快掉进猜谜里。
 
-== 发布构建
+== firmware handoff
 
-当你需要生成 GitHub Pages 产物时，运行：
+当 OpenSBI 进入路径之后，我现在会先检查：
 
-```sh
-make pages
-```
+- payload 是怎么链接进去的
+- device tree 路径和 payload 路径是不是当前这次构建真正使用的版本
+- firmware image 采用的 handoff 约定是不是 payload 侧假设的那一种
+- firmware 这一层能不能给出足够的信息，让我知道控制权确实往前走了
 
-它会把静态站点重新构建到 `_site/` 中，并写入 `_site/.nojekyll`，让这个目录可以直接用于 Pages 发布。
+这一层一旦错了，看起来很像“内核没起来”，但它们其实不是同一种诊断。
 
-部署前请确认：
+== device tree 和 memory map 的基本一致性
 
-1. 如果仓库本身就是你的 Pages 域名，请保持 `config.typ` 中的 `site-root = ""`。
-2. 如果你发布的是项目站点，请在执行 `make pages` 之前把 `site-root` 设为 `"/your-repository-name"`。
+我还会用一份更枯燥但很必要的 memory-map 检查：
 
-== GitHub Actions
+- payload 放置的位置是否真是当前 firmware build 假设的那个地址
+- 有没有 reserved region 和 Linux 或当前 boot payload 想用的空间撞上
+- device tree 描述的平台信息是否真的和当前运行目标匹配
+- 如果中间还有 checkpoint、initramfs 或 payload wrapper，它们隐式占用了哪些地址范围
 
-在仓库中创建 `.github/workflows/deploy.yml`，内容如下：
+这些问题很烦，但它们就是最容易把 bring-up 搞得看上去莫名其妙的那类不一致。
 
-```yaml
-name: Deploy
+== 最早的“活着”信号
 
-on:
-  push:
-    branches: [ main ]
-  workflow_dispatch:
+最先有价值的观察通常很小：
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
+- 一条 console 输出
+- 一个到达过的已知阶段
+- 一个落在预期位置的 trap
+- 一个至少能说明“停在这里”的 timeout 或 watchdog 迹象
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v5
-      - uses: typst-community/setup-typst@v4
-      - run: make pages
-      - uses: actions/configure-pages@v4
-      - uses: actions/upload-pages-artifact@v4
-        with:
-          path: _site
+比起没有证据就直接猜更深层的原因，我更愿意先拿到一个可信的小进展信号。
 
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    permissions:
-      pages: write
-      id-token: write
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
-      - uses: actions/deploy-pages@v4
-        id: deployment
-```
+== 当启动流程卡住时
 
-== 启用 GitHub Pages
+当什么明显信号都没有时，我会继续问自己：
 
-1. 打开你的 GitHub 仓库。
-2. 进入 _Settings_ → _Pages_。
-3. 在 _Build and deployment_ 中把来源设置为 _GitHub Actions_。
+- 控制是在进入内核之前停住了，还是已经过了 firmware 阶段才停？
+- 是真的没有发生预期 transition，还是我根本没有把日志信号接出来？
+- 在改更多代码之前，有没有哪个前提可以先低成本验证？
+- 如果拿 NEMU 作为基线，最先发生偏离的是哪一层？
 
-之后，每次 push 到 `main` 时，都可以自动重建并发布 `_site/` 目录。
+这份清单故意写得有点“无聊”。这正是它的价值所在：我想先有一条可重复走的路，再决定哪些地方值得更深入地猜。
 
 #series-navbar("zh", nav)

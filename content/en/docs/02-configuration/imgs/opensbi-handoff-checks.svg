@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="860" height="240" viewBox="0 0 860 240" role="img" aria-label="OpenSBI handoff checks diagram">
+  <rect width="860" height="240" fill="#f6f1e8"/>
+  <rect x="42" y="46" width="232" height="148" rx="18" fill="#fde0c6" stroke="#9c6644" stroke-width="3"/>
+  <rect x="314" y="46" width="232" height="148" rx="18" fill="#eadfd0" stroke="#7f5539" stroke-width="3"/>
+  <rect x="586" y="46" width="232" height="148" rx="18" fill="#dfead2" stroke="#386641" stroke-width="3"/>
+  <text x="158" y="82" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#5a3d2b">Payload placement</text>
+  <text x="158" y="112" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#5a3d2b">entry address</text>
+  <text x="158" y="136" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#5a3d2b">payload offset</text>
+  <text x="158" y="160" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#5a3d2b">memory map fit</text>
+  <text x="430" y="82" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#4a3426">Device-tree handoff</text>
+  <text x="430" y="112" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#4a3426">current FDT path</text>
+  <text x="430" y="136" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#4a3426">platform match</text>
+  <text x="430" y="160" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#4a3426">boot arguments</text>
+  <text x="702" y="82" text-anchor="middle" font-size="24" font-family="Georgia, serif" fill="#1b4332">SBI-facing services</text>
+  <text x="702" y="112" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#1b4332">console hooks</text>
+  <text x="702" y="136" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#1b4332">timer and IPI</text>
+  <text x="702" y="160" text-anchor="middle" font-size="17" font-family="Georgia, serif" fill="#1b4332">forward progress</text>
+  <path d="M274 120H304" stroke="#7f5539" stroke-width="4"/>
+  <polygon points="304,120 290,112 290,128" fill="#7f5539"/>
+  <path d="M546 120H576" stroke="#7f5539" stroke-width="4"/>
+  <polygon points="576,120 562,112 562,128" fill="#7f5539"/>
+</svg>

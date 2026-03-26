@@ -20,7 +20,6 @@ const {
   zhDeployDocHtml,
   enReferenceDocHtml,
   zhReferenceDocHtml,
-  zhCvHtml,
   css,
 } = loadTemplateFixture();
 
@@ -35,24 +34,6 @@ function countOccurrences(text, snippet) {
   return text.split(snippet).length - 1;
 }
 
-function sectionBetween(htmlText, startLabel, endLabel) {
-  const startIndex = htmlText.indexOf(`>${startLabel}<`);
-  const endIndex = htmlText.indexOf(`>${endLabel}<`, startIndex + startLabel.length);
-
-  return startIndex === -1 || endIndex === -1
-    ? ""
-    : htmlText.slice(startIndex, endIndex);
-}
-
-function trailingSection(htmlText, startLabel) {
-  const startIndex = htmlText.indexOf(`>${startLabel}<`);
-  const footerIndex = htmlText.indexOf('<div class="site-footer">', startIndex + startLabel.length);
-
-  return startIndex === -1 || footerIndex === -1
-    ? ""
-    : htmlText.slice(startIndex, footerIndex);
-}
-
 function extractCardSlugs(sectionHtml, locale) {
   const slugPattern = new RegExp(`<a href="/${locale}/docs/([^/"]+)/" class="content-card"`, "g");
   return [...sectionHtml.matchAll(slugPattern)].map((match) => match[1]);
@@ -63,16 +44,23 @@ function extractDocRoutes(htmlText, locale) {
   return [...htmlText.matchAll(routePattern)].map((match) => match[1]);
 }
 
-function assertNavPlacement(htmlText, href, topMarker, message) {
+function assertNavPlacement(htmlText, href, message) {
   const firstIndex = htmlText.indexOf(href);
   const lastIndex = htmlText.lastIndexOf(href);
-  const topMarkerIndex = htmlText.indexOf(topMarker);
+  const firstNavIndex = htmlText.indexOf('<nav class="series-nav">');
+  const lastNavIndex = htmlText.lastIndexOf('<nav class="series-nav">');
+  const headingIndex = htmlText.indexOf("<h2>");
+  const firstSubheadingIndex = htmlText.indexOf("<h3>", headingIndex);
+  const footerIndex = htmlText.indexOf('<div class="site-footer">');
 
   assert(firstIndex !== -1 && lastIndex !== -1 && firstIndex !== lastIndex, message);
-  assert(firstIndex < topMarkerIndex, `${message} (first nav link should be above the main body)`);
   assert(
-    lastIndex > htmlText.length * 0.75,
-    `${message} (second nav link should appear near the bottom of the page)`,
+    firstNavIndex > headingIndex && firstNavIndex < firstSubheadingIndex,
+    `${message} (first nav block should sit between the page title and the first section body)`,
+  );
+  assert(
+    lastNavIndex > htmlText.length * 0.7 && lastNavIndex < footerIndex,
+    `${message} (second nav block should appear near the bottom of the page, before the footer)`,
   );
 }
 
@@ -88,10 +76,6 @@ const navEnd = enHtml.indexOf("</nav>");
 const articleIndex = enHtml.indexOf("<article>");
 const themeButtonIndex = enHtml.indexOf("theme-switcher__button");
 const languageSwitcherIndex = enHtml.indexOf("language-switcher");
-const docsSeriesSectionEn = sectionBetween(enDocsLandingHtml, "Series", "Reference");
-const docsSeriesSectionZh = sectionBetween(zhDocsLandingHtml, "系列", "参考");
-const docsReferenceSectionEn = trailingSection(enDocsLandingHtml, "Reference");
-const docsReferenceSectionZh = trailingSection(zhDocsLandingHtml, "参考");
 const nestedEnglishChapterRoutes = chapterSlugs.map(
   (slug) => `href="/en/docs/getting-started/${slug}/"`,
 );
@@ -116,12 +100,11 @@ assert(
   "root index should include the language redirect script",
 );
 assert(
-  enHtml.includes("Build a deliberate personal site in Typst"),
-  "English localized home page should render the English hero content",
-);
-assert(
-  zhHtml.includes("用 Typst 打造一个克制而明确的个人网站"),
-  "Chinese localized home page should render the Chinese hero content",
+  enHtml.includes('class="home-hero"') &&
+    zhHtml.includes('class="home-hero"') &&
+    countOccurrences(enHtml, 'class="home-link"') === 3 &&
+    countOccurrences(zhHtml, 'class="home-link"') === 3,
+  "localized home pages should keep the shared hero shell and three primary entry links",
 );
 assert(
   !fs.existsSync(path.join(siteDir, "en", "docs", "series.html")) &&
@@ -160,59 +143,15 @@ assert(
   "localized pages should declare the correct html lang attribute",
 );
 assert(
-  enDocsLandingHtml.includes(">Series<") &&
-    enDocsLandingHtml.includes(">Reference<") &&
-    enDocsLandingHtml.indexOf(">Series<") < enDocsLandingHtml.indexOf(">Reference<"),
-  "English docs landing page should render Series above Reference",
-);
-assert(
-  zhDocsLandingHtml.includes(">系列<") &&
-    zhDocsLandingHtml.includes(">参考<") &&
-    zhDocsLandingHtml.indexOf(">系列<") < zhDocsLandingHtml.indexOf(">参考<"),
-  "Chinese docs landing page should render 系列 above 参考",
-);
-assert(
-  docsSeriesSectionEn.includes('class="content-grid"') &&
-    docsSeriesSectionEn.includes("content-card__thumb") &&
-    docsSeriesSectionEn.includes("content-card__title"),
-  "English Series region should preserve the card-grid, thumbnail, and title structure",
-);
-assert(
-  docsSeriesSectionZh.includes('class="content-grid"') &&
-    docsSeriesSectionZh.includes("content-card__thumb") &&
-    docsSeriesSectionZh.includes("content-card__title"),
-  "Chinese 系列 region should preserve the card-grid, thumbnail, and title structure",
-);
-assert(
-  JSON.stringify(extractCardSlugs(docsSeriesSectionEn, "en")) ===
-    JSON.stringify(["getting-started"]) &&
-    JSON.stringify(extractCardSlugs(docsSeriesSectionZh, "zh")) ===
-      JSON.stringify(["getting-started"]),
-  "docs landing pages should collapse the setup tutorial into a single getting-started series card",
-);
-assert(
-  docsReferenceSectionEn.includes('class="content-grid"') &&
-    docsReferenceSectionEn.includes("content-card__thumb") &&
-    docsReferenceSectionEn.includes("content-card__title"),
-  "English Reference region should preserve the card-grid, thumbnail, and title structure",
-);
-assert(
-  docsReferenceSectionZh.includes('class="content-grid"') &&
-    docsReferenceSectionZh.includes("content-card__thumb") &&
-    docsReferenceSectionZh.includes("content-card__title"),
-  "Chinese 参考 region should preserve the card-grid, thumbnail, and title structure",
-);
-assert(
-  JSON.stringify(extractCardSlugs(docsReferenceSectionEn, "en")) ===
-    JSON.stringify(["embedding-markdown"]) &&
-    JSON.stringify(extractCardSlugs(docsReferenceSectionZh, "zh")) ===
-      JSON.stringify(["embedding-markdown"]),
-  "docs landing pages should keep embedding-markdown isolated in the reference area",
-);
-assert(
-  enSeriesHomeHtml.toLowerCase().includes("recommended") &&
-    zhSeriesHomeHtml.includes("阅读"),
-  "series homepages should include a short recommended reading pattern in both locales",
+  countOccurrences(enDocsLandingHtml, 'class="content-card"') === 2 &&
+    countOccurrences(zhDocsLandingHtml, 'class="content-card"') === 2 &&
+    enDocsLandingHtml.includes("content-card__thumb") &&
+    zhDocsLandingHtml.includes("content-card__thumb") &&
+    JSON.stringify(extractCardSlugs(enDocsLandingHtml, "en")) ===
+      JSON.stringify(["getting-started", "embedding-markdown"]) &&
+    JSON.stringify(extractCardSlugs(zhDocsLandingHtml, "zh")) ===
+      JSON.stringify(["getting-started", "embedding-markdown"]),
+  "docs landing pages should render the localized series and reference cards in a stable order",
 );
 assert(
   chapterSlugs.every((slug) => enSeriesHomeHtml.includes(`href="/en/docs/${slug}/"`)) &&
@@ -300,37 +239,31 @@ assert(
 assertNavPlacement(
   enDocHtml,
   'href="/en/docs/getting-started/"',
-  "Installation",
   "first English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhDocHtml,
   'href="/zh/docs/getting-started/"',
-  "安装",
   "first Chinese chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   enConfigurationDocHtml,
   'href="/en/docs/getting-started/"',
-  "Default Asset Roles",
   "middle English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhConfigurationDocHtml,
   'href="/zh/docs/getting-started/"',
-  "默认资源角色",
   "middle Chinese chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   enDeployDocHtml,
   'href="/en/docs/getting-started/"',
-  "Local Preview",
   "last English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhDeployDocHtml,
   'href="/zh/docs/getting-started/"',
-  "本地预览",
   "last Chinese chapter should place the series navigation near the top and bottom",
 );
 assert(
@@ -406,11 +339,6 @@ assert(
   "Chinese titles should override the upstream italic heading treatment",
 );
 assert(
-  zhCvHtml.includes("<em>Visual explanations: images and quantities, evidence and narrative</em>") &&
-    zhCvHtml.includes("<em>American Political Science Review</em>"),
-  "Chinese profile page should preserve the original emphasized work titles",
-);
-assert(
   /\.site-brand\s*\{[\s\S]*width:\s*8rem;/.test(css),
   "brand logo container should keep a stable width so nav links do not shift between themes",
 );
@@ -447,6 +375,10 @@ assert(
 assert(
   /\.content-card__description\s*\{[\s\S]*font-size:\s*1\.02rem;/.test(css),
   "content card descriptions should sit closer to the body copy scale",
+);
+assert(
+  /\.content-grid\s*\{[\s\S]*width:\s*min\(100%,\s*44rem\);/.test(css),
+  "content grids should keep a capped width so cards do not press against the far-right edge",
 );
 assert(
   /\.home-hero__profile\s*\{[^}]*width:\s*20rem;/.test(css),

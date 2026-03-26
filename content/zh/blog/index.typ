@@ -3,7 +3,7 @@
 
 = 博客
 
-这里放的是短篇随笔、示例说明和探索性笔记。卡片文案会先解释每篇文章“为什么值得点开”，这在双语归档里尤其重要。
+这里放更短一些的东西：阅读笔记、工具反思，以及做 bring-up 过程中冒出来的零散观察。和 docs 相比，这一部分会保留更多个人视角，而不是把每个话题都写成已经定稿的说明书。
 
 == 推荐阅读
 
@@ -11,23 +11,23 @@
   #content-card(
     locale-url("zh", route: "blog/2025-10-30-normal-distribution/"),
     "research-log.svg",
-    "正态分布",
-    "用简洁的方式说明高斯分布为什么重要、常见在哪里，以及两个核心参数在实践中的含义。",
-    label: "统计",
+    "为什么一做 Linux Bring-up 就绕不开 OpenSBI",
+    "一篇短笔记，记录我为什么会从抽象的特权级阅读，走到不得不认真看待 M 模式固件和 SBI 边界。",
+    label: "Bring-up 笔记",
   )
   #content-card(
     locale-url("zh", route: "blog/2024-10-04-iterators-generators/"),
     "workflow-guide.svg",
-    "Python 中的迭代器与生成器",
-    "一篇面向日常 Python 开发的实践笔记，对比显式迭代器对象与基于生成器的控制流。",
-    label: "编程",
+    "我理解的 LightSSS 在优化什么",
+    "一篇阅读笔记，记录轻量级仿真快照为什么能在长时间 RTL 调试里明显改善回放与定位效率。",
+    label: "工具笔记",
   )
   #content-card(
     locale-url("zh", route: "blog/2025-04-16-monkeys-apes/"),
     "reading-notes.svg",
-    "猴子和猿有什么区别",
-    "一个轻量的参考型示例，展示友好的文章归档同样可以保持结构清楚、说明充分。",
-    label: "参考文章",
+    "把 LibCheckpointAlpha 当作基础设施来读",
+    "一篇围绕 checkpoint 恢复和 bootloader 链接的小文章，解释为什么这种基础设施会改变我对整条软件栈的理解。",
+    label: "阅读笔记",
   )
 ]
 

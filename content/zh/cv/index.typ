@@ -1,61 +1,48 @@
 #import "../index.typ": template, tufted
 #show: template.with(locale: "zh", route: "cv/", title: "简历")
-#import "@preview/citegeist:0.2.2": load-bibliography
 
-= Edward R. Tufte
-
-#tufted.margin-note[
-  统计学家、艺术家、荣休教授 \
-  Website: #link("https://www.edwardtufte.com")[edwardtufte.com] \
-  Email: #link("mailto:noreply@edwardtufte.com")[`noreply@edwardtufte.com`]
-]
-
-长期研究统计证据与信息可视化中的分析性设计，将统计学、图形设计和认知科学结合起来，以提升定量信息的表达效果。
-
-== 工作经历
-
-- *1983--Present*: Graphics Press 创始人兼出版人，专注于信息设计与数据可视化的独立出版社。
-- *1977--1999*: Yale University 荣休教授，任职于政治学、统计学与计算机科学等院系。
-- *1967--1977*: Princeton University 教师，隶属 Woodrow Wilson School of Public and International Affairs。
-
-== 艺术作品
+= 0x1B05
 
 #tufted.margin-note[
-  #image("escaping-flatland.webp")
+  上海科技大学电子信息硕士研究生 \
+  一生一芯课题组 \
+  关注体系结构、系统与性能问题
 ]
 
-#tufted.margin-note[
-  向 Edward R. Tufte 的大型不锈钢雕塑 _Escaping Flatland_ 致意
-]
+我是上海科技大学电子信息专业硕士研究生，目前在一生一芯课题组。和已经形成成熟 perf 分析方法的人相比，我现在更接近“具备 CPU 与数字系统基础，并继续向系统与性能方向发展”的阶段，这一页主要是对这条发展路线做一个紧凑说明。
 
-创办位于康涅狄格州 Woodbury 的 Hogpen Hill Farms 雕塑园，占地 234 英亩。代表性大型作品包括 _Larkin's Twig_ 与 _Escaping Flatland_ 系列，并曾在 Aldrich Contemporary Art Museum 展出。
+== 基本情况
 
-== 研究贡献
+- 上海科技大学电子信息专业硕士研究生。
+- 一生一芯课题组成员。
+- 已完成一生一芯 B 线训练。
+- 希望把体系结构基础逐步转化为更扎实的系统与性能分析能力。
 
-提出 sparkline 这一可在正文中嵌入高分辨率数据图形的方法，并将 data-ink ratio 概念发展为衡量图形表达效率的定量标准。
+== 当前工作
 
-== 著作
+最近这段时间，我更关注系统 bring-up 和模拟器相关学习，而不是过早把自己包装成已经成熟的性能分析工程师。
 
-#{
-  let bib = load-bibliography(read("books.bib"))
-  for item in bib.values().rev() [
-    #let data = item.fields
-    - #strong(data.year): #emph(data.title)
-  ]
-}
+- 我正在尝试让 `NEMU` 和 `NPC` 的核心启动 Linux。
+- 这里的 `NEMU` 是一生一芯训练体系中常用的教学型全系统模拟器。
+- `NPC` 是我自己实现和维护的 `RISC-V64` 核项目，所以 bring-up 和调试会直接落在硬件与软件的边界上。
+- 我也在继续学习 `gem5`，希望把零散的模拟实践逐步变成更稳定的 workload 观察和微结构分析方法。
 
-== 论文
+== 背景与训练
 
-#{
-  let bib = load-bibliography(read("papers.bib"))
-  for item in bib.values().rev() [
-    #let data = item.fields
-    - #data.author, "#data.title," #emph(data.journal), #data.year. DOI: #link(data.url)[#data.doi]
-  ]
-}
+- 我目前的基础主要仍在 CPU 与数字系统入门，包括对流水线、cache、分支预测等概念的初步理解。
+- 一生一芯 B 线给了我一个比较务实的起点，让我能在核、工具链和系统层面继续往前做。
+- 虽然我之前也接触过 `gem5`，但现在仍在把它整理成更稳定的分析工作流，而不是把它当成已经完全掌握的能力。
+- 今年暑假我会去香山实习，这会是我继续把体系结构学习落到真实工程问题上的重要一步。
 
-== 教育经历
+== 技术兴趣
 
-- PhD in Political Science: Yale University (1968)。
-- MS in Statistics: Stanford University。
-- BS in Statistics: Stanford University。
+- CPU perf 与微结构性能分析
+- workload characterization 与测量方法
+- AI 芯片性能分析
+- AI 系统性能优化
+
+== 发展方向
+
+- 近阶段，我希望先把 Linux bring-up、模拟器使用、调试过程和面向性能的问题分析做得更系统一些。
+- 更长期来看，我希望从传统 CPU perf 问题逐步走向 AI workload 与 accelerator performance。
+- 毕业后我更倾向于在上海或苏州从事相关工作。

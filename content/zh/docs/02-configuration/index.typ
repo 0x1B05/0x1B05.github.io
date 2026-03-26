@@ -1,93 +1,59 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "zh", route: "docs/02-configuration/", title: "配置结构")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "zh", route: "docs/02-configuration/", title: "OpenSBI 在启动链路里做什么")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/02-configuration/")
 
-= 网站结构
+= OpenSBI 在启动链路里做什么
 
 #series-navbar("zh", nav)
 
-这个双语模板主要由四层组成：
+#tufted.margin-note[
+  参考资料 \
+  #link("https://github.com/riscv-software-src/opensbi")[OpenSBI README] \
+  #link("https://docs.xiangshan.cc/zh-cn/latest/workloads/opensbi-kernel-for-xs/")[香山 OpenSBI 内核文档]
+]
 
-- `config.typ`：共享壳层、路由辅助函数、本地化标签以及全局控件。
-- `content/en/`：英文内容树。
-- `content/zh/`：中文内容树。
-- `assets/`：中英文页面共用的静态资源与脚本。
+OpenSBI 是最近让我明显感觉“启动链路不再抽象”的那一层。以前容易把 Linux 当成第一个真正值得关心的软件，但一旦认真问“是谁把控制权交给 Linux”，machine-mode firmware 这一层就不再是可有可无的背景知识了。
 
-== 默认资源角色
+#tufted.margin-note[
+  #image("imgs/sbi-boundary.svg")
+  SBI 边界就是 machine-mode 控制能力转化成 payload 可以依赖的那层服务界面。
+]
 
-更新后的模板约定了几个共享资源的默认用途：
+#figure(
+  image("imgs/boot-chain.svg"),
+  caption: [把平台复位、machine-mode firmware、S-mode payload 和用户态放在一条可见链路里],
+)
 
-- `assets/logo-light.svg`：浅色主题下左上角品牌标识。
-- `assets/logo-dark.svg`：深色主题下左上角品牌标识。
-- `assets/profile.png`：中英文首页共用的头像。
-- `assets/content-thumbnails/`：博客和文档卡片共用的缩略图。
+== 它在什么位置
 
-== 核心配置
+OpenSBI 的 README 直接把它放在一个很明确的位置上：SBI 是运行在 `M-mode` 的平台固件与运行在 `S-mode` 或 `HS-mode` 的软件之间推荐使用的接口，而 OpenSBI 则是这套接口在 machine-mode firmware 侧的开源参考实现。
 
-在 `config.typ` 中，你会把上游 Tufted 提供的原语封装成一个本地 `site-web()` 壳层，以及一个带 locale 的 `template()` 辅助函数。这个包装层负责每个页面共享的结构：品牌导航、样式表注入、预绘制主题引导、语言切换器、主题切换器以及页脚。
+也就是说，OpenSBI 既不是内核，也不是普通程序。它真正重要的地方在于：它把 machine mode 的控制能力，转换成 supervisor-level 软件能够依赖的那套接口和交接关系。
 
-```typst
-#let locale-root(locale) = site-url(locale + "/")
+#figure(
+  image("imgs/opensbi-handoff-checks.svg"),
+  caption: [现在我会放在一起看的三个检查点：payload 放置、device tree handoff，以及 SBI 服务边界],
+)
 
-#let locale-url(locale, route: "") = {
-  let normalized = normalize-route(route)
-  if normalized == "" {
-    locale-root(locale)
-  } else {
-    locale-root(locale) + normalized
-  }
-}
+== 这一层通常负责什么
 
-#let template(
-  body,
-  title: site-name,
-  locale: "en",
-  route: "",
-) = {
-  let copy = locale-copy(locale)
-  let nav-links = (
-    (locale-url(locale), brand-logo(), "brand"),
-    (locale-url(locale, route: "docs/"), copy.nav_docs, "default"),
-    (locale-url(locale, route: "blog/"), copy.nav_blog, "default"),
-    (locale-url(locale, route: "cv/"), copy.nav_cv, "default"),
-  )
+OpenSBI README 里有一个很有帮助的点：它把 `libsbi.a` 描述成一个平台无关的 SBI 接口实现，而平台相关的固件代码再去接上硬件相关操作。像 console access、IPI 控制、定时器相关平台操作这样的事情，就会在这一层开始变得具体。
 
-  let page = site-web.with(
-    header-links: nav-links,
-    locale: locale,
-    lang: locale,
-    route: route,
-    footer-locale: locale,
-  )
+这正是 bring-up 时必须开始在意的边界：有些失败并不是“内核错了”，而是 firmware handoff 或 SBI 服务这一层没有按预期准备好。
 
-  page[#body]
-}
-```
+== 为什么一做 Linux bring-up 就会遇到它
 
-== 层级与继承
+香山文档会很快把这个问题变成实践问题：当你用 OpenSBI 去承载 Linux payload，并且同时传入设备树之后，OpenSBI 这一层就不再只是概念中的“固件”。它会直接出现在构建命令、镜像布局和地址假设里。
 
-站点仍然沿用 Typst 的层级结构。每个语言树都有自己的根 `index.typ`，子页面只从最近的本地化父级导入，而不直接回到 `config.typ`。
+这也改变了我现在看 bring-up 的方式。如果 Linux 没有继续往前走，一个很自然的问题就是：firmware 是否按 payload 的预期构建好了，handoff 是否真的按照软件栈假设的方式发生了。
 
-- `content/en/docs/index.typ` 从 `content/en/index.typ` 导入
-- `content/en/docs/01-quick-start/index.typ` 再从 `content/en/docs/index.typ` 导入
-- 中文树在 `content/zh/` 下完全镜像这一结构
+== 我现在想记住的点
 
-这样共享壳层可以集中维护，而每个语言树仍然拥有自己的文案和页面内容。
-
-== 本地化分工
-
-- 导航标签、主题菜单标签等共享 UI 文案放在 `config.typ` 中。
-- 每个页面正文则放在 `content/en/` 和 `content/zh/` 各自的内容文件里。
-- 两边必须保持相同 slug，这样语言切换器才能可靠地跳到对侧页面。
-
-== GitHub Pages 路径
-
-- 如果你发布到 `username.github.io` 这类用户或组织站点，请保持 `site-root = ""`。
-- 如果你发布到项目站点，请把 `site-root` 设成 `"/your-repository-name"`，并且不要加结尾斜杠。
-
-这样 `/en/` 与 `/zh/` 在 GitHub Pages 上也会保持正确解析。
+- OpenSBI 是 machine-mode firmware 和 supervisor-level software 之间那层明确可见的交接面。
+- 它之所以重要，不在于它有多大，而在于它定义了 Linux 之下那层契约。
+- 一旦 Linux 成为 payload，firmware build 参数、payload 位置和设备树处理都不再是次要细节。
 
 #series-navbar("zh", nav)

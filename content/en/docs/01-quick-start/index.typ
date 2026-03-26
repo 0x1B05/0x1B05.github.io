@@ -1,51 +1,58 @@
 #import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": series-registry
-#show: template.with(locale: "en", route: "docs/01-quick-start/", title: "Quick Start")
+#import "../series.typ": getting-started-series
+#show: template.with(locale: "en", route: "docs/01-quick-start/", title: "RISC-V Privilege Levels and Boot Context")
 
-#let series = series-registry.at(0)
+#let series = getting-started-series
 #let nav = series-context(series, "docs/01-quick-start/")
 
-= Quick Start
+= RISC-V Privilege Levels and Boot Context
 
 #series-navbar("en", nav)
 
-== Installation
+#tufted.margin-note[
+  Further reading \
+  #link("https://riscv.github.io/riscv-isa-manual/snapshot/privileged")[Privileged Architecture Manual]
+]
 
-To initialize a new project from the template, run the following commands:
+Linux bring-up made the privileged architecture feel much less abstract to me. Once the target is a real kernel image instead of a tiny test program, the questions stop being "can the core run instructions?" and become "which privilege mode owns what, who handles traps, and who is responsible for the next handoff?"
 
-```sh
-typst init @preview/tufted:0.1.1 my-website
-cd my-website
-```
+== Machine, Supervisor, and User
 
-== Building
+The privileged specification defines a software stack with distinct privilege levels:
 
-The template includes a `Makefile` that compiles every `index.typ` page in the bilingual content tree:
+- `M-mode` is the highest privilege level and the only mandatory one for a RISC-V hardware platform.
+- `S-mode` is where a supervisor-level OS such as Linux expects to execute.
+- `U-mode` is where ordinary applications live once the kernel has set up the environment around them.
 
-```sh
-make html
-```
+That split matters because Linux is not supposed to begin life in a vacuum. Something below it has to establish the environment, delegate the right control, and hand over execution in a predictable way.
 
-This writes the generated pages to `_site/`, including the language gateway at `/` and the mirrored `/en/` and `/zh/` sections.
+== Why CSRs and traps appear immediately
 
-== Previewing Locally
+Once boot becomes the topic, control and status registers stop feeling like background material:
 
-For day-to-day editing, use the built-in preview target:
+- status registers tell you what privilege state the hart is in
+- trap-related CSRs tell you where exceptions and interrupts will land
+- address-translation state such as `satp` affects when virtual-memory assumptions begin to matter
+- delegation controls decide which layer is allowed to see which trap first
 
-```sh
-make preview
-```
+Even when I am not reading every CSR in detail, I still need the overall picture: if a trap goes to the wrong place or the next privilege transition is wrong, Linux bring-up can fail long before the kernel gets far enough to print anything useful.
 
-By default the preview server listens on port `8000`. If you need a different port, run `make preview PORT=9000`.
+== Boot context is more than "can it execute code"
 
-== Publishing Build
+The first practical questions I now care about are things like:
 
-When you are preparing a GitHub Pages artifact, run:
+- Which mode does the hart start in?
+- Who sets up the next privilege transition?
+- Who passes the device tree and boot arguments?
+- Which layer is expected to provide the SBI calls Linux will rely on?
+- Where should I expect the first visible sign of life if the path is correct?
 
-```sh
-make pages
-```
+These are all "boot context" questions rather than "instruction set" questions, but they sit directly on top of the privileged architecture model.
 
-That command rebuilds the HTML output and writes `_site/.nojekyll` so the generated folder is ready to upload.
+== What I take away from this chapter
+
+- The privilege split is not just specification vocabulary; it defines the contracts between firmware, kernel, and user software.
+- Traps and CSRs matter early because they determine whether control reaches the expected layer at all.
+- Before touching Linux-specific details, I need a clear picture of the privilege and handoff story.
 
 #series-navbar("en", nav)

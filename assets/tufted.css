@@ -594,6 +594,7 @@ CONTENT ENTRY CARDS
 .content-grid {
     display: grid;
     gap: 1rem;
+    width: min(100%, 44rem);
     margin: 1.35rem 0 2rem;
 }
 

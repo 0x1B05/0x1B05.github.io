@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": getting-started-series
-#show: template.with(locale: "zh", route: "docs/03-styling/", title: "我如何区分使用 NEMU、NPC 和 gem5")
+#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../series.typ": linux-bringup-series
+#show: template.with(locale: "zh", route: "docs/linux-bringup/03-styling/", title: "我如何区分使用 NEMU、NPC 和 gem5")
 
-#let series = getting-started-series
-#let nav = series-context(series, "docs/03-styling/")
+#let series = linux-bringup-series
+#let nav = series-context(series, "docs/linux-bringup/03-styling/")
 
 = 我如何区分使用 NEMU、NPC 和 gem5
 

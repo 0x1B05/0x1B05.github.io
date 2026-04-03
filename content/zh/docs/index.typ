@@ -1,6 +1,6 @@
 #import "../../../config.typ": series-context as shared-series-context, series-navbar as shared-series-navbar, series-begin as shared-series-begin
 #import "../index.typ": template, tufted, content-card, locale-url
-#import "./series.typ": series-registry, reference-registry
+#import "./registry.typ": series-registry, note-registry
 #show: template.with(locale: "zh", route: "docs/", title: "文档")
 
 #let series-context = shared-series-context
@@ -17,20 +17,20 @@
 
 = 文档
 
-这一部分放更结构化的内容：体系结构学习路径、软件栈参考，以及我在做 Linux bring-up 时反复回看的检查清单。我希望它更像一组可以复查的笔记，而不是把每个话题都写成一篇很长的 blog。
+这一部分放更结构化的内容：更完整的系列、较短的工作短文，以及我在做 Linux bring-up 时反复回看的检查清单。我希望它更像一组可以复查的笔记，而不是把每个话题都写成一篇很长的 blog。
 
 == 系列
 
 #html.div(class: "content-grid")[
   #for entry in series-registry [
-    #docs-card(entry, label: "教程")
+    #docs-card(entry, label: "系列")
   ]
 ]
 
-== 参考
+== 短文
 
 #html.div(class: "content-grid")[
-  #for entry in reference-registry [
+  #for entry in note-registry [
     #docs-card(entry, label: entry.label)
   ]
 ]

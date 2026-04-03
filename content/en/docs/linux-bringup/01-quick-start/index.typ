@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": getting-started-series
-#show: template.with(locale: "en", route: "docs/01-quick-start/", title: "RISC-V Privilege Levels and Boot Context")
+#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../series.typ": linux-bringup-series
+#show: template.with(locale: "en", route: "docs/linux-bringup/01-quick-start/", title: "RISC-V Privilege Levels and Boot Context")
 
-#let series = getting-started-series
-#let nav = series-context(series, "docs/01-quick-start/")
+#let series = linux-bringup-series
+#let nav = series-context(series, "docs/linux-bringup/01-quick-start/")
 
 = RISC-V Privilege Levels and Boot Context
 

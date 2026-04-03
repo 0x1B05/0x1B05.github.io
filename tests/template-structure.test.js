@@ -11,15 +11,33 @@ const enIndexPath = path.join(__dirname, "..", "content", "en", "index.typ");
 const zhIndexPath = path.join(__dirname, "..", "content", "zh", "index.typ");
 const enDocsIndexPath = path.join(__dirname, "..", "content", "en", "docs", "index.typ");
 const zhDocsIndexPath = path.join(__dirname, "..", "content", "zh", "docs", "index.typ");
-const enDocsSeriesPath = path.join(__dirname, "..", "content", "en", "docs", "series.typ");
-const zhDocsSeriesPath = path.join(__dirname, "..", "content", "zh", "docs", "series.typ");
+const enDocsRegistryPath = path.join(__dirname, "..", "content", "en", "docs", "registry.typ");
+const zhDocsRegistryPath = path.join(__dirname, "..", "content", "zh", "docs", "registry.typ");
+const enDocsSeriesPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "linux-bringup",
+  "series.typ",
+);
+const zhDocsSeriesPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "linux-bringup",
+  "series.typ",
+);
 const enSeriesHomePath = path.join(
   __dirname,
   "..",
   "content",
   "en",
   "docs",
-  "getting-started",
+  "linux-bringup",
   "index.typ",
 );
 const zhSeriesHomePath = path.join(
@@ -28,7 +46,7 @@ const zhSeriesHomePath = path.join(
   "content",
   "zh",
   "docs",
-  "getting-started",
+  "linux-bringup",
   "index.typ",
 );
 const enQuickStartDocPath = path.join(
@@ -37,6 +55,7 @@ const enQuickStartDocPath = path.join(
   "content",
   "en",
   "docs",
+  "linux-bringup",
   "01-quick-start",
   "index.typ",
 );
@@ -46,6 +65,7 @@ const zhQuickStartDocPath = path.join(
   "content",
   "zh",
   "docs",
+  "linux-bringup",
   "01-quick-start",
   "index.typ",
 );
@@ -55,6 +75,7 @@ const enConfigurationDocPath = path.join(
   "content",
   "en",
   "docs",
+  "linux-bringup",
   "02-configuration",
   "index.typ",
 );
@@ -64,6 +85,7 @@ const zhConfigurationDocPath = path.join(
   "content",
   "zh",
   "docs",
+  "linux-bringup",
   "02-configuration",
   "index.typ",
 );
@@ -73,6 +95,7 @@ const enStylingDocPath = path.join(
   "content",
   "en",
   "docs",
+  "linux-bringup",
   "03-styling",
   "index.typ",
 );
@@ -82,6 +105,7 @@ const zhStylingDocPath = path.join(
   "content",
   "zh",
   "docs",
+  "linux-bringup",
   "03-styling",
   "index.typ",
 );
@@ -94,6 +118,7 @@ const enDeployDocPath = path.join(
   "content",
   "en",
   "docs",
+  "linux-bringup",
   "04-deploy",
   "index.typ",
 );
@@ -103,7 +128,60 @@ const zhDeployDocPath = path.join(
   "content",
   "zh",
   "docs",
+  "linux-bringup",
   "04-deploy",
+  "index.typ",
+);
+const enLegacySeriesHomePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "getting-started",
+  "index.typ",
+);
+const zhLegacySeriesHomePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "getting-started",
+  "index.typ",
+);
+const enLegacyReferencePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "embedding-markdown",
+);
+const zhLegacyReferencePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "embedding-markdown",
+);
+const enReferenceDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "bring-up-checklist",
+  "index.typ",
+);
+const zhReferenceDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "bring-up-checklist",
   "index.typ",
 );
 const rootIndex = fs.existsSync(rootIndexPath)
@@ -122,6 +200,12 @@ const enDocsSeries = fs.existsSync(enDocsSeriesPath)
   : "";
 const zhDocsSeries = fs.existsSync(zhDocsSeriesPath)
   ? fs.readFileSync(zhDocsSeriesPath, "utf8")
+  : "";
+const enDocsRegistry = fs.existsSync(enDocsRegistryPath)
+  ? fs.readFileSync(enDocsRegistryPath, "utf8")
+  : "";
+const zhDocsRegistry = fs.existsSync(zhDocsRegistryPath)
+  ? fs.readFileSync(zhDocsRegistryPath, "utf8")
   : "";
 const enQuickStartDoc = fs.existsSync(enQuickStartDocPath)
   ? fs.readFileSync(enQuickStartDocPath, "utf8")
@@ -147,14 +231,20 @@ const enDeployDoc = fs.existsSync(enDeployDocPath)
 const zhDeployDoc = fs.existsSync(zhDeployDocPath)
   ? fs.readFileSync(zhDeployDocPath, "utf8")
   : "";
-const enSeriesRegistrySource = enDocsSeries.split("#let reference-registry").at(0);
-const zhSeriesRegistrySource = zhDocsSeries.split("#let reference-registry").at(0);
+const enReferenceDoc = fs.existsSync(enReferenceDocPath)
+  ? fs.readFileSync(enReferenceDocPath, "utf8")
+  : "";
+const zhReferenceDoc = fs.existsSync(zhReferenceDocPath)
+  ? fs.readFileSync(zhReferenceDocPath, "utf8")
+  : "";
+const enSeriesRegistrySource = enDocsSeries;
+const zhSeriesRegistrySource = zhDocsSeries;
 const expectedSeriesRoutes = [
-  "docs/getting-started/",
-  "docs/01-quick-start/",
-  "docs/02-configuration/",
-  "docs/03-styling/",
-  "docs/04-deploy/",
+  "docs/linux-bringup/",
+  "docs/linux-bringup/01-quick-start/",
+  "docs/linux-bringup/02-configuration/",
+  "docs/linux-bringup/03-styling/",
+  "docs/linux-bringup/04-deploy/",
 ];
 const expectedChapterOrder = ["1", "2", "3", "4"];
 
@@ -205,31 +295,39 @@ assert(
   "localized docs index pages should inherit from their language root index files",
 );
 assert(
+  fs.existsSync(enDocsRegistryPath) && fs.existsSync(zhDocsRegistryPath),
+  "localized docs registry files should exist in both locales",
+);
+assert(
   fs.existsSync(enDocsSeriesPath) && fs.existsSync(zhDocsSeriesPath),
-  "localized docs series metadata files should exist in both locales",
+  "localized series metadata files should live under the series directory in both locales",
 );
 assert(
   fs.existsSync(enSeriesHomePath) && fs.existsSync(zhSeriesHomePath),
-  "localized getting-started series homepages should exist in both locales",
+  "localized linux-bringup series homepages should exist in both locales",
 );
 assert(
   enDocsIndex.includes("== Series") &&
-    enDocsIndex.includes("== Reference") &&
-    enDocsIndex.indexOf("== Series") < enDocsIndex.indexOf("== Reference"),
-  "English docs index should render Series above Reference",
+    enDocsIndex.includes("== Short Notes") &&
+    enDocsIndex.indexOf("== Series") < enDocsIndex.indexOf("== Short Notes"),
+  "English docs index should render Series above Short Notes",
 );
 assert(
   zhDocsIndex.includes("== 系列") &&
-    zhDocsIndex.includes("== 参考") &&
-    zhDocsIndex.indexOf("== 系列") < zhDocsIndex.indexOf("== 参考"),
-  "Chinese docs index should render 系列 above 参考",
+    zhDocsIndex.includes("== 短文") &&
+    zhDocsIndex.indexOf("== 系列") < zhDocsIndex.indexOf("== 短文"),
+  "Chinese docs index should render 系列 above 短文",
 );
 assert(
-  enDocsIndex.includes('#import "./series.typ": series-registry, reference-registry') &&
-    zhDocsIndex.includes('#import "./series.typ": series-registry, reference-registry') &&
+  enDocsIndex.includes('#import "./registry.typ": series-registry, note-registry') &&
+    zhDocsIndex.includes('#import "./registry.typ": series-registry, note-registry') &&
+    enDocsRegistry.includes('#import "./linux-bringup/series.typ": linux-bringup-series') &&
+    zhDocsRegistry.includes('#import "./linux-bringup/series.typ": linux-bringup-series') &&
     enDocsIndex.includes("#for entry in series-registry") &&
-    zhDocsIndex.includes("#for entry in series-registry"),
-  "docs landing pages should render their series cards from the localized docs registry files",
+    zhDocsIndex.includes("#for entry in series-registry") &&
+    enDocsIndex.includes("#for entry in note-registry") &&
+    zhDocsIndex.includes("#for entry in note-registry"),
+  "docs landing pages should render their cards from localized docs registry files",
 );
 assert(
   !enDocsIndex.includes('locale-url("en", route: "docs/01-quick-start/")') &&
@@ -243,25 +341,25 @@ assert(
   "phase-1 docs landing should no longer list quick-start, configuration, styling, and deploy as top-level cards",
 );
 assert(
-  enQuickStartDoc.includes('route: "docs/01-quick-start/"') &&
-    enConfigurationDoc.includes('route: "docs/02-configuration/"') &&
-    enStylingDoc.includes('route: "docs/03-styling/"') &&
-    enDeployDoc.includes('route: "docs/04-deploy/"') &&
-    zhQuickStartDoc.includes('route: "docs/01-quick-start/"') &&
-    zhConfigurationDoc.includes('route: "docs/02-configuration/"') &&
-    zhStylingDoc.includes('route: "docs/03-styling/"') &&
-    zhDeployDoc.includes('route: "docs/04-deploy/"'),
-  "phase-1 chapter URLs should stay frozen for both locales",
+  enQuickStartDoc.includes('route: "docs/linux-bringup/01-quick-start/"') &&
+    enConfigurationDoc.includes('route: "docs/linux-bringup/02-configuration/"') &&
+    enStylingDoc.includes('route: "docs/linux-bringup/03-styling/"') &&
+    enDeployDoc.includes('route: "docs/linux-bringup/04-deploy/"') &&
+    zhQuickStartDoc.includes('route: "docs/linux-bringup/01-quick-start/"') &&
+    zhConfigurationDoc.includes('route: "docs/linux-bringup/02-configuration/"') &&
+    zhStylingDoc.includes('route: "docs/linux-bringup/03-styling/"') &&
+    zhDeployDoc.includes('route: "docs/linux-bringup/04-deploy/"'),
+  "chapter URLs should move under the series-owned linux-bringup route for both locales",
 );
 assert(
-  enDocsSeries.includes('id: "embedding-markdown"') &&
-    zhDocsSeries.includes('id: "embedding-markdown"'),
-  "embedding-markdown should stay listed in the localized docs reference registry",
+  enDocsRegistry.includes('id: "bring-up-checklist"') &&
+    zhDocsRegistry.includes('id: "bring-up-checklist"'),
+  "bring-up-checklist should stay listed in the localized short-note registry",
 );
 assert(
-  !enSeriesRegistrySource.includes("embedding-markdown") &&
-    !zhSeriesRegistrySource.includes("embedding-markdown"),
-  "embedding-markdown should stay outside docs series metadata",
+  !enSeriesRegistrySource.includes("bring-up-checklist") &&
+    !zhSeriesRegistrySource.includes("bring-up-checklist"),
+  "flat docs should stay outside the series metadata files",
 );
 const enSeriesIds = extractOrderedMatches(enSeriesRegistrySource, /(?:^|\n)\s*id:\s*"([^"]+)"/g);
 const zhSeriesIds = extractOrderedMatches(zhSeriesRegistrySource, /(?:^|\n)\s*id:\s*"([^"]+)"/g);
@@ -270,18 +368,37 @@ const zhChapterRoutes = extractOrderedMatches(zhSeriesRegistrySource, /(?:^|\n)\
 const enChapterOrder = extractOrderedMatches(enSeriesRegistrySource, /order:\s*([0-9]+)/g);
 const zhChapterOrder = extractOrderedMatches(zhSeriesRegistrySource, /order:\s*([0-9]+)/g);
 assert(
-  enSeriesIds[0] === "getting-started" && zhSeriesIds[0] === "getting-started",
-  "English and Chinese docs series metadata should register getting-started as the mirrored series id",
+  enSeriesIds[0] === "linux-bringup" && zhSeriesIds[0] === "linux-bringup",
+  "English and Chinese docs series metadata should register linux-bringup as the mirrored series id",
 );
 assert(
   JSON.stringify(enChapterRoutes) === JSON.stringify(expectedSeriesRoutes) &&
     JSON.stringify(zhChapterRoutes) === JSON.stringify(expectedSeriesRoutes),
-  "English and Chinese docs series metadata should expose the frozen series homepage and chapter routes in order",
+  "English and Chinese docs series metadata should expose the nested series homepage and chapter routes in order",
 );
 assert(
   JSON.stringify(enChapterOrder) === JSON.stringify(expectedChapterOrder) &&
     JSON.stringify(zhChapterOrder) === JSON.stringify(expectedChapterOrder),
-  "English and Chinese docs series metadata should keep the phase-1 chapter order fields aligned with the approved reading order",
+  "English and Chinese docs series metadata should keep the chapter order fields aligned with the approved reading order",
+);
+assert(
+  !fs.existsSync(enLegacySeriesHomePath) &&
+    !fs.existsSync(zhLegacySeriesHomePath) &&
+    !fs.existsSync(enLegacyReferencePath) &&
+    !fs.existsSync(zhLegacyReferencePath),
+  "superseded getting-started and embedding-markdown source directories should be removed after the restructure",
+);
+assert(
+  fs.existsSync(enReferenceDocPath) &&
+    fs.existsSync(zhReferenceDocPath) &&
+    enReferenceDoc.includes('route: "docs/bring-up-checklist/"') &&
+    zhReferenceDoc.includes('route: "docs/bring-up-checklist/"'),
+  "renamed short-note pages should exist under the bring-up-checklist route in both locales",
+);
+assert(
+  !enReferenceDoc.includes("tufted-titmouse") &&
+    !zhReferenceDoc.includes("tufted-titmouse"),
+  "renamed short-note pages should not reference the removed tufted-titmouse assets",
 );
 assert(
   !fs.existsSync(legacyDocsDirPath) &&

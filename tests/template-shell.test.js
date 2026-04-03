@@ -76,11 +76,17 @@ const navEnd = enHtml.indexOf("</nav>");
 const articleIndex = enHtml.indexOf("<article>");
 const themeButtonIndex = enHtml.indexOf("theme-switcher__button");
 const languageSwitcherIndex = enHtml.indexOf("language-switcher");
-const nestedEnglishChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/en/docs/getting-started/${slug}/"`,
+const seriesEnglishChapterRoutes = chapterSlugs.map(
+  (slug) => `href="/en/docs/linux-bringup/${slug}/"`,
 );
-const nestedChineseChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/zh/docs/getting-started/${slug}/"`,
+const seriesChineseChapterRoutes = chapterSlugs.map(
+  (slug) => `href="/zh/docs/linux-bringup/${slug}/"`,
+);
+const legacyFlatEnglishChapterRoutes = chapterSlugs.map(
+  (slug) => `href="/en/docs/${slug}/"`,
+);
+const legacyFlatChineseChapterRoutes = chapterSlugs.map(
+  (slug) => `href="/zh/docs/${slug}/"`,
 );
 
 assert(headStart !== -1 && headEnd !== -1, "generated home page should include a head");
@@ -110,6 +116,11 @@ assert(
   !fs.existsSync(path.join(siteDir, "en", "docs", "series.html")) &&
     !fs.existsSync(path.join(siteDir, "zh", "docs", "series.html")),
   "docs series metadata should not compile into standalone series.html outputs",
+);
+assert(
+  !fs.existsSync(path.join(siteDir, "en", "docs", "registry.html")) &&
+    !fs.existsSync(path.join(siteDir, "zh", "docs", "registry.html")),
+  "docs registry metadata should not compile into standalone registry.html outputs",
 );
 assert(
   enHtml.includes('src="/assets/profile.png"') &&
@@ -148,77 +159,77 @@ assert(
     enDocsLandingHtml.includes("content-card__thumb") &&
     zhDocsLandingHtml.includes("content-card__thumb") &&
     JSON.stringify(extractCardSlugs(enDocsLandingHtml, "en")) ===
-      JSON.stringify(["getting-started", "embedding-markdown"]) &&
+      JSON.stringify(["linux-bringup", "bring-up-checklist"]) &&
     JSON.stringify(extractCardSlugs(zhDocsLandingHtml, "zh")) ===
-      JSON.stringify(["getting-started", "embedding-markdown"]),
+      JSON.stringify(["linux-bringup", "bring-up-checklist"]),
   "docs landing pages should render the localized series and reference cards in a stable order",
 );
 assert(
-  chapterSlugs.every((slug) => enSeriesHomeHtml.includes(`href="/en/docs/${slug}/"`)) &&
-    chapterSlugs.every((slug) => zhSeriesHomeHtml.includes(`href="/zh/docs/${slug}/"`)),
-  "series homepages should list the included flat chapter routes in both locales",
+  chapterSlugs.every((slug) => enSeriesHomeHtml.includes(`href="/en/docs/linux-bringup/${slug}/"`)) &&
+    chapterSlugs.every((slug) => zhSeriesHomeHtml.includes(`href="/zh/docs/linux-bringup/${slug}/"`)),
+  "series homepages should list the included nested chapter routes in both locales",
 );
 assert(
-  extractDocRoutes(enSeriesHomeHtml, "en").at(-1) === "01-quick-start/" &&
-    extractDocRoutes(zhSeriesHomeHtml, "zh").at(-1) === "01-quick-start/",
-  "series homepages should end with a begin action pointing to the first flat chapter route",
+  extractDocRoutes(enSeriesHomeHtml, "en").at(-1) === "linux-bringup/01-quick-start/" &&
+    extractDocRoutes(zhSeriesHomeHtml, "zh").at(-1) === "linux-bringup/01-quick-start/",
+  "series homepages should end with a begin action pointing to the first nested chapter route",
 );
 assert(
   enSeriesHomeHtml.includes('class="language-switcher"') &&
-    enSeriesHomeHtml.includes('href="/zh/docs/getting-started/"') &&
-    zhSeriesHomeHtml.includes('href="/en/docs/getting-started/"'),
+    enSeriesHomeHtml.includes('href="/zh/docs/linux-bringup/"') &&
+    zhSeriesHomeHtml.includes('href="/en/docs/linux-bringup/"'),
   "series homepages should keep the language switcher on the sibling series route",
 );
 assert(
   enDocHtml.includes('class="language-switcher"') &&
-    enDocHtml.includes('href="/zh/docs/01-quick-start/"') &&
-    zhDocHtml.includes('href="/en/docs/01-quick-start/"') &&
-    enConfigurationDocHtml.includes('href="/zh/docs/02-configuration/"') &&
-    zhConfigurationDocHtml.includes('href="/en/docs/02-configuration/"') &&
-    enDeployDocHtml.includes('href="/zh/docs/04-deploy/"') &&
-    zhDeployDocHtml.includes('href="/en/docs/04-deploy/"'),
+    enDocHtml.includes('href="/zh/docs/linux-bringup/01-quick-start/"') &&
+    zhDocHtml.includes('href="/en/docs/linux-bringup/01-quick-start/"') &&
+    enConfigurationDocHtml.includes('href="/zh/docs/linux-bringup/02-configuration/"') &&
+    zhConfigurationDocHtml.includes('href="/en/docs/linux-bringup/02-configuration/"') &&
+    enDeployDocHtml.includes('href="/zh/docs/linux-bringup/04-deploy/"') &&
+    zhDeployDocHtml.includes('href="/en/docs/linux-bringup/04-deploy/"'),
   "chapter pages should render a sibling-language switcher that keeps readers on the matching route",
 );
 assert(
-  enReferenceDocHtml.includes('href="/zh/docs/embedding-markdown/"') &&
-    zhReferenceDocHtml.includes('href="/en/docs/embedding-markdown/"'),
+  enReferenceDocHtml.includes('href="/zh/docs/bring-up-checklist/"') &&
+    zhReferenceDocHtml.includes('href="/en/docs/bring-up-checklist/"'),
   "reference pages should keep the language switcher on the sibling reference route",
 );
 assert(
-  countOccurrences(enDocHtml, 'href="/en/docs/getting-started/"') === 2 &&
-    countOccurrences(enDocHtml, 'href="/en/docs/02-configuration/"') === 2 &&
-    !enDocHtml.includes('href="/en/docs/03-styling/"'),
-  "first English chapter should link only to series home and the next flat chapter",
+  countOccurrences(enDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
+    countOccurrences(enDocHtml, 'href="/en/docs/linux-bringup/02-configuration/"') === 2 &&
+    !enDocHtml.includes('href="/en/docs/linux-bringup/03-styling/"'),
+  "first English chapter should link only to series home and the next nested chapter",
 );
 assert(
-  countOccurrences(zhDocHtml, 'href="/zh/docs/getting-started/"') === 2 &&
-    countOccurrences(zhDocHtml, 'href="/zh/docs/02-configuration/"') === 2 &&
-    !zhDocHtml.includes('href="/zh/docs/03-styling/"'),
-  "first Chinese chapter should link only to series home and the next flat chapter",
+  countOccurrences(zhDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
+    countOccurrences(zhDocHtml, 'href="/zh/docs/linux-bringup/02-configuration/"') === 2 &&
+    !zhDocHtml.includes('href="/zh/docs/linux-bringup/03-styling/"'),
+  "first Chinese chapter should link only to series home and the next nested chapter",
 );
 assert(
-  countOccurrences(enConfigurationDocHtml, 'href="/en/docs/01-quick-start/"') === 2 &&
-    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/getting-started/"') === 2 &&
-    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/03-styling/"') === 2,
-  "middle English chapter should link to previous, series home, and next flat chapter routes",
+  countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/01-quick-start/"') === 2 &&
+    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
+    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/03-styling/"') === 2,
+  "middle English chapter should link to previous, series home, and next nested chapter routes",
 );
 assert(
-  countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/01-quick-start/"') === 2 &&
-    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/getting-started/"') === 2 &&
-    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/03-styling/"') === 2,
-  "middle Chinese chapter should link to previous, series home, and next flat chapter routes",
+  countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/01-quick-start/"') === 2 &&
+    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
+    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/03-styling/"') === 2,
+  "middle Chinese chapter should link to previous, series home, and next nested chapter routes",
 );
 assert(
-  countOccurrences(enDeployDocHtml, 'href="/en/docs/03-styling/"') === 2 &&
-    countOccurrences(enDeployDocHtml, 'href="/en/docs/getting-started/"') === 2 &&
-    !enDeployDocHtml.includes('href="/en/docs/02-configuration/"'),
-  "last English chapter should link only to the previous flat chapter and series home",
+  countOccurrences(enDeployDocHtml, 'href="/en/docs/linux-bringup/03-styling/"') === 2 &&
+    countOccurrences(enDeployDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
+    !enDeployDocHtml.includes('href="/en/docs/linux-bringup/02-configuration/"'),
+  "last English chapter should link only to the previous nested chapter and series home",
 );
 assert(
-  countOccurrences(zhDeployDocHtml, 'href="/zh/docs/03-styling/"') === 2 &&
-    countOccurrences(zhDeployDocHtml, 'href="/zh/docs/getting-started/"') === 2 &&
-    !zhDeployDocHtml.includes('href="/zh/docs/02-configuration/"'),
-  "last Chinese chapter should link only to the previous flat chapter and series home",
+  countOccurrences(zhDeployDocHtml, 'href="/zh/docs/linux-bringup/03-styling/"') === 2 &&
+    countOccurrences(zhDeployDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
+    !zhDeployDocHtml.includes('href="/zh/docs/linux-bringup/02-configuration/"'),
+  "last Chinese chapter should link only to the previous nested chapter and series home",
 );
 assert(
   enDocHtml.includes("Previous") || enConfigurationDocHtml.includes("Previous"),
@@ -238,36 +249,53 @@ assert(
 );
 assertNavPlacement(
   enDocHtml,
-  'href="/en/docs/getting-started/"',
+  'href="/en/docs/linux-bringup/"',
   "first English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhDocHtml,
-  'href="/zh/docs/getting-started/"',
+  'href="/zh/docs/linux-bringup/"',
   "first Chinese chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   enConfigurationDocHtml,
-  'href="/en/docs/getting-started/"',
+  'href="/en/docs/linux-bringup/"',
   "middle English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhConfigurationDocHtml,
-  'href="/zh/docs/getting-started/"',
+  'href="/zh/docs/linux-bringup/"',
   "middle Chinese chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   enDeployDocHtml,
-  'href="/en/docs/getting-started/"',
+  'href="/en/docs/linux-bringup/"',
   "last English chapter should place the series navigation near the top and bottom",
 );
 assertNavPlacement(
   zhDeployDocHtml,
-  'href="/zh/docs/getting-started/"',
+  'href="/zh/docs/linux-bringup/"',
   "last Chinese chapter should place the series navigation near the top and bottom",
 );
 assert(
-  nestedEnglishChapterRoutes.every(
+  seriesEnglishChapterRoutes.every(
+    (href) =>
+      enSeriesHomeHtml.includes(href) ||
+      enDocHtml.includes(href) ||
+      enConfigurationDocHtml.includes(href) ||
+      enDeployDocHtml.includes(href),
+  ) &&
+    seriesChineseChapterRoutes.every(
+      (href) =>
+        zhSeriesHomeHtml.includes(href) ||
+        zhDocHtml.includes(href) ||
+        zhConfigurationDocHtml.includes(href) ||
+        zhDeployDocHtml.includes(href),
+    ),
+  "series pages should render nested linux-bringup chapter URLs after the restructure",
+);
+assert(
+  legacyFlatEnglishChapterRoutes.every(
     (href) =>
       !enDocsLandingHtml.includes(href) &&
       !enSeriesHomeHtml.includes(href) &&
@@ -275,7 +303,7 @@ assert(
       !enConfigurationDocHtml.includes(href) &&
       !enDeployDocHtml.includes(href),
   ) &&
-    nestedChineseChapterRoutes.every(
+    legacyFlatChineseChapterRoutes.every(
       (href) =>
         !zhDocsLandingHtml.includes(href) &&
         !zhSeriesHomeHtml.includes(href) &&
@@ -283,7 +311,7 @@ assert(
         !zhConfigurationDocHtml.includes(href) &&
         !zhDeployDocHtml.includes(href),
     ),
-  "phase-1 docs series should not introduce nested getting-started chapter URLs in rendered output",
+  "old flat chapter routes should disappear from rendered output once the series owns nested URLs",
 );
 assert(
   enHtml.includes('class="theme-switcher__button-icon theme-switcher__button-icon--sun"') &&

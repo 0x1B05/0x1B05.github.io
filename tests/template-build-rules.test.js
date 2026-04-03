@@ -34,6 +34,12 @@ assert(
   "Makefile should exclude docs series metadata files from the standalone HTML page list",
 );
 assert(
+  /find content [^\n]*-name '\*\.typ'[^\n]*(-not -name 'registry\.typ'|! -name 'registry\.typ')/.test(
+    makefile,
+  ),
+  "Makefile should exclude docs registry metadata files from the standalone HTML page list",
+);
+assert(
   /page-shared-typs[\s\S]*series\.typ/.test(makefile),
   "Makefile should track parent docs/series.typ files as shared Typst prerequisites when chapter pages import series metadata",
 );
@@ -144,12 +150,12 @@ assert(
 );
 assert(
   htmlFixtureHelper.includes("const enSeriesHomePath = path.join(") &&
-    htmlFixtureHelper.includes('"getting-started"'),
+    htmlFixtureHelper.includes('"linux-bringup"'),
   "shared HTML fixture helper should cover the localized series home outputs",
 );
 assert(
   htmlFixtureHelper.includes("const enReferenceDocPath = path.join(") &&
-    htmlFixtureHelper.includes('"embedding-markdown"'),
+    htmlFixtureHelper.includes('"bring-up-checklist"'),
   "shared HTML fixture helper should cover the localized reference doc outputs",
 );
 assert(

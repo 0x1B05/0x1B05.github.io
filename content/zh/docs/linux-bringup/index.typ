@@ -1,8 +1,8 @@
 #import "../index.typ": template, tufted, content-card, locale-url, series-begin
-#import "../series.typ": series-registry, getting-started-series
-#show: template.with(locale: "zh", route: "docs/getting-started/", title: "快速上手")
+#import "./series.typ": linux-bringup-series
+#show: template.with(locale: "zh", route: "docs/linux-bringup/", title: "Linux Bring-up")
 
-#let series = getting-started-series
+#let series = linux-bringup-series
 
 #let chapter-thumbnail(chapter) = if chapter.order == 1 {
   "starter-series.svg"

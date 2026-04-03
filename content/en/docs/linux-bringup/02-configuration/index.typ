@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": getting-started-series
-#show: template.with(locale: "en", route: "docs/02-configuration/", title: "What OpenSBI Does in the Boot Chain")
+#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../series.typ": linux-bringup-series
+#show: template.with(locale: "en", route: "docs/linux-bringup/02-configuration/", title: "What OpenSBI Does in the Boot Chain")
 
-#let series = getting-started-series
-#let nav = series-context(series, "docs/02-configuration/")
+#let series = linux-bringup-series
+#let nav = series-context(series, "docs/linux-bringup/02-configuration/")
 
 = What OpenSBI Does in the Boot Chain
 

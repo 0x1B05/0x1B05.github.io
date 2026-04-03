@@ -14,20 +14,21 @@ const enSeriesHomePath = path.join(
   siteDir,
   "en",
   "docs",
-  "getting-started",
+  "linux-bringup",
   "index.html",
 );
 const zhSeriesHomePath = path.join(
   siteDir,
   "zh",
   "docs",
-  "getting-started",
+  "linux-bringup",
   "index.html",
 );
 const enQuickStartDocPath = path.join(
   siteDir,
   "en",
   "docs",
+  "linux-bringup",
   "01-quick-start",
   "index.html",
 );
@@ -35,6 +36,7 @@ const zhQuickStartDocPath = path.join(
   siteDir,
   "zh",
   "docs",
+  "linux-bringup",
   "01-quick-start",
   "index.html",
 );
@@ -42,6 +44,7 @@ const enConfigurationDocPath = path.join(
   siteDir,
   "en",
   "docs",
+  "linux-bringup",
   "02-configuration",
   "index.html",
 );
@@ -49,6 +52,7 @@ const zhConfigurationDocPath = path.join(
   siteDir,
   "zh",
   "docs",
+  "linux-bringup",
   "02-configuration",
   "index.html",
 );
@@ -56,6 +60,7 @@ const enDeployDocPath = path.join(
   siteDir,
   "en",
   "docs",
+  "linux-bringup",
   "04-deploy",
   "index.html",
 );
@@ -63,6 +68,7 @@ const zhDeployDocPath = path.join(
   siteDir,
   "zh",
   "docs",
+  "linux-bringup",
   "04-deploy",
   "index.html",
 );
@@ -70,14 +76,14 @@ const enReferenceDocPath = path.join(
   siteDir,
   "en",
   "docs",
-  "embedding-markdown",
+  "bring-up-checklist",
   "index.html",
 );
 const zhReferenceDocPath = path.join(
   siteDir,
   "zh",
   "docs",
-  "embedding-markdown",
+  "bring-up-checklist",
   "index.html",
 );
 const homeDir = process.env.HOME || repoRoot;

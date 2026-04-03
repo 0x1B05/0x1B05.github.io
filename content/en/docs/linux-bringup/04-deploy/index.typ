@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": getting-started-series
-#show: template.with(locale: "en", route: "docs/04-deploy/", title: "A Working Checklist for Linux Bring-up")
+#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../series.typ": linux-bringup-series
+#show: template.with(locale: "en", route: "docs/linux-bringup/04-deploy/", title: "A Working Checklist for Linux Bring-up")
 
-#let series = getting-started-series
-#let nav = series-context(series, "docs/04-deploy/")
+#let series = linux-bringup-series
+#let nav = series-context(series, "docs/linux-bringup/04-deploy/")
 
 = A Working Checklist for Linux Bring-up
 

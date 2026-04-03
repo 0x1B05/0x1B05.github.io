@@ -1,5 +1,5 @@
 #import "../index.typ": template, tufted
-#show: template.with(locale: "en", route: "docs/embedding-markdown/", title: "Bring-up Checklist Reference")
+#show: template.with(locale: "en", route: "docs/bring-up-checklist/", title: "Bring-up Checklist Reference")
 
 = Bring-up Checklist Reference
 

@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, series-context, series-navbar
-#import "../series.typ": getting-started-series
-#show: template.with(locale: "zh", route: "docs/01-quick-start/", title: "RISC-V 特权级与启动上下文")
+#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../series.typ": linux-bringup-series
+#show: template.with(locale: "zh", route: "docs/linux-bringup/01-quick-start/", title: "RISC-V 特权级与启动上下文")
 
-#let series = getting-started-series
-#let nav = series-context(series, "docs/01-quick-start/")
+#let series = linux-bringup-series
+#let nav = series-context(series, "docs/linux-bringup/01-quick-start/")
 
 = RISC-V 特权级与启动上下文
 

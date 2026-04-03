@@ -1,8 +1,8 @@
-# Find all .typ files in content/ that don't start with an underscore in their path
+# Find all page .typ files in content/ while excluding metadata-only files.
 SITE_DIR := _site
 SITE_ASSET_DIR := $(SITE_DIR)/assets
 TYPST_HTML_FLAGS := --root .. --features html --format html
-TYP_FILES := $(shell find content -name '*.typ' -not -name 'series.typ' -not -path '*/_*' | LC_ALL=C sort)
+TYP_FILES := $(shell find content -name '*.typ' -not -name 'series.typ' -not -name 'registry.typ' -not -path '*/_*' | LC_ALL=C sort)
 PORT ?= 8000
 
 # Generate corresponding HTML file paths in the output directory

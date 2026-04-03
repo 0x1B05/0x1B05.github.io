@@ -1,5 +1,5 @@
 #import "../index.typ": template, tufted
-#show: template.with(locale: "zh", route: "docs/embedding-markdown/", title: "Bring-up 检查清单参考")
+#show: template.with(locale: "zh", route: "docs/bring-up-checklist/", title: "Bring-up 检查清单参考")
 
 = Bring-up 检查清单参考
 

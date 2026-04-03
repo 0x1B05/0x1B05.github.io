@@ -1,6 +1,6 @@
 #import "../../../config.typ": series-context as shared-series-context, series-navbar as shared-series-navbar, series-begin as shared-series-begin
 #import "../index.typ": template, tufted, content-card, locale-url
-#import "./series.typ": series-registry, reference-registry
+#import "./registry.typ": series-registry, note-registry
 #show: template.with(locale: "en", route: "docs/", title: "Docs")
 
 #let series-context = shared-series-context
@@ -17,20 +17,20 @@
 
 = Docs
 
-This section keeps the more structured side of my notes: architecture reading paths, software-stack references, and working checklists for Linux bring-up. I want it to stay useful as a place to revisit the privilege model, firmware handoff, and simulator roles without turning every topic into a long blog post.
+This section keeps the more structured side of my notes: longer reading paths, shorter working notes, and the bring-up checklists I expect to revisit. I want it to stay useful as a place to revisit the privilege model, firmware handoff, and simulator roles without turning every topic into a long blog post.
 
 == Series
 
 #html.div(class: "content-grid")[
   #for entry in series-registry [
-    #docs-card(entry, label: "Tutorial")
+    #docs-card(entry, label: "Series")
   ]
 ]
 
-== Reference
+== Short Notes
 
 #html.div(class: "content-grid")[
-  #for entry in reference-registry [
+  #for entry in note-registry [
     #docs-card(entry, label: entry.label)
   ]
 ]

@@ -20,6 +20,8 @@ const {
   zhDeployDocHtml,
   enReferenceDocHtml,
   zhReferenceDocHtml,
+  enSearchHtml,
+  zhSearchHtml,
   css,
 } = loadTemplateFixture();
 
@@ -76,6 +78,14 @@ const navEnd = enHtml.indexOf("</nav>");
 const articleIndex = enHtml.indexOf("<article>");
 const themeButtonIndex = enHtml.indexOf("theme-switcher__button");
 const languageSwitcherIndex = enHtml.indexOf("language-switcher");
+const searchBoxIndex = enHtml.indexOf("site-search");
+const primaryGroupIndex = enHtml.indexOf("site-nav__primary");
+const controlsGroupIndex = enHtml.indexOf("site-nav__controls");
+const primarySection = primaryGroupIndex === -1 ? "" : enHtml.slice(primaryGroupIndex, controlsGroupIndex === -1 ? navEnd : controlsGroupIndex);
+const controlsSection = controlsGroupIndex === -1 ? "" : enHtml.slice(controlsGroupIndex, navEnd);
+const controlsSearchIndex = controlsSection.indexOf("site-search");
+const controlsLanguageIndex = controlsSection.indexOf("language-switcher");
+const controlsThemeIndex = controlsSection.indexOf("theme-switcher__button");
 const seriesEnglishChapterRoutes = chapterSlugs.map(
   (slug) => `href="/en/docs/linux-bringup/${slug}/"`,
 );
@@ -123,6 +133,10 @@ assert(
   "docs registry metadata should not compile into standalone registry.html outputs",
 );
 assert(
+  fs.existsSync(path.join(siteDir, "pagefind")),
+  "generated site should include Pagefind assets under /pagefind/ so runtime search can load the index",
+);
+assert(
   enHtml.includes('src="/assets/profile.png"') &&
     zhHtml.includes('src="/assets/profile.png"'),
   "localized home pages should serve the shared profile image from the assets path",
@@ -138,6 +152,72 @@ assert(
     languageSwitcherIndex < navEnd &&
     navEnd < articleIndex,
   "theme switcher should render inside the site navigation instead of floating over the article",
+);
+assert(
+  searchBoxIndex > navStart && searchBoxIndex < navEnd,
+  "top-bar search box should render inside the site navigation",
+);
+assert(
+  primaryGroupIndex > navStart && primaryGroupIndex < navEnd,
+  "top-bar links should render inside a dedicated primary navigation group",
+);
+assert(
+  controlsGroupIndex > navStart && controlsGroupIndex < navEnd,
+  "top-bar controls should render inside a dedicated right-side controls group",
+);
+assert(
+  primarySection.includes('href="/en/docs/"') &&
+    primarySection.includes('href="/en/blog/"') &&
+    primarySection.includes('href="/en/cv/"'),
+  "primary navigation group should contain the main Docs, Blog, and CV links",
+);
+assert(
+  controlsSearchIndex !== -1 &&
+    controlsLanguageIndex !== -1 &&
+    controlsThemeIndex !== -1 &&
+    controlsSearchIndex < controlsLanguageIndex &&
+    controlsLanguageIndex < controlsThemeIndex,
+  "right-side controls group should contain search, language switcher, then theme switcher in that order",
+);
+assert(
+  enHtml.includes("assets/search.js") && zhHtml.includes("assets/search.js"),
+  "localized pages should load the site search runtime script",
+);
+assert(
+  enHtml.includes('class="site-search"') &&
+    enHtml.includes('class="site-search__icon"') &&
+    enHtml.includes('class="site-search__input"') &&
+    enHtml.includes('class="site-search__dropdown"'),
+  "English pages should include the search icon, input, and dropdown hooks",
+);
+assert(
+  zhHtml.includes('class="site-search"') &&
+    zhHtml.includes('class="site-search__icon"') &&
+    zhHtml.includes('class="site-search__input"') &&
+    zhHtml.includes('class="site-search__dropdown"'),
+  "Chinese pages should include the search icon, input, and dropdown hooks",
+);
+assert(
+  enHtml.includes('id="site-search-result-template"') &&
+    enHtml.includes('class="site-search-result__title"') &&
+    enHtml.includes('class="site-search-result__section"') &&
+    enHtml.includes('class="site-search-result__locale"') &&
+    enHtml.includes('class="site-search-result__excerpt"'),
+  "search result template should include title, section, locale, and excerpt hooks",
+);
+assert(
+  enSearchHtml.includes('id="search-results"') &&
+    zhSearchHtml.includes('id="search-results"'),
+  "localized search pages should include a results container for runtime rendering",
+);
+assert(
+  /\.site-nav__primary\s*\{/.test(css) &&
+    /\.site-nav__controls\s*\{/.test(css),
+  "header CSS should define explicit primary and controls groups for the navigation layout",
+);
+assert(
+  /\.site-search__dropdown\s*\{[\s\S]*left:\s*auto;[\s\S]*right:\s*0;[\s\S]*(max-width:|width:\s*min\()/.test(css),
+  "search dropdown CSS should anchor inward from the search box instead of stretching flush to both sides",
 );
 assert(
   !enHtml.includes("theme-switcher__label"),
@@ -371,10 +451,14 @@ assert(
   "brand logo container should keep a stable width so nav links do not shift between themes",
 );
 assert(
-  /header nav > p\s*\{[\s\S]*display:\s*flex;[\s\S]*align-items:\s*center;[\s\S]*flex:\s*0 1 auto;[\s\S]*margin:\s*0;/.test(
+  /\.site-nav__primary\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*flex:\s*0 1 auto;/.test(
     css,
   ),
-  "navigation paragraph wrapper should be normalized into a flex row so light and dark themes do not change nav height",
+  "primary navigation group should size to its content so the controls group can sit immediately after CV",
+);
+assert(
+  /\.site-nav__controls\s*\{[^}]*margin-left:\s*1rem;/.test(css),
+  "controls group should use a fixed gap from CV instead of auto-pushing itself to the far right",
 );
 assert(
   /\.site-brand\s*\{[\s\S]*line-height:\s*0;/.test(css),

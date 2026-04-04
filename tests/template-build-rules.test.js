@@ -14,6 +14,10 @@ const htmlFixtureHelper = fs.readFileSync(
   path.join(__dirname, "helpers", "html-fixture.js"),
   "utf8",
 );
+const deployWorkflow = fs.readFileSync(
+  path.join(__dirname, "..", ".github", "workflows", "deploy.yml"),
+  "utf8",
+);
 
 assert(
   /SITE_DIR\s*:=\s*_site/.test(makefile),
@@ -38,6 +42,14 @@ assert(
     makefile,
   ),
   "Makefile should exclude docs registry metadata files from the standalone HTML page list",
+);
+assert(
+  /pagefind/.test(makefile),
+  "Makefile should run Pagefind as a post-build step so the static site includes a search index",
+);
+assert(
+  /--force-language\s+en/.test(makefile),
+  "Makefile should force a single Pagefind language so search can return results across locales from one search box",
 );
 assert(
   /page-shared-typs[\s\S]*series\.typ/.test(makefile),
@@ -159,6 +171,11 @@ assert(
   "shared HTML fixture helper should cover the localized reference doc outputs",
 );
 assert(
+  htmlFixtureHelper.includes('const enSearchPath = path.join(siteDir, "en", "search", "index.html")') &&
+    htmlFixtureHelper.includes('const zhSearchPath = path.join(siteDir, "zh", "search", "index.html")'),
+  "shared HTML fixture helper should cover the localized search page outputs",
+);
+assert(
   !htmlFixtureHelper.includes('"/bin/zsh"'),
   "template-shell test should not depend on a workstation-specific shell path",
 );
@@ -173,6 +190,14 @@ assert(
 assert(
   htmlFixtureHelper.includes('path.join(homeDir, ".cache")'),
   "shared HTML fixture helper should derive its fallback cache path from HOME",
+);
+assert(
+  /setup-node|actions\/setup-node@/.test(deployWorkflow),
+  "GitHub Pages deploy workflow should set up Node so it can install and run Pagefind during make pages",
+);
+assert(
+  /npm\s+ci|npm\s+install/.test(deployWorkflow),
+  "GitHub Pages deploy workflow should install npm dependencies before building the site",
 );
 
 console.log("PASS template build rules avoid over-rebuilds and clean-checkout test failures");

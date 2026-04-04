@@ -1,5 +1,6 @@
 _site/
 .DS_Store
 .reference/
+node_modules/
 plans/
 docs/superpowers/

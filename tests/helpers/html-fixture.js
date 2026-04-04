@@ -86,6 +86,8 @@ const zhReferenceDocPath = path.join(
   "bring-up-checklist",
   "index.html",
 );
+const enSearchPath = path.join(siteDir, "en", "search", "index.html");
+const zhSearchPath = path.join(siteDir, "zh", "search", "index.html");
 const homeDir = process.env.HOME || repoRoot;
 const defaultDataDir = path.join(homeDir, ".local", "share");
 const defaultCacheDir = path.join(homeDir, ".cache");
@@ -203,6 +205,8 @@ function loadTemplateFixture() {
     zhDeployDocHtml: readHtmlIfExists(zhDeployDocPath),
     enReferenceDocHtml: readHtmlIfExists(enReferenceDocPath),
     zhReferenceDocHtml: readHtmlIfExists(zhReferenceDocPath),
+    enSearchHtml: readHtmlIfExists(enSearchPath),
+    zhSearchHtml: readHtmlIfExists(zhSearchPath),
     css: fs.readFileSync(path.join(templateDir, "assets", "tufted.css"), "utf8"),
   };
 }

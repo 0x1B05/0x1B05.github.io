@@ -49,6 +49,18 @@
     theme_dark: "暗色",
     theme_system: "跟随系统",
     language_label: "语言",
+    search_label: "搜索",
+    search_placeholder: "搜索全站内容",
+    search_button: "搜索",
+    search_results: "搜索结果",
+    search_hint: "输入关键词，查看全站匹配结果。",
+    search_loading: "正在搜索……",
+    search_empty: "没有找到结果。",
+    search_error: "搜索暂时不可用。",
+    search_section_home: "首页",
+    search_section_docs: "文档",
+    search_section_blog: "博客",
+    search_section_cv: "简历",
     footer_label: footer-label-zh,
     footer_tagline: site-tagline-zh,
   )
@@ -68,6 +80,18 @@
     theme_dark: "Dark",
     theme_system: "System",
     language_label: "Language",
+    search_label: "Search",
+    search_placeholder: "Search the site",
+    search_button: "Search",
+    search_results: "Search Results",
+    search_hint: "Enter keywords to search across the whole site.",
+    search_loading: "Searching...",
+    search_empty: "No results found.",
+    search_error: "Search is temporarily unavailable.",
+    search_section_home: "Home",
+    search_section_docs: "Docs",
+    search_section_blog: "Blog",
+    search_section_cv: "CV",
     footer_label: footer-label-en,
     footer_tagline: site-tagline-en,
   )
@@ -101,6 +125,17 @@
         "path",
         attrs: (
           d: "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z",
+          "stroke-linecap": "round",
+          "stroke-linejoin": "round",
+        ),
+      )[]
+    ]
+  } else if kind == "search" {
+    html.elem("svg", attrs: svg-attrs)[
+      #html.elem(
+        "path",
+        attrs: (
+          d: "M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z",
           "stroke-linecap": "round",
           "stroke-linejoin": "round",
         ),
@@ -193,20 +228,77 @@
   ]
 }
 
+#let site-search(locale) = {
+  let copy = locale-copy(locale)
+  let action = locale-url(locale, route: "search/")
+
+  html.elem(
+    "div",
+    attrs: (
+      class: "site-search",
+      "data-search-locale": locale,
+      "data-search-results-label": copy.search_results,
+      "data-search-hint-label": copy.search_hint,
+      "data-search-loading-label": copy.search_loading,
+      "data-search-empty-label": copy.search_empty,
+      "data-search-error-label": copy.search_error,
+      "data-search-section-home": copy.search_section_home,
+      "data-search-section-docs": copy.search_section_docs,
+      "data-search-section-blog": copy.search_section_blog,
+      "data-search-section-cv": copy.search_section_cv,
+    ),
+  )[
+    #html.elem("form", attrs: (class: "site-search__form", role: "search", action: action, method: "get"))[
+      #html.elem("label", attrs: ("for": "site-search-input", class: "site-search__label"))[
+        #html.elem("span", attrs: (class: "site-search__icon", "aria-hidden": "true"))[#theme-icon("search", class: "site-search__icon-svg")]#html.span(class: "site-search__label-text")[#copy.search_label]
+      ]
+      #html.input(
+        id: "site-search-input",
+        class: "site-search__input",
+        type: "search",
+        name: "q",
+        placeholder: copy.search_placeholder,
+      )
+      #html.button(type: "submit", class: "site-search__button")[#copy.search_button]
+    ]
+    #html.elem("div", attrs: (class: "site-search__dropdown", hidden: "hidden"))[
+      #html.elem("div", attrs: (class: "site-search__status"))[]
+      #html.elem("div", attrs: (class: "site-search__results"))[]
+    ]
+    #html.elem("template", attrs: (id: "site-search-result-template"))[
+      #html.a(href: "#", class: "site-search-result")[
+        #html.span(class: "site-search-result__header")[
+          #html.span(class: "site-search-result__title")[]
+          #html.span(class: "site-search-result__meta")[
+            #html.span(class: "site-search-result__section")[]
+            #html.span(class: "site-search-result__locale")[]
+          ]
+        ]
+        #html.span(class: "site-search-result__excerpt")[]
+      ]
+    ]
+  ]
+}
+
 #let make-header(links, locale: none, route: "") = html.header(
   if links != none {
-    html.nav({
-      for entry in links {
-        let href = entry.at(0)
-        let title = entry.at(1)
-        let kind = if entry.len() > 2 { entry.at(2) } else { "default" }
-        nav-link(href, title, kind: kind)
-      }
-      if locale != none {
-        language-switcher(locale, route)
-        theme-switcher(locale)
-      }
-    })
+    html.nav[
+      #html.elem("div", attrs: (class: "site-nav__primary"))[
+        #for entry in links {
+          let href = entry.at(0)
+          let title = entry.at(1)
+          let kind = if entry.len() > 2 { entry.at(2) } else { "default" }
+          nav-link(href, title, kind: kind)
+        }
+      ]
+      #if locale != none [
+        #html.elem("div", attrs: (class: "site-nav__controls"))[
+          #site-search(locale)
+          #language-switcher(locale, route)
+          #theme-switcher(locale)
+        ]
+      ]
+    ]
   },
 )
 
@@ -345,6 +437,7 @@
           html.section({
             html.script(src: site-url("assets/theme-switcher.js"))[]
             html.script(src: site-url("assets/language-switcher.js"))[]
+            html.script(src: site-url("assets/search.js"))[]
             for (script-link) in body-scripts {
               html.script(src: script-link)[]
             }

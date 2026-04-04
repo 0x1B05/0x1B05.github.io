@@ -9,6 +9,22 @@ const config = fs.readFileSync(
 const rootIndexPath = path.join(__dirname, "..", "content", "index.typ");
 const enIndexPath = path.join(__dirname, "..", "content", "en", "index.typ");
 const zhIndexPath = path.join(__dirname, "..", "content", "zh", "index.typ");
+const enSearchPagePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "search",
+  "index.typ",
+);
+const zhSearchPagePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "search",
+  "index.typ",
+);
 const enDocsIndexPath = path.join(__dirname, "..", "content", "en", "docs", "index.typ");
 const zhDocsIndexPath = path.join(__dirname, "..", "content", "zh", "docs", "index.typ");
 const enDocsRegistryPath = path.join(__dirname, "..", "content", "en", "docs", "registry.typ");
@@ -275,6 +291,14 @@ assert(
 assert(
   config.includes('html.elem("svg"'),
   "theme switcher markup should use inline svg elements in config.typ",
+);
+assert(
+  config.includes("#let site-search("),
+  "config.typ should define a reusable top-bar site-search helper",
+);
+assert(
+  fs.existsSync(enSearchPagePath) && fs.existsSync(zhSearchPagePath),
+  "localized search pages should exist in both locales",
 );
 assert(
   fs.existsSync(enIndexPath) && fs.existsSync(zhIndexPath),

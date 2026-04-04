@@ -1,6 +1,8 @@
 # Find all page .typ files in content/ while excluding metadata-only files.
 SITE_DIR := _site
 SITE_ASSET_DIR := $(SITE_DIR)/assets
+PAGEFIND_BIN := ./node_modules/.bin/pagefind
+PAGEFIND_FLAGS := --site $(SITE_DIR) --output-subdir pagefind --force-language en
 TYPST_HTML_FLAGS := --root .. --features html --format html
 TYP_FILES := $(shell find content -name '*.typ' -not -name 'series.typ' -not -name 'registry.typ' -not -path '*/_*' | LC_ALL=C sort)
 PORT ?= 8000
@@ -24,8 +26,8 @@ define page-embedded-assets
 $(GLOBAL_EMBEDDED_ASSET_FILES) $(if $(filter index,$(1)),assets/profile.png) $(if $(filter blog/index docs/index,$(1)),$(CONTENT_THUMBNAIL_FILES))
 endef
 
-# The main target 'html' depends on all generated HTML files and assets
-html: $(HTML_FILES) assets
+# The main target 'html' builds pages, copies assets, and indexes the site for search.
+html: $(HTML_FILES) assets search-index
 
 # Explicit target for GitHub Pages style deployments
 pages:
@@ -50,8 +52,12 @@ assets: $(ASSET_FILES)
 	@mkdir -p $(SITE_ASSET_DIR)
 	@cp -r assets/* $(SITE_ASSET_DIR)/
 
+search-index: $(HTML_FILES) assets package-lock.json
+	@test -x $(PAGEFIND_BIN) || (printf '%s\n' "Missing $(PAGEFIND_BIN). Run npm install to set up Pagefind." >&2; exit 1)
+	@$(PAGEFIND_BIN) $(PAGEFIND_FLAGS)
+
 # A clean rule to remove generated files
 clean:
 	rm -rf $(SITE_DIR)
 
-.PHONY: html clean assets pages github-pages preview
+.PHONY: html clean assets pages github-pages preview search-index

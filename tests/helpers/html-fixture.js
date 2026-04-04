@@ -86,6 +86,86 @@ const zhReferenceDocPath = path.join(
   "bring-up-checklist",
   "index.html",
 );
+const enMemblockOverviewPath = path.join(
+  siteDir,
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "01-overview",
+  "index.html",
+);
+const zhMemblockOverviewPath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "01-overview",
+  "index.html",
+);
+const enMemblockLsqPath = path.join(
+  siteDir,
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "03-load-store-lsq",
+  "index.html",
+);
+const zhMemblockLsqPath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "03-load-store-lsq",
+  "index.html",
+);
+const enMemblockMmuPath = path.join(
+  siteDir,
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "04-mmu-and-permission",
+  "index.html",
+);
+const zhMemblockMmuPath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "04-mmu-and-permission",
+  "index.html",
+);
+const enMemblockCachePath = path.join(
+  siteDir,
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "05-dcache-sbuffer-uncache",
+  "index.html",
+);
+const zhMemblockCachePath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "05-dcache-sbuffer-uncache",
+  "index.html",
+);
+const enMemblockVectorPath = path.join(
+  siteDir,
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "06-vector-memory",
+  "index.html",
+);
+const zhMemblockVectorPath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "06-vector-memory",
+  "index.html",
+);
 const enSearchPath = path.join(siteDir, "en", "search", "index.html");
 const zhSearchPath = path.join(siteDir, "zh", "search", "index.html");
 const homeDir = process.env.HOME || repoRoot;
@@ -107,6 +187,16 @@ const requiredHtmlPaths = [
   zhDeployDocPath,
   enReferenceDocPath,
   zhReferenceDocPath,
+  enMemblockOverviewPath,
+  zhMemblockOverviewPath,
+  enMemblockLsqPath,
+  zhMemblockLsqPath,
+  enMemblockMmuPath,
+  zhMemblockMmuPath,
+  enMemblockCachePath,
+  zhMemblockCachePath,
+  enMemblockVectorPath,
+  zhMemblockVectorPath,
 ];
 
 let fixtureBuilt = false;
@@ -205,6 +295,16 @@ function loadTemplateFixture() {
     zhDeployDocHtml: readHtmlIfExists(zhDeployDocPath),
     enReferenceDocHtml: readHtmlIfExists(enReferenceDocPath),
     zhReferenceDocHtml: readHtmlIfExists(zhReferenceDocPath),
+    enMemblockOverviewHtml: readHtmlIfExists(enMemblockOverviewPath),
+    zhMemblockOverviewHtml: readHtmlIfExists(zhMemblockOverviewPath),
+    enMemblockLsqHtml: readHtmlIfExists(enMemblockLsqPath),
+    zhMemblockLsqHtml: readHtmlIfExists(zhMemblockLsqPath),
+    enMemblockMmuHtml: readHtmlIfExists(enMemblockMmuPath),
+    zhMemblockMmuHtml: readHtmlIfExists(zhMemblockMmuPath),
+    enMemblockCacheHtml: readHtmlIfExists(enMemblockCachePath),
+    zhMemblockCacheHtml: readHtmlIfExists(zhMemblockCachePath),
+    enMemblockVectorHtml: readHtmlIfExists(enMemblockVectorPath),
+    zhMemblockVectorHtml: readHtmlIfExists(zhMemblockVectorPath),
     enSearchHtml: readHtmlIfExists(enSearchPath),
     zhSearchHtml: readHtmlIfExists(zhSearchPath),
     css: fs.readFileSync(path.join(templateDir, "assets", "tufted.css"), "utf8"),

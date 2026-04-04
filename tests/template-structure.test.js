@@ -38,6 +38,15 @@ const enDocsSeriesPath = path.join(
   "linux-bringup",
   "series.typ",
 );
+const enMemblockSeriesPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "series.typ",
+);
 const zhDocsSeriesPath = path.join(
   __dirname,
   "..",
@@ -45,6 +54,15 @@ const zhDocsSeriesPath = path.join(
   "zh",
   "docs",
   "linux-bringup",
+  "series.typ",
+);
+const zhMemblockSeriesPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
   "series.typ",
 );
 const enSeriesHomePath = path.join(
@@ -56,6 +74,15 @@ const enSeriesHomePath = path.join(
   "linux-bringup",
   "index.typ",
 );
+const enMemblockSeriesHomePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "index.typ",
+);
 const zhSeriesHomePath = path.join(
   __dirname,
   "..",
@@ -63,6 +90,15 @@ const zhSeriesHomePath = path.join(
   "zh",
   "docs",
   "linux-bringup",
+  "index.typ",
+);
+const zhMemblockSeriesHomePath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
   "index.typ",
 );
 const enQuickStartDocPath = path.join(
@@ -148,6 +184,146 @@ const zhDeployDocPath = path.join(
   "04-deploy",
   "index.typ",
 );
+const enMemblockOverviewDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "01-overview",
+  "index.typ",
+);
+const zhMemblockOverviewDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "01-overview",
+  "index.typ",
+);
+const enMemblockInterfacesDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "02-interfaces",
+  "index.typ",
+);
+const zhMemblockInterfacesDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "02-interfaces",
+  "index.typ",
+);
+const enMemblockLoadStoreDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "03-load-store-lsq",
+  "index.typ",
+);
+const zhMemblockLoadStoreDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "03-load-store-lsq",
+  "index.typ",
+);
+const enMemblockMmuDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "04-mmu-and-permission",
+  "index.typ",
+);
+const zhMemblockMmuDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "04-mmu-and-permission",
+  "index.typ",
+);
+const enMemblockCacheDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "05-dcache-sbuffer-uncache",
+  "index.typ",
+);
+const zhMemblockCacheDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "05-dcache-sbuffer-uncache",
+  "index.typ",
+);
+const enMemblockVectorDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "06-vector-memory",
+  "index.typ",
+);
+const zhMemblockVectorDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "06-vector-memory",
+  "index.typ",
+);
+const enMemblockReviewDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "en",
+  "docs",
+  "xiangshan-memblock",
+  "07-review-checklist",
+  "index.typ",
+);
+const zhMemblockReviewDocPath = path.join(
+  __dirname,
+  "..",
+  "content",
+  "zh",
+  "docs",
+  "xiangshan-memblock",
+  "07-review-checklist",
+  "index.typ",
+);
 const enLegacySeriesHomePath = path.join(
   __dirname,
   "..",
@@ -214,8 +390,14 @@ const zhDocsIndex = fs.existsSync(zhDocsIndexPath)
 const enDocsSeries = fs.existsSync(enDocsSeriesPath)
   ? fs.readFileSync(enDocsSeriesPath, "utf8")
   : "";
+const enMemblockSeries = fs.existsSync(enMemblockSeriesPath)
+  ? fs.readFileSync(enMemblockSeriesPath, "utf8")
+  : "";
 const zhDocsSeries = fs.existsSync(zhDocsSeriesPath)
   ? fs.readFileSync(zhDocsSeriesPath, "utf8")
+  : "";
+const zhMemblockSeries = fs.existsSync(zhMemblockSeriesPath)
+  ? fs.readFileSync(zhMemblockSeriesPath, "utf8")
   : "";
 const enDocsRegistry = fs.existsSync(enDocsRegistryPath)
   ? fs.readFileSync(enDocsRegistryPath, "utf8")
@@ -263,6 +445,17 @@ const expectedSeriesRoutes = [
   "docs/linux-bringup/04-deploy/",
 ];
 const expectedChapterOrder = ["1", "2", "3", "4"];
+const expectedMemblockRoutes = [
+  "docs/xiangshan-memblock/",
+  "docs/xiangshan-memblock/01-overview/",
+  "docs/xiangshan-memblock/02-interfaces/",
+  "docs/xiangshan-memblock/03-load-store-lsq/",
+  "docs/xiangshan-memblock/04-mmu-and-permission/",
+  "docs/xiangshan-memblock/05-dcache-sbuffer-uncache/",
+  "docs/xiangshan-memblock/06-vector-memory/",
+  "docs/xiangshan-memblock/07-review-checklist/",
+];
+const expectedMemblockChapterOrder = ["1", "2", "3", "4", "5", "6", "7"];
 
 function extractOrderedMatches(content, regex) {
   const values = [];
@@ -322,8 +515,16 @@ assert(
   "localized series metadata files should live under the series directory in both locales",
 );
 assert(
+  fs.existsSync(enMemblockSeriesPath) && fs.existsSync(zhMemblockSeriesPath),
+  "localized XiangShan MemBlock series metadata files should exist in both locales",
+);
+assert(
   fs.existsSync(enSeriesHomePath) && fs.existsSync(zhSeriesHomePath),
   "localized linux-bringup series homepages should exist in both locales",
+);
+assert(
+  fs.existsSync(enMemblockSeriesHomePath) && fs.existsSync(zhMemblockSeriesHomePath),
+  "localized XiangShan MemBlock series homepages should exist in both locales",
 );
 assert(
   !enDocsIndex.includes('locale-url("en", route: "docs/01-quick-start/")') &&
@@ -353,6 +554,11 @@ assert(
   "bring-up-checklist should stay listed in the localized short-note registry",
 );
 assert(
+  enDocsRegistry.includes("xiangshan-memblock-series") &&
+    zhDocsRegistry.includes("xiangshan-memblock-series"),
+  "localized docs registries should register the XiangShan MemBlock series",
+);
+assert(
   !enSeriesRegistrySource.includes("bring-up-checklist") &&
     !zhSeriesRegistrySource.includes("bring-up-checklist"),
   "flat docs should stay outside the series metadata files",
@@ -376,6 +582,44 @@ assert(
   JSON.stringify(enChapterOrder) === JSON.stringify(expectedChapterOrder) &&
     JSON.stringify(zhChapterOrder) === JSON.stringify(expectedChapterOrder),
   "English and Chinese docs series metadata should keep the chapter order fields aligned with the approved reading order",
+);
+const enMemblockSeriesIds = extractOrderedMatches(enMemblockSeries, /(?:^|\n)\s*id:\s*"([^"]+)"/g);
+const zhMemblockSeriesIds = extractOrderedMatches(zhMemblockSeries, /(?:^|\n)\s*id:\s*"([^"]+)"/g);
+const enMemblockChapterRoutes = extractOrderedMatches(enMemblockSeries, /(?:^|\n)\s*route:\s*"([^"]+)"/g);
+const zhMemblockChapterRoutes = extractOrderedMatches(zhMemblockSeries, /(?:^|\n)\s*route:\s*"([^"]+)"/g);
+const enMemblockChapterOrder = extractOrderedMatches(enMemblockSeries, /order:\s*([0-9]+)/g);
+const zhMemblockChapterOrder = extractOrderedMatches(zhMemblockSeries, /order:\s*([0-9]+)/g);
+assert(
+  enMemblockSeriesIds[0] === "xiangshan-memblock" &&
+    zhMemblockSeriesIds[0] === "xiangshan-memblock",
+  "English and Chinese XiangShan MemBlock series metadata should register the mirrored series id",
+);
+assert(
+  JSON.stringify(enMemblockChapterRoutes) === JSON.stringify(expectedMemblockRoutes) &&
+    JSON.stringify(zhMemblockChapterRoutes) === JSON.stringify(expectedMemblockRoutes),
+  "English and Chinese XiangShan MemBlock series metadata should expose the nested series homepage and chapter routes in order",
+);
+assert(
+  JSON.stringify(enMemblockChapterOrder) === JSON.stringify(expectedMemblockChapterOrder) &&
+    JSON.stringify(zhMemblockChapterOrder) === JSON.stringify(expectedMemblockChapterOrder),
+  "English and Chinese XiangShan MemBlock series metadata should keep seven ordered chapters aligned",
+);
+assert(
+  fs.existsSync(enMemblockOverviewDocPath) &&
+    fs.existsSync(zhMemblockOverviewDocPath) &&
+    fs.existsSync(enMemblockInterfacesDocPath) &&
+    fs.existsSync(zhMemblockInterfacesDocPath) &&
+    fs.existsSync(enMemblockLoadStoreDocPath) &&
+    fs.existsSync(zhMemblockLoadStoreDocPath) &&
+    fs.existsSync(enMemblockMmuDocPath) &&
+    fs.existsSync(zhMemblockMmuDocPath) &&
+    fs.existsSync(enMemblockCacheDocPath) &&
+    fs.existsSync(zhMemblockCacheDocPath) &&
+    fs.existsSync(enMemblockVectorDocPath) &&
+    fs.existsSync(zhMemblockVectorDocPath) &&
+    fs.existsSync(enMemblockReviewDocPath) &&
+    fs.existsSync(zhMemblockReviewDocPath),
+  "all localized XiangShan MemBlock chapter pages should exist in both locales",
 );
 assert(
   !fs.existsSync(enLegacySeriesHomePath) &&

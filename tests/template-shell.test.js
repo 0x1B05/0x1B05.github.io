@@ -20,6 +20,16 @@ const {
   zhDeployDocHtml,
   enReferenceDocHtml,
   zhReferenceDocHtml,
+  enMemblockOverviewHtml,
+  zhMemblockOverviewHtml,
+  enMemblockLsqHtml,
+  zhMemblockLsqHtml,
+  enMemblockMmuHtml,
+  zhMemblockMmuHtml,
+  enMemblockCacheHtml,
+  zhMemblockCacheHtml,
+  enMemblockVectorHtml,
+  zhMemblockVectorHtml,
   enSearchHtml,
   zhSearchHtml,
 } = loadTemplateFixture();
@@ -224,14 +234,14 @@ assert(
   "localized pages should declare the correct html lang attribute",
 );
 assert(
-  countOccurrences(enDocsLandingHtml, 'class="content-card"') === 2 &&
-    countOccurrences(zhDocsLandingHtml, 'class="content-card"') === 2 &&
+  countOccurrences(enDocsLandingHtml, 'class="content-card"') === 3 &&
+    countOccurrences(zhDocsLandingHtml, 'class="content-card"') === 3 &&
     enDocsLandingHtml.includes("content-card__thumb") &&
     zhDocsLandingHtml.includes("content-card__thumb") &&
     JSON.stringify(extractCardSlugs(enDocsLandingHtml, "en")) ===
-      JSON.stringify(["linux-bringup", "bring-up-checklist"]) &&
+      JSON.stringify(["linux-bringup", "xiangshan-memblock", "bring-up-checklist"]) &&
     JSON.stringify(extractCardSlugs(zhDocsLandingHtml, "zh")) ===
-      JSON.stringify(["linux-bringup", "bring-up-checklist"]),
+      JSON.stringify(["linux-bringup", "xiangshan-memblock", "bring-up-checklist"]),
   "docs landing pages should render the localized series and reference cards in a stable order",
 );
 assert(
@@ -264,6 +274,23 @@ assert(
   enReferenceDocHtml.includes('href="/zh/docs/bring-up-checklist/"') &&
     zhReferenceDocHtml.includes('href="/en/docs/bring-up-checklist/"'),
   "reference pages should keep the language switcher on the sibling reference route",
+);
+assert(
+  enMemblockOverviewHtml.includes("<figure>") &&
+    enMemblockOverviewHtml.includes("useful as a subsystem map before tracing individual lanes") &&
+    zhMemblockOverviewHtml.includes("<figure>") &&
+    zhMemblockOverviewHtml.includes("适合先拿来建立子系统地图") &&
+    enMemblockLsqHtml.includes('class="marginnote"><img') &&
+    enMemblockLsqHtml.includes("The XiangShan LSQ diagram is compact enough to work as a side reference") &&
+    zhMemblockLsqHtml.includes('class="marginnote"><img') &&
+    zhMemblockLsqHtml.includes("香山设计文档里的 LSQ 框图比较适合当成侧边参考图") &&
+    enMemblockMmuHtml.includes("two-stage translation diagram is a useful reminder") &&
+    zhMemblockMmuHtml.includes("两阶段翻译流程图很适合提醒自己") &&
+    enMemblockCacheHtml.includes("SBuffer block diagram from the XiangShan design doc") &&
+    zhMemblockCacheHtml.includes("香山设计文档里的 SBuffer 总图") &&
+    enMemblockVectorHtml.includes("VSegmentUnit state machine is a good visual cue") &&
+    zhMemblockVectorHtml.includes("VSegmentUnit 的状态机图很适合提醒自己"),
+  "selected XiangShan MemBlock chapters should render the localized reference SVG figures",
 );
 assert(
   countOccurrences(enDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&

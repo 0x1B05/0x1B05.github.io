@@ -17,7 +17,7 @@
 
 = Docs
 
-This section keeps the more structured side of my notes: longer reading paths, shorter working notes, and the bring-up checklists I expect to revisit. I want it to stay useful as a place to revisit the privilege model, firmware handoff, and simulator roles without turning every topic into a long blog post.
+This section keeps the more structured side of my notes: longer reading paths, shorter working notes, and the checklists I expect to revisit. I want it to stay useful both for system bring-up topics and for code-reading paths such as XiangShan MemBlock, without turning every topic into a long blog post.
 
 == Series
 

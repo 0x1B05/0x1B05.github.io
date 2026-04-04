@@ -1,7 +1,9 @@
 #import "./linux-bringup/series.typ": linux-bringup-series
+#import "./xiangshan-memblock/series.typ": xiangshan-memblock-series
 
 #let series-registry = (
   linux-bringup-series,
+  xiangshan-memblock-series,
 )
 
 #let note-registry = (

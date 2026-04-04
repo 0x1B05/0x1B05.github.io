@@ -8,9 +8,17 @@ Production URL: `https://0x1B05.github.io/`
 
 - `typst`
 - `make`
+- `node`
+- `npm`
 - `python3` for local preview
 
 ## Local Development
+
+Install JavaScript dependencies first:
+
+```sh
+npm install
+```
 
 Build the site:
 
@@ -61,4 +69,5 @@ Because this repository is the user-site repository `0x1B05.github.io`, the site
 
 - Add or edit pages under `content/en/` and `content/zh/`.
 - Shared shell behavior usually belongs in `config.typ` or `assets/tufted.css`.
-- If the site is ever moved out of the root user-site repository into a project repository, update the root-path assumptions before deploying.
+- `assets/custom.css` is an intentional override hook for future site-specific tweaks that should layer on top of `assets/tufted.css`.
+- This site intentionally targets the root user-site domain, so paths and search assets are written against `/`.

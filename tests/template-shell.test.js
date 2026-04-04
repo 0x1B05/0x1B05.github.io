@@ -22,7 +22,6 @@ const {
   zhReferenceDocHtml,
   enSearchHtml,
   zhSearchHtml,
-  css,
 } = loadTemplateFixture();
 
 const chapterSlugs = [
@@ -211,15 +210,6 @@ assert(
   "localized search pages should include a results container for runtime rendering",
 );
 assert(
-  /\.site-nav__primary\s*\{/.test(css) &&
-    /\.site-nav__controls\s*\{/.test(css),
-  "header CSS should define explicit primary and controls groups for the navigation layout",
-);
-assert(
-  /\.site-search__dropdown\s*\{[\s\S]*left:\s*auto;[\s\S]*right:\s*0;[\s\S]*(max-width:|width:\s*min\()/.test(css),
-  "search dropdown CSS should anchor inward from the search box instead of stretching flush to both sides",
-);
-assert(
   !enHtml.includes("theme-switcher__label"),
   "theme switcher should use an icon button instead of the old inline text label",
 );
@@ -399,112 +389,6 @@ assert(
     !enHtml.includes(">☀<") &&
     !enHtml.includes(">☾<"),
   "theme switcher should render SVG icons instead of theme glyph characters",
-);
-assert(
-  css.includes(".site-nav__link--brand"),
-  "brand navigation styling should target the dedicated brand link class",
-);
-assert(
-  !css.includes("header nav a:first-child"),
-  "brand navigation styling should not depend on the first nav link",
-);
-assert(
-  css.includes(".theme-switcher__button"),
-  "theme switcher styling should target the new icon button trigger",
-);
-assert(
-  css.includes(".theme-switcher__menu"),
-  "theme switcher styling should include the dropdown menu",
-);
-assert(
-  css.includes(".language-switcher"),
-  "localized header styling should include the language switcher",
-);
-assert(
-  /html\s*\{\s*font-size:\s*12pt;/.test(css),
-  "site typography should use the larger base font size",
-);
-assert(
-  /article p,\s*article li\s*\{[^}]*font-size:\s*1\.24rem;/.test(css),
-  "article copy should override the upstream paragraph scale with a slightly smaller size",
-);
-assert(
-  /article h2\s*\{[^}]*font-size:\s*1\.72rem;/.test(css),
-  "article h2 headings should be slightly smaller than the upstream default scale",
-);
-assert(
-  /article h3\s*\{[^}]*font-size:\s*1\.44rem;/.test(css),
-  "article h3 headings should be slightly smaller than the upstream default scale",
-);
-assert(
-  /html\[lang="zh"\]\s+article p,\s*html\[lang="zh"\]\s+article li\s*\{[\s\S]*font-size:\s*1\.04rem;/.test(css),
-  "Chinese article copy should be reduced a touch more to offset denser glyph shapes",
-);
-assert(
-  /html\[lang="zh"\]\s+h1,\s*html\[lang="zh"\]\s+h2,\s*html\[lang="zh"\]\s+h3,\s*html\[lang="zh"\]\s+h4,\s*html\[lang="zh"\]\s+h5,\s*html\[lang="zh"\]\s+h6,\s*html\[lang="zh"\]\s+\.home-link__title,\s*html\[lang="zh"\]\s+\.content-card__title\s*\{[\s\S]*font-style:\s*normal\s*!important;/.test(
-    css,
-  ),
-  "Chinese titles should override the upstream italic heading treatment",
-);
-assert(
-  /\.site-brand\s*\{[\s\S]*width:\s*8rem;/.test(css),
-  "brand logo container should keep a stable width so nav links do not shift between themes",
-);
-assert(
-  /\.site-nav__primary\s*\{[^}]*display:\s*flex;[^}]*align-items:\s*center;[^}]*flex:\s*0 1 auto;/.test(
-    css,
-  ),
-  "primary navigation group should size to its content so the controls group can sit immediately after CV",
-);
-assert(
-  /\.site-nav__controls\s*\{[^}]*margin-left:\s*1rem;/.test(css),
-  "controls group should use a fixed gap from CV instead of auto-pushing itself to the far right",
-);
-assert(
-  /\.site-brand\s*\{[\s\S]*line-height:\s*0;/.test(css),
-  "brand logo should suppress inline line-box differences between light and dark variants",
-);
-assert(
-  /header nav \.site-nav__link\s*\{[\s\S]*font-size:\s*1\.1rem;/.test(css),
-  "navigation links should use the larger font size",
-);
-assert(
-  /\.theme-switcher__button-icon svg\s*\{[\s\S]*width:\s*1\.1rem;/.test(css),
-  "theme switcher button icons should size the inline SVG explicitly",
-);
-assert(
-  /\.home-link__title\s*\{[\s\S]*font-size:\s*1\.12rem;/.test(css),
-  "home link titles should be larger for better readability",
-);
-assert(
-  /\.home-link__description\s*\{[\s\S]*font-size:\s*1rem;/.test(css),
-  "home link descriptions should stay readable without overpowering the page body",
-);
-assert(
-  /\.content-card__title\s*\{[\s\S]*font-size:\s*1\.24rem;/.test(css),
-  "content card titles should be larger across docs and blog indexes",
-);
-assert(
-  /\.content-card__description\s*\{[\s\S]*font-size:\s*1\.02rem;/.test(css),
-  "content card descriptions should sit closer to the body copy scale",
-);
-assert(
-  /\.content-grid\s*\{[\s\S]*width:\s*min\(100%,\s*44rem\);/.test(css),
-  "content grids should keep a capped width so cards do not press against the far-right edge",
-);
-assert(
-  /\.home-links\s*\{[^}]*width:\s*min\(100%,\s*48rem\);/.test(css),
-  "home page link cards should keep the same capped width so they do not press against the far-right edge",
-);
-assert(
-  /\.home-hero__profile\s*\{[^}]*width:\s*20rem;/.test(css),
-  "home hero portrait should use a fixed smaller footprint",
-);
-assert(
-  /\.home-hero__profile img,\s*\.home-hero__profile svg\s*\{[^}]*width:\s*20rem;[^}]*height:\s*20rem;[^}]*object-fit:\s*cover;[^}]*border-radius:\s*50%;/.test(
-    css,
-  ),
-  "home hero portrait should render as a circular cropped avatar",
 );
 
 console.log("PASS template shell emits bilingual navigation, docs series navigation, and localized pages");

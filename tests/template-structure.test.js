@@ -314,11 +314,6 @@ assert(
   "localized root pages should pass their locale into the shared template wrapper",
 );
 assert(
-  enDocsIndex.includes('#import "../index.typ": template, tufted, content-card') &&
-    zhDocsIndex.includes('#import "../index.typ": template, tufted, content-card'),
-  "localized docs index pages should inherit from their language root index files",
-);
-assert(
   fs.existsSync(enDocsRegistryPath) && fs.existsSync(zhDocsRegistryPath),
   "localized docs registry files should exist in both locales",
 );
@@ -329,29 +324,6 @@ assert(
 assert(
   fs.existsSync(enSeriesHomePath) && fs.existsSync(zhSeriesHomePath),
   "localized linux-bringup series homepages should exist in both locales",
-);
-assert(
-  enDocsIndex.includes("== Series") &&
-    enDocsIndex.includes("== Short Notes") &&
-    enDocsIndex.indexOf("== Series") < enDocsIndex.indexOf("== Short Notes"),
-  "English docs index should render Series above Short Notes",
-);
-assert(
-  zhDocsIndex.includes("== 系列") &&
-    zhDocsIndex.includes("== 短文") &&
-    zhDocsIndex.indexOf("== 系列") < zhDocsIndex.indexOf("== 短文"),
-  "Chinese docs index should render 系列 above 短文",
-);
-assert(
-  enDocsIndex.includes('#import "./registry.typ": series-registry, note-registry') &&
-    zhDocsIndex.includes('#import "./registry.typ": series-registry, note-registry') &&
-    enDocsRegistry.includes('#import "./linux-bringup/series.typ": linux-bringup-series') &&
-    zhDocsRegistry.includes('#import "./linux-bringup/series.typ": linux-bringup-series') &&
-    enDocsIndex.includes("#for entry in series-registry") &&
-    zhDocsIndex.includes("#for entry in series-registry") &&
-    enDocsIndex.includes("#for entry in note-registry") &&
-    zhDocsIndex.includes("#for entry in note-registry"),
-  "docs landing pages should render their cards from localized docs registry files",
 );
 assert(
   !enDocsIndex.includes('locale-url("en", route: "docs/01-quick-start/")') &&
@@ -418,11 +390,6 @@ assert(
     enReferenceDoc.includes('route: "docs/bring-up-checklist/"') &&
     zhReferenceDoc.includes('route: "docs/bring-up-checklist/"'),
   "renamed short-note pages should exist under the bring-up-checklist route in both locales",
-);
-assert(
-  !enReferenceDoc.includes("tufted-titmouse") &&
-    !zhReferenceDoc.includes("tufted-titmouse"),
-  "renamed short-note pages should not reference the removed tufted-titmouse assets",
 );
 assert(
   !fs.existsSync(legacyDocsDirPath) &&

@@ -6,10 +6,9 @@
 #let footer-year = "2026"
 #let footer-label-en = "Personal site"
 #let footer-label-zh = "个人博客"
-#let site-root = ""
 
-#let site-home-url() = if site-root == "" { "/" } else { site-root + "/" }
-#let site-url(path) = if site-root == "" { "/" + path } else { site-root + "/" + path }
+#let site-home-url() = "/"
+#let site-url(path) = "/" + path
 
 #let normalize-route(route) = if route == "" {
   ""

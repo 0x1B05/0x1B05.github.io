@@ -21,43 +21,58 @@ THEME TOKENS
     --border-strong: rgba(94, 129, 172, 0.34);
     --shadow-soft: 0 16px 40px rgba(46, 52, 64, 0.08);
     --shadow-card: 0 14px 32px rgba(94, 129, 172, 0.09);
+    --theme-dark-surface-bg: #2e3440;
+    --theme-dark-surface-card: rgba(59, 66, 82, 0.9);
+    --theme-dark-surface-soft: #3b4252;
+    --theme-dark-surface-strong: #4c566a;
+    --theme-dark-text-main: #eceff4;
+    --theme-dark-text-muted: #d8dee9;
+    --theme-dark-text-faint: #b8c2cf;
+    --theme-dark-link: #88c0d0;
+    --theme-dark-link-strong: #8fbcbb;
+    --theme-dark-accent: #88c0d0;
+    --theme-dark-accent-soft: rgba(136, 192, 208, 0.2);
+    --theme-dark-border: rgba(216, 222, 233, 0.14);
+    --theme-dark-border-strong: rgba(136, 192, 208, 0.38);
+    --theme-dark-shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.34);
+    --theme-dark-shadow-card: 0 16px 34px rgba(15, 23, 42, 0.32);
 }
 
 html.theme-dark {
-    --surface-bg: #2e3440;
-    --surface-card: rgba(59, 66, 82, 0.9);
-    --surface-soft: #3b4252;
-    --surface-strong: #4c566a;
-    --text-main: #eceff4;
-    --text-muted: #d8dee9;
-    --text-faint: #b8c2cf;
-    --link: #88c0d0;
-    --link-strong: #8fbcbb;
-    --accent: #88c0d0;
-    --accent-soft: rgba(136, 192, 208, 0.2);
-    --border: rgba(216, 222, 233, 0.14);
-    --border-strong: rgba(136, 192, 208, 0.38);
-    --shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.34);
-    --shadow-card: 0 16px 34px rgba(15, 23, 42, 0.32);
+    --surface-bg: var(--theme-dark-surface-bg);
+    --surface-card: var(--theme-dark-surface-card);
+    --surface-soft: var(--theme-dark-surface-soft);
+    --surface-strong: var(--theme-dark-surface-strong);
+    --text-main: var(--theme-dark-text-main);
+    --text-muted: var(--theme-dark-text-muted);
+    --text-faint: var(--theme-dark-text-faint);
+    --link: var(--theme-dark-link);
+    --link-strong: var(--theme-dark-link-strong);
+    --accent: var(--theme-dark-accent);
+    --accent-soft: var(--theme-dark-accent-soft);
+    --border: var(--theme-dark-border);
+    --border-strong: var(--theme-dark-border-strong);
+    --shadow-soft: var(--theme-dark-shadow-soft);
+    --shadow-card: var(--theme-dark-shadow-card);
 }
 
 @media (prefers-color-scheme: dark) {
     html:not(.theme-light) {
-        --surface-bg: #2e3440;
-        --surface-card: rgba(59, 66, 82, 0.9);
-        --surface-soft: #3b4252;
-        --surface-strong: #4c566a;
-        --text-main: #eceff4;
-        --text-muted: #d8dee9;
-        --text-faint: #b8c2cf;
-        --link: #88c0d0;
-        --link-strong: #8fbcbb;
-        --accent: #88c0d0;
-        --accent-soft: rgba(136, 192, 208, 0.2);
-        --border: rgba(216, 222, 233, 0.14);
-        --border-strong: rgba(136, 192, 208, 0.38);
-        --shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.34);
-        --shadow-card: 0 16px 34px rgba(15, 23, 42, 0.32);
+        --surface-bg: var(--theme-dark-surface-bg);
+        --surface-card: var(--theme-dark-surface-card);
+        --surface-soft: var(--theme-dark-surface-soft);
+        --surface-strong: var(--theme-dark-surface-strong);
+        --text-main: var(--theme-dark-text-main);
+        --text-muted: var(--theme-dark-text-muted);
+        --text-faint: var(--theme-dark-text-faint);
+        --link: var(--theme-dark-link);
+        --link-strong: var(--theme-dark-link-strong);
+        --accent: var(--theme-dark-accent);
+        --accent-soft: var(--theme-dark-accent-soft);
+        --border: var(--theme-dark-border);
+        --border-strong: var(--theme-dark-border-strong);
+        --shadow-soft: var(--theme-dark-shadow-soft);
+        --shadow-card: var(--theme-dark-shadow-card);
     }
 }
 
@@ -121,27 +136,40 @@ html[lang="zh"] article li {
     line-height: 1.88;
 }
 
-html[lang="zh"] h1,
-html[lang="zh"] h2,
-html[lang="zh"] h3,
-html[lang="zh"] h4,
-html[lang="zh"] h5,
-html[lang="zh"] h6,
-html[lang="zh"] .home-link__title,
-html[lang="zh"] .content-card__title {
+html[lang="zh"] :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .home-link__title,
+    .content-card__title
+),
+html[lang="zh"] :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .home-link__title,
+    .content-card__title
+) em {
     font-style: normal !important;
-    font-synthesis: none;
 }
 
-html[lang="zh"] h1 em,
-html[lang="zh"] h2 em,
-html[lang="zh"] h3 em,
-html[lang="zh"] h4 em,
-html[lang="zh"] h5 em,
-html[lang="zh"] h6 em,
-html[lang="zh"] .home-link__title em,
-html[lang="zh"] .content-card__title em {
-    font-style: normal !important;
+html[lang="zh"] :is(
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6,
+    .home-link__title,
+    .content-card__title
+) {
+    font-synthesis: none;
 }
 
 p,

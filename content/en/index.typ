@@ -16,9 +16,9 @@
 
     == From CPU fundamentals to performance-oriented systems work
 
-    I am an M.S. student in Electronic Information at ShanghaiTech University and a member of the One Student One Chip group. After completing the B-track of the training, my current foundation is strongest in CPU and digital systems fundamentals, and I am using this site to document how that base grows into more systematic architecture, systems, and performance work.
+    I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. I finished the B-track of the training and am still building from CPU and digital-systems fundamentals toward architecture, systems, and performance work. I use this site to keep notes from that process.
 
-    Recently I have been trying to boot Linux on both `NEMU` and `NPC`. In this context, `NEMU` is the educational full-system emulator used in the YSYX workflow, while `NPC` is my own `RISC-V64` core project. In parallel, I am learning `gem5` so I can build a more repeatable way to study microarchitectural behavior and performance questions.
+    Recently I have been spending more time reviewing and validating XiangShan Kunminghu `v2`. In parallel, I am still working on Linux bring-up on both `NEMU` and `NPC`. Here `NEMU` is the teaching-oriented full-system emulator used in the YSYX workflow, while `NPC` is my own `RISC-V64` core project. I also keep learning `gem5` so I can look at workloads and microarchitectural behavior more systematically.
   ]
   #html.div(class: "home-hero__profile")[
     #profile-image()
@@ -29,29 +29,29 @@
 
 My near-term work is centered on a few connected goals:
 
-- strengthen the path from CPU and digital systems fundamentals toward microarchitectural performance analysis
-- use Linux bring-up on `NEMU` and `NPC` as a concrete way to connect architecture, debugging, and systems behavior
-- prepare for my upcoming summer internship at XiangShan
-- grow from CPU-oriented performance questions toward AI workload and accelerator performance over time
+- keep building from CPU and digital-systems fundamentals toward microarchitectural performance analysis
+- use Linux bring-up, debugging, and simulator work as one connected workflow instead of separate exercises
+- keep learning through review and validation work on XiangShan Kunminghu `v2`
+- gradually move from CPU performance questions toward AI workloads and accelerators
 
 #html.div(class: "home-links")[
   #home-link(
     locale-url("en", route: "docs/"),
     "Study notes and references",
-    "Keep architecture notes, bring-up records, and practical methodology pages that are easy to revisit when the workflow gets deeper.",
+    "Architecture notes, bring-up records, and reference pages I expect to revisit.",
   )
   #home-link(
     locale-url("en", route: "blog/"),
     "Experiment logs and writing",
-    "Collect reading notes, short technical essays, and stage-by-stage writeups from ongoing systems and performance work.",
+    "Short notes, reading logs, and writeups from ongoing systems work.",
   )
   #home-link(
     locale-url("en", route: "cv/"),
     "Profile and direction",
-    "See a compact summary of my background, current work, technical interests, and the directions I want to grow into next.",
+    "A short summary of my background, current work, and technical direction.",
   )
 ]
 
 == What This Site Is For
 
-I want this site to stay small, readable, and useful both as a personal profile and as a technical notebook. The emphasis is less on presenting finished expertise and more on making current work, learning direction, and technical growth visible.
+This site is a simple personal homepage plus a place to keep technical notes. I mainly use it to record what I am working on now, what I am learning, and where I want to go next.

@@ -4,35 +4,36 @@
 = 0x1B05
 
 #tufted.margin-note[
-  M.S. student in Electronic Information \
+  M.S. student in Electronic Engineering \
   ShanghaiTech University \
   One Student One Chip group
 ]
 
-I am a graduate student in Electronic Information at ShanghaiTech University and a member of the One Student One Chip group. My current background is stronger in CPU and digital systems fundamentals than in mature performance-analysis work, and this page is meant to give a compact view of the direction I am actively growing into.
+I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. My background is still anchored in CPU and digital-systems fundamentals, and this page is a short summary of what I am doing now and where I want to go next.
 
 == Profile
 
-- Graduate student in Electronic Information at ShanghaiTech University.
+- M.S. student in Electronic Engineering at ShanghaiTech University.
 - Member of the One Student One Chip group.
 - Completed the B-track of the One Student One Chip training.
-- Interested in turning architecture fundamentals into stronger systems and performance-analysis habits.
+- Trying to turn architecture fundamentals into more solid systems and performance work.
 
 == Current Work
 
-Recently I have been spending time on system bring-up and simulation-oriented learning rather than claiming polished performance expertise too early.
+Recently I have been spending more time reviewing and validating XiangShan Kunminghu `v2`, while still using bring-up and simulators as part of my learning path.
 
-- I am trying to boot Linux on both `NEMU` and `NPC`.
+- I have recently been reviewing and validating XiangShan Kunminghu `v2`.
+- I am also still working on booting Linux on both `NEMU` and `NPC`.
 - In this context, `NEMU` is the educational full-system emulator used throughout the YSYX training workflow.
-- `NPC` is my own `RISC-V64` core project, which makes the hardware and software boundary much more concrete during bring-up and debugging.
-- I am also learning `gem5` and trying to turn simulator use into a more repeatable way of studying workload behavior and microarchitectural questions.
+- `NPC` is my own `RISC-V64` core project, so bring-up and debugging land directly on the hardware/software boundary.
+- I continue to learn `gem5` as a way to look at workloads and microarchitectural behavior more systematically.
 
 == Background and Training
 
-- My current base is still primarily in CPU and digital systems fundamentals, including introductory understanding of pipelines, caches, and branch prediction.
+- My current base is still mostly CPU and digital-systems fundamentals, including introductory understanding of pipelines, caches, and branch prediction.
 - One Student One Chip B-track gave me a practical starting point for core, toolchain, and system-level work.
-- I have used `gem5` before, but I am still building a stable workflow for analysis rather than treating it as a fully mature skill.
-- This summer I will intern at XiangShan, which I expect to be an important step in making my architecture work more concrete.
+- I have used `gem5` before, but I am still building a stable workflow for analysis rather than treating it as a mature skill.
+- Recent work around XiangShan Kunminghu `v2` is also giving me a clearer sense of how architecture reading, code review, and validation fit together.
 
 == Technical Interests
 
@@ -43,6 +44,5 @@ Recently I have been spending time on system bring-up and simulation-oriented le
 
 == Direction
 
-- Near term, I want to become more systematic about Linux bring-up, simulation, debugging, and performance-oriented reasoning around CPU-like systems.
+- Near term, I want to become more systematic about Linux bring-up, simulation, debugging, and review work around CPU-like systems.
 - Over a longer horizon, I want to move from traditional CPU performance questions toward AI workloads and accelerator performance.
-- After graduation, I would prefer to work in Shanghai or Suzhou.

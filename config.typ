@@ -40,6 +40,11 @@
     docs_series: "系列",
     docs_reference: "参考",
     docs_toc: "目录",
+    callout_note: "备注",
+    callout_tip: "提示",
+    callout_example: "例子",
+    callout_definition: "定义",
+    callout_warning: "注意",
     series_begin: "开始阅读这个系列",
     series_home: "系列首页",
     series_previous: "上一章",
@@ -72,6 +77,11 @@
     docs_series: "Series",
     docs_reference: "Reference",
     docs_toc: "Contents",
+    callout_note: "Note",
+    callout_tip: "Tip",
+    callout_example: "Example",
+    callout_definition: "Definition",
+    callout_warning: "Warning",
     series_begin: "Begin the series!",
     series_home: "Series homepage",
     series_previous: "Previous",
@@ -345,6 +355,38 @@
       depth: 3,
     )
   ]
+}
+
+#let callout(kind, title, body) = html.div(class: "callout callout--" + kind)[
+  #if title != none [
+    #html.div(class: "callout__title")[#title]
+  ]
+  #html.div(class: "callout__body")[#body]
+]
+
+#let note(body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).callout_note } else { title }
+  callout("note", resolved-title, body)
+}
+
+#let tip(body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).callout_tip } else { title }
+  callout("tip", resolved-title, body)
+}
+
+#let example(body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).callout_example } else { title }
+  callout("example", resolved-title, body)
+}
+
+#let definition(body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).callout_definition } else { title }
+  callout("definition", resolved-title, body)
+}
+
+#let warning(body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).callout_warning } else { title }
+  callout("warning", resolved-title, body)
 }
 
 #let series-context(series, route) = {

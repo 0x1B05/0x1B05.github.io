@@ -1,0 +1,346 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="fdp-structures" name="Feedback Directed Prefetching Structures">
+    <mxGraphModel dx="2405" dy="2262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fs_top_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="1390" width="2140" x="30" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_top_outer" parent="fs_top_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="750" width="1890" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_top_header" parent="fs_top_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Per-Line / In-Flight Event State" vertex="1">
+          <mxGeometry height="48" width="1890" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_group" connectable="0" parent="fs_top_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="406" width="460" x="710" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters" parent="fs_counters_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="406" width="460" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_header" parent="fs_counters_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="interval counters" vertex="1">
+          <mxGeometry height="56" width="460" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_col_0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="counter" vertex="1">
+          <mxGeometry height="50" width="174" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_col_1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="meaning" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r0c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="pref-total" vertex="1">
+          <mxGeometry height="50" width="174" y="106" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r0c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="issued prefetches" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="106" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r1c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="used-total" vertex="1">
+          <mxGeometry height="50" width="174" y="156" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r1c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="useful prefetches" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="156" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r2c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="late-total" vertex="1">
+          <mxGeometry height="50" width="174" y="206" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r2c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="late prefetches" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="206" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r3c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="pollution-total" vertex="1">
+          <mxGeometry height="50" width="174" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r3c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="approximate cache damage" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r4c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="demand-total" vertex="1">
+          <mxGeometry height="50" width="174" y="306" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r4c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="demand reference count" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="306" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r5c0" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="eviction-count" vertex="1">
+          <mxGeometry height="50" width="174" y="356" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_counters_r5c1" parent="fs_counters_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="window progress" vertex="1">
+          <mxGeometry height="50" width="285" x="174" y="356" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_group" connectable="0" parent="fs_top_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="420" width="420" x="1410" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter" parent="fs_filter_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="420" width="420" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_header" parent="fs_filter_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="pollution filter slice" vertex="1">
+          <mxGeometry height="56" width="420" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_col_0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="idx" vertex="1">
+          <mxGeometry height="52" width="252" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_col_1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="bit" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r0c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+0" vertex="1">
+          <mxGeometry height="52" width="252" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r0c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r1c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+1" vertex="1">
+          <mxGeometry height="52" width="252" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r1c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="0" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r2c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+2" vertex="1">
+          <mxGeometry height="52" width="252" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r2c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r3c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+3" vertex="1">
+          <mxGeometry height="52" width="252" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r3c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="0" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r4c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+4" vertex="1">
+          <mxGeometry height="52" width="252" y="316" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r4c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="0" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="316" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r5c0" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="i+5" vertex="1">
+          <mxGeometry height="52" width="252" y="368" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_filter_r5c1" parent="fs_filter_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="52" width="168" x="252" y="368" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_group" connectable="0" parent="fs_top_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="288" width="500" x="60" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line" parent="fs_line_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="288" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_header" parent="fs_line_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="cache-line metadata" vertex="1">
+          <mxGeometry height="56" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_col_0" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="58" width="185" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_col_1" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="purpose" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r0c0" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="tag / state" vertex="1">
+          <mxGeometry height="58" width="185" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r0c1" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="normal cache tracking" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r1c0" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="pref-bit" vertex="1">
+          <mxGeometry height="58" width="185" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r1c1" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="prefetched line marker" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r2c0" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="used clear" vertex="1">
+          <mxGeometry height="58" width="185" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_line_r2c1" parent="fs_line_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="clear on useful demand hit" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_group" connectable="0" parent="fs_top_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="288" width="500" x="50" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr" parent="fs_mshr_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="288" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_header" parent="fs_mshr_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="MSHR entry" vertex="1">
+          <mxGeometry height="56" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_col_0" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="58" width="185" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_col_1" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="purpose" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r0c0" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="block tag" vertex="1">
+          <mxGeometry height="58" width="185" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r0c1" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="in-flight miss target" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r1c0" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="pref-bit" vertex="1">
+          <mxGeometry height="58" width="185" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r1c1" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="prefetch in flight" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r2c0" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="late detect" vertex="1">
+          <mxGeometry height="58" width="185" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_mshr_r2c1" parent="fs_mshr_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#c2410c;strokeWidth=1;" value="demand collides before fill" vertex="1">
+          <mxGeometry height="58" width="314" x="185" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="fs_top_group" source="fs_line" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="fs_counters" value="use / total">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="fs_top_group" source="fs_mshr" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="fs_counters" value="late events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="fs_top_group" source="fs_filter_r2c0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="fs_counters_r2c1" value="pollution events">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_bottom_group" connectable="0" parent="fs_top_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="580" width="1980" x="45" y="810" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_bottom_outer" parent="fs_bottom_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="580" width="1980" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_bottom_header" parent="fs_bottom_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="Policy Registers And Lookup Tables" vertex="1">
+          <mxGeometry height="48" width="1980" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_group" connectable="0" parent="fs_bottom_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="296" width="360" x="1590" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert" parent="fs_insert_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="296" width="360" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_header" parent="fs_insert_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="insertion policy map" vertex="1">
+          <mxGeometry height="56" width="360" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_col_0" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="pollution class" vertex="1">
+          <mxGeometry height="60" width="210" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_col_1" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="insert" vertex="1">
+          <mxGeometry height="60" width="150" x="210" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r0c0" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="low" vertex="1">
+          <mxGeometry height="60" width="210" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r0c1" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="MID" vertex="1">
+          <mxGeometry height="60" width="150" x="210" y="116" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r1c0" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="medium" vertex="1">
+          <mxGeometry height="60" width="210" y="176" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r1c1" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="LRU-4" vertex="1">
+          <mxGeometry height="60" width="150" x="210" y="176" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r2c0" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="high" vertex="1">
+          <mxGeometry height="60" width="210" y="236" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_insert_r2c1" parent="fs_insert_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="LRU" vertex="1">
+          <mxGeometry height="60" width="150" x="210" y="236" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_group" connectable="0" parent="fs_bottom_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="380" width="700" x="720" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels" parent="fs_levels_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="380" width="700" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_header" parent="fs_levels_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="aggressiveness levels" vertex="1">
+          <mxGeometry height="56" width="700" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_col_0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="level" vertex="1">
+          <mxGeometry height="54" width="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_col_1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="distance" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_col_2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="degree" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r0c0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="54" width="200" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r0c1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="4" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r0c2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r1c0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="2" vertex="1">
+          <mxGeometry height="54" width="200" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r1c1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="8" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r1c2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="164" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r2c0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="3" vertex="1">
+          <mxGeometry height="54" width="200" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r2c1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="16" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r2c2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="2" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="218" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r3c0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="4" vertex="1">
+          <mxGeometry height="54" width="200" y="272" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r3c1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="32" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="272" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r3c2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="4" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="272" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r4c0" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="5" vertex="1">
+          <mxGeometry height="54" width="200" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r4c1" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="64" vertex="1">
+          <mxGeometry height="54" width="250" x="200" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_levels_r4c2" parent="fs_levels_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="4" vertex="1">
+          <mxGeometry height="54" width="250" x="450" y="326" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_group" connectable="0" parent="fs_bottom_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="346" width="560" x="40" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold" parent="fs_threshold_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="346" width="560" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_header" parent="fs_threshold_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="threshold and register bank" vertex="1">
+          <mxGeometry height="56" width="560" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_col_0" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="register" vertex="1">
+          <mxGeometry height="58" width="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_col_1" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="role" vertex="1">
+          <mxGeometry height="58" width="360" x="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r0c0" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="Ahigh / Alow" vertex="1">
+          <mxGeometry height="58" width="200" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r0c1" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="accuracy thresholds" vertex="1">
+          <mxGeometry height="58" width="360" x="200" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r1c0" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="Tlateness" vertex="1">
+          <mxGeometry height="58" width="200" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r1c1" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="late / not-late split" vertex="1">
+          <mxGeometry height="58" width="360" x="200" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r2c0" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="Phigh / Plow" vertex="1">
+          <mxGeometry height="58" width="200" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r2c1" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="pollution thresholds" vertex="1">
+          <mxGeometry height="58" width="360" x="200" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r3c0" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="configCounter" vertex="1">
+          <mxGeometry height="58" width="200" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="fs_threshold_r3c1" parent="fs_threshold_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="3-bit current level" vertex="1">
+          <mxGeometry height="58" width="360" x="200" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="fs_bottom_group" source="fs_threshold" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="fs_levels" value="select level">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="fs_bottom_group" source="fs_levels" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="fs_insert" value="paired policy view">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

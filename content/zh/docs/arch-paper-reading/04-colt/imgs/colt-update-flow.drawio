@@ -1,0 +1,111 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="colt-update-flow" name="CoLT Fill / Coalescing Flow">
+    <mxGraphModel dx="2405" dy="2262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cu_fill_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="420" width="2140" x="90" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_fill_outer" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="420" width="2140" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_fill_header" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Miss / Fill Path" vertex="1">
+          <mxGeometry height="48" width="2140" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_group" connectable="0" parent="cu_fill_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="346" width="500" x="740" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle" parent="cu_bundle_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="346" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_header" parent="cu_bundle_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="returned translation bundle" vertex="1">
+          <mxGeometry height="56" width="500" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_col_0" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="slot" vertex="1">
+          <mxGeometry height="58" width="166" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_col_1" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="VPN -&gt; PPN" vertex="1">
+          <mxGeometry height="58" width="333" x="166" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r0c0" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="0" vertex="1">
+          <mxGeometry height="58" width="166" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r0c1" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="n -&gt; p" vertex="1">
+          <mxGeometry height="58" width="333" x="166" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r1c0" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="1" vertex="1">
+          <mxGeometry height="58" width="166" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r1c1" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="n+1 -&gt; p+1" vertex="1">
+          <mxGeometry height="58" width="333" x="166" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r2c0" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="2" vertex="1">
+          <mxGeometry height="58" width="166" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r2c1" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="n+2 -&gt; p+2" vertex="1">
+          <mxGeometry height="58" width="333" x="166" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r3c0" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="3" vertex="1">
+          <mxGeometry height="58" width="166" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_bundle_r3c1" parent="cu_bundle_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#4338ca;strokeWidth=1;" value="n+3 -&gt; p+3" vertex="1">
+          <mxGeometry height="58" width="333" x="166" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_miss" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="TLB miss&#xa;requested VPN misses" vertex="1">
+          <mxGeometry height="100" width="210" x="40" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_walk" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="page walk&#xa;return requested translation" vertex="1">
+          <mxGeometry height="120" width="240" x="340" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_detect" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="contiguity detector&#xa;VPN contiguous?&#xa;PPN contiguous?&#xa;attrs same?" vertex="1">
+          <mxGeometry height="120" width="300" x="1440" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_build_sa" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="SA builder&#xa;valid bits&#xa;base PPN" vertex="1">
+          <mxGeometry height="120" width="220" x="1830" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_build_fa" parent="cu_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="FA builder&#xa;base VPN&#xa;length" vertex="1">
+          <mxGeometry height="120" width="220" x="1830" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="cu_fill_group" source="cu_miss" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cu_walk" value="walk">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="cu_fill_group" source="cu_walk" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;dashed=1;dashPattern=12 8;" target="cu_bundle" value="cache-line return">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="cu_fill_group" source="cu_bundle" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cu_detect" value="neighbor translations">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="cu_fill_group" source="cu_detect" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cu_build_sa" value="SA eligible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="cu_fill_group" source="cu_detect" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cu_build_fa" value="FA eligible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_result_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="290" width="1440" x="520" y="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_result_outer" parent="cu_result_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="290" width="1440" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_result_header" parent="cu_result_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="Refill Result" vertex="1">
+          <mxGeometry height="48" width="1440" as="geometry" />
+        </mxCell>
+        <mxCell id="cu_refill" parent="cu_result_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="refill with coalesced entry&#xa;requested translation already served&#xa;future hits consume SA / FA metadata" vertex="1">
+          <mxGeometry height="130" width="760" x="340" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="1" source="cu_build_sa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=20;dashed=1;dashPattern=12 8;" target="cu_refill" value="write SA">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2210" y="330" />
+              <mxPoint x="2210" y="938" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="1" source="cu_build_fa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.25;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="cu_refill" value="write FA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

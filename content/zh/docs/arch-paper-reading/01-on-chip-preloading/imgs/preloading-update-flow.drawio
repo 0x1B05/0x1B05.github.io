@@ -1,0 +1,125 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="preloading-update-flow" name="On-Chip Preloading Update Flow">
+    <mxGraphModel dx="3328" dy="1923" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pu_issue_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="660" width="1915" x="90" y="510" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_issue_outer" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="550" width="1670" x="10" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_issue_header" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="Look-Ahead Issue Path" vertex="1">
+          <mxGeometry height="48" width="1680" as="geometry" />
+        </mxCell>
+        <mxCell id="future_hit" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="future load/store PC&#xa;seen by LA-PC" vertex="1">
+          <mxGeometry height="100" width="250" x="55" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_read" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="RPT read&#xa;candidate addr&#xa;state bits" vertex="1">
+          <mxGeometry height="120" width="280" x="425" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="distance_gate" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="distance gate&#xa;distance &lt; d" vertex="1">
+          <mxGeometry height="120" width="240" x="55" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="dup_gate2" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="ORL duplicate gate&#xa;CAM reject" vertex="1">
+          <mxGeometry height="120" width="240" x="470" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="cache_gate2" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="cache-present gate&#xa;miss only" vertex="1">
+          <mxGeometry height="120" width="220" x="880" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="issue2" parent="pu_issue_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="issue&#xa;send req" vertex="1">
+          <mxGeometry height="130" width="150" x="1370" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="pu_issue_group" source="future_hit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="rpt_read" value="PC lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="pu_issue_group" source="rpt_read" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;" target="distance_gate" value="steady + addr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="pu_issue_group" source="distance_gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="dup_gate2" value="window ok">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" edge="1" parent="pu_issue_group" source="dup_gate2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cache_gate2" value="not duplicate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_8" edge="1" parent="pu_issue_group" source="cache_gate2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="issue2" value="not cached">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rFxMSN5v0Rce5hPAp3NX-1" connectable="0" parent="pu_issue_group" style="group" value="" vertex="1">
+          <mxGeometry height="224" width="430" x="960" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_header" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="ORL reminder" vertex="1">
+          <mxGeometry height="56" width="430" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_col_0" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="56" width="165" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_col_1" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="meaning" vertex="1">
+          <mxGeometry height="56" width="264" x="166" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_r0c0" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="block tag" vertex="1">
+          <mxGeometry height="56" width="165" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_r0c1" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="candidate preload block" vertex="1">
+          <mxGeometry height="56" width="264" x="166" y="112" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_r1c0" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="req ID" vertex="1">
+          <mxGeometry height="56" width="165" y="168" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_orl_r1c1" parent="rFxMSN5v0Rce5hPAp3NX-1" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="outstanding request" vertex="1">
+          <mxGeometry height="56" width="264" x="166" y="168" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9" edge="1" parent="pu_issue_group" source="dup_gate2" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;dashed=1;entryX=0;entryY=0.5;entryDx=0;entryDy=0;edgeStyle=orthogonalEdgeStyle;fontSize=20;exitX=0.5;exitY=0;exitDx=0;exitDy=0;dashPattern=12 8;" target="pu_orl_header" value="consult ORL">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="590" y="270" />
+              <mxPoint x="790" y="270" />
+              <mxPoint x="790" y="98" />
+            </Array>
+            <mxPoint x="1210" y="260" as="sourcePoint" />
+            <mxPoint x="1305" y="830" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="pu_train_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="260" width="1850" x="90" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_train_outer" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="260" width="1850" as="geometry" />
+        </mxCell>
+        <mxCell id="pu_train_header" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Real Execution Training" vertex="1">
+          <mxGeometry height="48" width="1850" as="geometry" />
+        </mxCell>
+        <mxCell id="real_load" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="retired load/store&#xa;real addr appears" vertex="1">
+          <mxGeometry height="90" width="240" x="40" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_alloc" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="update RPT entry&#xa;write prev addr&#xa;track stride" vertex="1">
+          <mxGeometry height="120" width="280" x="370" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="state_update" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="state transition&#xa;initial -&gt; transient&#xa;transient -&gt; steady" vertex="1">
+          <mxGeometry height="120" width="300" x="830" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="wrong_path" parent="pu_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="wrong-path protection&#xa;LA-PC never trains history" vertex="1">
+          <mxGeometry height="110" width="420" x="1400" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="pu_train_group" source="real_load" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="rpt_alloc" value="train">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="pu_train_group" source="rpt_alloc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="state_update" value="observe stride">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="pu_train_group" source="state_update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#dc2626;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;dashed=1;dashPattern=12 8;" target="wrong_path" value="no wrong-path writeback">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="1" source="state_update" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;dashed=1;edgeStyle=orthogonalEdgeStyle;fontSize=20;dashPattern=12 8;" target="rpt_read" value="steady entry visible later">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1090" y="490" />
+              <mxPoint x="655" y="490" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

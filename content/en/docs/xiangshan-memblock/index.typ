@@ -22,13 +22,13 @@
 
 = Reading XiangShan MemBlock: From the Memory Subsystem Map to Review Hotspots
 
-This series reorganizes my XiangShan MemBlock reading notes into a path I can revisit while doing code review. The goal is not to paraphrase `MemBlock.scala` line by line. The goal is to keep one usable map in mind: what MemBlock coordinates, which boundaries matter first, and where the highest-risk control interactions keep showing up.
+This series is the path I use when revisiting XiangShan MemBlock. It does not paraphrase `MemBlock.scala` line by line. It starts with the places where I am most likely to get lost: what MemBlock coordinates, which interfaces to read first, and which control interactions deserve extra attention.
 
-That means the series sits between two styles of writing. It is not a beginner-only introduction, because it keeps asking review questions. It is also not a raw notebook dump, because each chapter tries to turn one pile of observations into a stable reading handle.
+Each chapter keeps a review angle, but the first goal is still to understand the structure. The map and the paths need to be in place before the individual ports and control signals make sense.
 
 == Recommended reading
 
-Read the chapters in order the first time through. The sequence starts with the subsystem map, then moves through backend interfaces, load/store and LSQ structure, MMU and permission checks, cacheable versus uncacheable traffic, vector memory, and finally a review checklist that compresses the whole path into something actionable.
+Read the chapters in order the first time through: subsystem map, backend interfaces, load/store and LSQ structure, MMU and permission checks, cacheable versus uncacheable traffic, vector memory, then the review checklist.
 
 == Included Chapters
 

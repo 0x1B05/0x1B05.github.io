@@ -16,13 +16,13 @@
 
 = From RISC-V Privilege Levels to Linux Bring-up
 
-This series is the path I am currently using to connect architectural reading with system bring-up work. Instead of explaining how to customize the site, it follows the layers that have become hard to ignore while trying to boot Linux: privilege levels, machine-mode firmware, tool choice, and the checklist I keep returning to when something stalls.
+This series is the path I am using to connect architectural reading with system bring-up work. The layers that keep showing up are privilege levels, machine-mode firmware, tool choice, and the checks I return to when the boot flow stalls.
 
-It is not written as if I have already solved every problem in that stack. The point is to keep the learning path explicit: what I need to understand, why each layer matters, and how the pieces fit together once the target is a real boot flow rather than an isolated toy program.
+I have not figured out the whole stack. These notes keep the parts I currently need most: why each layer shows up, and how it connects to the next failure I am likely to see.
 
 == Recommended reading
 
-Read the chapters in order the first time through. The sequence moves from the privilege model, to OpenSBI, to tool roles, and finally to a practical checklist. Each chapter is short on purpose, so the series stays closer to a guided map than to a full textbook.
+Read the chapters in order the first time through: privilege model, OpenSBI, tool roles, then the bring-up checklist. The chapters are short because I first want the path to stay visible.
 
 == Included Chapters
 

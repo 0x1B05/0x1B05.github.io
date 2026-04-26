@@ -16,7 +16,7 @@
 
     == From CPU fundamentals to performance-oriented systems work
 
-    I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. I finished the B-track of the training and am still building from CPU and digital-systems fundamentals toward architecture, systems, and performance work. I use this site to keep notes from that process.
+    I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. After finishing the B-track training, I have kept working through the line between CPUs, digital systems, architecture, and system software. This site is where I put the things I am reading, building, and debugging along the way.
 
     Recently I have been spending more time reviewing and validating XiangShan Kunminghu `v2`. In parallel, I am still working on Linux bring-up on both `NEMU` and `NPC`. Here `NEMU` is the teaching-oriented full-system emulator used in the YSYX workflow, while `NPC` is my own `RISC-V64` core project. I also keep learning `gem5` so I can look at workloads and microarchitectural behavior more systematically.
   ]
@@ -47,11 +47,11 @@ My near-term work is centered on a few connected goals:
   )
   #home-link(
     locale-url("en", route: "cv/"),
-    "Profile and direction",
-    "A short summary of my background, current work, and technical direction.",
+    "Profile and recent work",
+    "A short summary of my background, recent work, and technical interests.",
   )
 ]
 
-== What This Site Is For
+== This Site
 
-This site is a simple personal homepage plus a place to keep technical notes. I mainly use it to record what I am working on now, what I am learning, and where I want to go next.
+This is not meant to read like a polished publication archive. It is closer to a notebook I can revisit: boot-flow notes, tool docs, code-reading paths, and the occasional piece that needs to be rewritten once I understand the topic better.

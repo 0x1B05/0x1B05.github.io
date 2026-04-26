@@ -26,7 +26,7 @@ When I first grouped these tools together, I implicitly treated them as alternat
 
 In my current workflow, `NEMU` is the educational full-system emulator that gives me a relatively stable reference point. It is not "simple" in the sense of being trivial, but it is simple in the sense that it helps me ask, "what should a working full-system path roughly look like?"
 
-That makes it useful when I want a baseline for software stack expectations instead of immediately debugging my own hardware implementation.
+That makes it useful as a baseline for software stack expectations before I start debugging my own hardware implementation.
 
 == NPC as the place where the assumptions hit my own core
 
@@ -49,7 +49,7 @@ So for now I treat gem5 as part of my learning path, not as a mature workflow I 
 
 The current split that makes sense to me is:
 
-- use `NEMU` when I want a baseline for full-system behavior
+- use `NEMU` as a baseline for full-system behavior
 - use `NPC` when I need to confront whether my own core and handoff path behave correctly
 - use `gem5` when the question becomes more about simulator-supported observation, workload study, or microarchitectural experimentation
 

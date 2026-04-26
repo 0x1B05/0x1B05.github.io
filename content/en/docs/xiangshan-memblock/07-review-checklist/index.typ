@@ -9,7 +9,7 @@
 
 #series-navbar("en", nav)
 
-After reading the subsystem by pieces, I want to compress it into a checklist I can actually use while reviewing code or designing targeted tests. The point is not to prove every detail wrong in advance. The point is to avoid reading such a large subsystem without a stable set of questions.
+After reading the subsystem by pieces, this page compresses the questions into a checklist I can use during review or targeted test design. MemBlock is large enough that, without fixed questions in hand, reading quickly turns into scrolling.
 
 == Structural checks I would keep first
 
@@ -48,6 +48,6 @@ For testing, I would not begin from a full-system run and hope the right corner 
 - combine one control event such as redirect or exception with one shared-resource path
 - keep records of which combinations are covered, not just which files were read
 
-That is the main reason for writing this series at all. MemBlock is large enough that reading without a checklist quickly becomes passive. A useful review path has to keep turning structure into concrete suspicion.
+That is the main reason for writing this series. MemBlock is large enough that the review path has to keep turning structure into concrete cases.
 
 #series-navbar("en", nav)

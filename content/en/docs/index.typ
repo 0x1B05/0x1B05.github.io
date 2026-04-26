@@ -17,7 +17,7 @@
 
 = Docs
 
-This section keeps the more structured side of my notes: longer reading paths, shorter working notes, and the checklists I expect to revisit. I want it to stay useful both for system bring-up topics and for code-reading paths such as XiangShan MemBlock, without turning every topic into a long blog post.
+This section keeps the more structured side of my notes: series, shorter working notes, and checklists I expect to revisit while debugging. Right now it is mostly Linux bring-up, XiangShan MemBlock code reading, and architecture paper notes.
 
 == Series
 

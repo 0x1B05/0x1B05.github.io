@@ -3,7 +3,7 @@
 
 = Blog
 
-This section is for the smaller pieces: reading notes, tool-focused reflections, and the short observations that come out of bring-up work before they are ready to become a structured docs page. I want these posts to keep some personal angle instead of pretending every topic is already a settled conclusion.
+This section is for notes that are not ready, or not worth, turning into full docs pages: things I noticed while reading tool documentation, problems that came up during bring-up, and judgments that felt worth writing down at the time.
 
 == Featured Reading
 
@@ -31,8 +31,6 @@ This section is for the smaller pieces: reading notes, tool-focused reflections,
   )
 ]
 
-== How To Read This Section
+== Archive Notes
 
-- Look at the label above each card to understand whether the piece is a tutorial, note, or lightweight reference.
-- Use this page as the archive front door; every card should explain the post before the reader opens it.
-- Keep the English and Chinese summaries aligned so the language switcher always lands on equivalent pages.
+Not every post here is a tutorial. Some are just my read of a document after one pass; some come from debugging notes. The title and label should make clear whether the post is about a tool, a bring-up problem, or a project I was reading through.

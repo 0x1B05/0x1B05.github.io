@@ -10,7 +10,7 @@
   is clear
 ]
 
-This page is the flatter companion to the series chapter. I want it to behave like a page I can skim while debugging rather than a narrative explanation.
+This page is for quick scanning during debugging. When the boot flow gets stuck, I use these questions to check that I have not skipped the basic boundaries.
 
 == Privilege assumptions
 

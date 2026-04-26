@@ -9,11 +9,11 @@
 
 #series-navbar("en", nav)
 
-This chapter is deliberately written as a working checklist instead of a success report. I am still using it to organize my own bring-up thinking, so the goal is not to present a solved story. The goal is to keep the first-response checks short, visible, and easy to revisit.
+This is the bring-up checklist I still reach for when the path stalls. It is not a success story. It keeps the first checks in one place so I do not start guessing too early.
 
 == Before kernel entry
 
-The first questions I want answered are about assumptions, not heroics:
+The first questions are basic assumptions:
 
 - Which privilege mode am I in when control reaches the current stage?
 - Is there a clear firmware-to-payload handoff path?
@@ -24,7 +24,7 @@ If I cannot answer those cleanly, looking at later symptoms is often wasted effo
 
 == Firmware handoff
 
-When OpenSBI is part of the flow, I want to check:
+When OpenSBI is part of the flow, I check:
 
 - how the payload was linked
 - whether the device tree path and payload path match the current build
@@ -64,6 +64,6 @@ When nothing obvious appears, the next questions I ask myself are:
 - Which assumption can I verify cheaply before changing more code?
 - If I compare against a NEMU-based baseline, which part of the path diverges first?
 
-The checklist is intentionally boring. That is the point. I want a repeatable path to follow before I let frustration turn the whole problem into guesswork.
+The checklist is supposed to be a little boring. I would rather clear the low-level mismatches along a fixed path before guessing at deeper failures.
 
 #series-navbar("en", nav)

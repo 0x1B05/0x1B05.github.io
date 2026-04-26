@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "en", route: "docs/linux-bringup/04-deploy/", title: "A Working Checklist for Linux Bring-up")
 
@@ -8,6 +8,8 @@
 = A Working Checklist for Linux Bring-up
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 This is the bring-up checklist I still reach for when the path stalls. It is not a success story. It keeps the first checks in one place so I do not start guessing too early.
 

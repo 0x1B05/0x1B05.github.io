@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/05-dcache-sbuffer-uncache/", title: "DCache, SBuffer, and Uncache")
 
@@ -8,6 +8,8 @@
 = DCache, SBuffer, and Uncache/MMIO: Separating Cacheable and Uncacheable Paths
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 One reason MemBlock grows large is that "memory" is not one traffic class. Cacheable loads, draining stores, and uncache or MMIO requests obey different progress rules. The code has to keep those paths related but not confused with one another.
 

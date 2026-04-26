@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/01-overview/", title: "MemBlock 到底是什么")
 
@@ -8,6 +8,8 @@
 = MemBlock 到底是什么：先建立访存总图
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 第一次读 MemBlock 时，最容易犯的错误是把它想成一个特别大的 LSU 顶层文件。文件确实很大，但更有用的心智模型是：它是核内访存子系统的协调器。后端 issue 进来的访存 uop、load/store 执行单元、地址翻译、权限检查、DCache、uncache 路径、向量访存和 rollback 决策，都在这里相遇。
 

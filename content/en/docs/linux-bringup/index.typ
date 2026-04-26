@@ -1,4 +1,4 @@
-#import "../index.typ": template, tufted, content-card, locale-url, series-begin
+#import "../index.typ": template, tufted, content-card, locale-url, series-begin, doc-toc
 #import "./series.typ": linux-bringup-series
 #show: template.with(locale: "en", route: "docs/linux-bringup/", title: "Linux Bring-up")
 
@@ -15,6 +15,8 @@
 }
 
 = From RISC-V Privilege Levels to Linux Bring-up
+
+#doc-toc("en")
 
 This series is the path I am using to connect architectural reading with system bring-up work. The layers that keep showing up are privilege levels, machine-mode firmware, tool choice, and the checks I return to when the boot flow stalls.
 

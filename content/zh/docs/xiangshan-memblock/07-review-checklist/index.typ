@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/07-review-checklist/", title: "MemBlock Review 检查框架")
 
@@ -8,6 +8,8 @@
 = 我会怎么 review MemBlock：一份高风险路径检查框架
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 前面几章把系统拆开看完之后，这里把问题重新收成一份 review 时能用的清单。MemBlock 太大了，如果手里没有固定的问题，很容易只是顺着代码往下滑。
 

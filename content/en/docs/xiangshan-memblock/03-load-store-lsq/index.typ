@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/03-load-store-lsq/", title: "Load, Store, Std, and LSQ")
 
@@ -8,6 +8,8 @@
 = Load, Store, Std, and the LSQ: How One Memory Instruction Gets Split
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 One of the clearest patterns in MemBlock is that a "memory instruction" is not handled as one opaque thing. Load, store-address, and store-data responsibilities are separated early, then re-coordinated through the LSQ and the surrounding control fabric.
 

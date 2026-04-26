@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/01-overview/", title: "What MemBlock Really Is")
 
@@ -8,6 +8,8 @@
 = What MemBlock Really Is: Building the Memory Subsystem Map First
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 The first reading mistake is to treat MemBlock as a single giant load-store unit. The top-level file is large, but the more useful mental model is "the core's internal memory subsystem coordinator." It owns the place where backend issue streams, load/store execution units, translation checks, cache interfaces, uncache handling, vector-memory machinery, and rollback decisions all meet.
 

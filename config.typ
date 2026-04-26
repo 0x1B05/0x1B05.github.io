@@ -39,6 +39,7 @@
     nav_cv: "简历",
     docs_series: "系列",
     docs_reference: "参考",
+    docs_toc: "目录",
     series_begin: "开始阅读这个系列",
     series_home: "系列首页",
     series_previous: "上一章",
@@ -70,6 +71,7 @@
     nav_cv: "CV",
     docs_series: "Series",
     docs_reference: "Reference",
+    docs_toc: "Contents",
     series_begin: "Begin the series!",
     series_home: "Series homepage",
     series_previous: "Previous",
@@ -331,6 +333,19 @@
     #html.span(class: "content-card__description")[#description]
   ]
 ]
+
+#let doc-toc(locale) = {
+  let copy = locale-copy(locale)
+
+  html.div(class: "doc-toc")[
+    #html.div(class: "doc-toc__title")[#copy.docs_toc]
+    #outline(
+      title: none,
+      target: heading.where(level: 2).or(heading.where(level: 3)),
+      depth: 3,
+    )
+  ]
+}
 
 #let series-context(series, route) = {
   let normalized = normalize-route(route)

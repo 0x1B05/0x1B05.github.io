@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "en", route: "docs/linux-bringup/01-quick-start/", title: "RISC-V Privilege Levels and Boot Context")
 
@@ -8,6 +8,8 @@
 = RISC-V Privilege Levels and Boot Context
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 #tufted.margin-note[
   Further reading \

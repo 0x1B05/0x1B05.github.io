@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/06-vector-memory/", title: "Vector Memory in MemBlock")
 
@@ -8,6 +8,8 @@
 = Why Vector Memory Is So Much More Complicated: Split, Merge, Segment, and FOF
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 The vector-memory section looks intimidating because it is solving several problems at once. One vector memory instruction can expand into many internal operations, still needs ordering and feedback, and may borrow scalar memory resources while preserving vector semantics on the way back out.
 

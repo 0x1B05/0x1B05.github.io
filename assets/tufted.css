@@ -907,6 +907,64 @@ CONTENT ENTRY CARDS
 DOCS SERIES
 *******************************************************************************/
 
+.doc-toc {
+    width: min(100%, 42rem);
+    margin: 1.15rem 0 1.65rem;
+    padding: 0.95rem 1.05rem;
+    border: 1px solid var(--border);
+    border-left: 0.28rem solid var(--accent);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-card);
+}
+
+.doc-toc__title {
+    margin-bottom: 0.45rem;
+    color: var(--text-faint);
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+}
+
+.doc-toc nav[role="doc-toc"] {
+    margin: 0;
+}
+
+.doc-toc ol {
+    margin: 0;
+    padding-left: 0;
+}
+
+.doc-toc ol ol {
+    margin-top: 0.2rem;
+    padding-left: 1rem;
+}
+
+.doc-toc li {
+    margin: 0.18rem 0;
+    font-size: 0.98rem;
+    line-height: 1.45;
+}
+
+html[lang="zh"] .doc-toc li {
+    font-size: 0.94rem;
+    line-height: 1.5;
+}
+
+.doc-toc a,
+.doc-toc a:link,
+.doc-toc a:visited {
+    color: var(--text-main) !important;
+    text-decoration-color: transparent !important;
+}
+
+.doc-toc a:hover,
+.doc-toc a:focus-visible {
+    color: var(--link-strong) !important;
+    text-decoration-color: currentColor !important;
+}
+
 .series-nav {
     display: flex;
     flex-wrap: wrap;

@@ -1,4 +1,4 @@
-#import "../index.typ": template, tufted, content-card, locale-url, series-begin
+#import "../index.typ": template, tufted, content-card, locale-url, series-begin, doc-toc
 #import "./series.typ": linux-bringup-series
 #show: template.with(locale: "zh", route: "docs/linux-bringup/", title: "Linux Bring-up")
 
@@ -15,6 +15,8 @@
 }
 
 = 从 RISC-V 特权级到 Linux Bring-up
+
+#doc-toc("zh")
 
 这个系列是我把“读规格”和“做 bring-up”接起来时整理出的路径。现在绕不开的几层基本都在这里：特权级、machine-mode firmware、工具分工，以及 Linux bring-up 时反复要确认的检查项。
 

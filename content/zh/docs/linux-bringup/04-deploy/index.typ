@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "zh", route: "docs/linux-bringup/04-deploy/", title: "一份正在使用的 Linux Bring-up 检查框架")
 
@@ -8,6 +8,8 @@
 = 一份正在使用的 Linux Bring-up 检查框架
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 这一章是我现在还会拿出来看的 bring-up 检查清单。它不讲“最后怎么成功了”，只把最先该确认的东西放在一起，免得卡住以后直接开始乱猜。
 

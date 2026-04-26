@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/05-dcache-sbuffer-uncache/", title: "DCache、SBuffer 与 Uncache")
 
@@ -8,6 +8,8 @@
 = DCache、SBuffer 和 Uncache/MMIO：cacheable 与 uncacheable 路径怎么分家
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 MemBlock 会越长越大，一个重要原因就是“memory traffic”根本不是一种东西。cacheable load、已经准备好往下推的 store，以及 uncache/MMIO 请求，遵循的是不同的推进规则。代码必须让它们相关，但又不能混在一起。
 

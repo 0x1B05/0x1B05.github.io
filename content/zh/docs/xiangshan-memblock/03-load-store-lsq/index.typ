@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/03-load-store-lsq/", title: "Load、Store、Std 与 LSQ")
 
@@ -8,6 +8,8 @@
 = Load、Store、Std 和 LSQ：一条访存指令是怎么被拆开的
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 MemBlock 里最清楚的结构之一，就是“访存指令”不会被当成一个整体黑盒来处理。load、store address 和 store data 很早就被拆成不同职责，然后再通过 LSQ 和外围控制结构重新协调起来。
 

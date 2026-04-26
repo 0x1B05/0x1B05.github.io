@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/06-vector-memory/", title: "MemBlock 中的向量访存")
 
@@ -8,6 +8,8 @@
 = 向量访存为什么更复杂：Split、Merge、Segment 和 FOF
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 向量访存这一段之所以一上来就显得很复杂，是因为它同时在解决几件事：一条向量访存指令会扩成很多内部操作，仍然需要顺序和反馈，而且底下经常还要借用标量访存资源，同时最后又要把结果重新还原成向量语义。
 

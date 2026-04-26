@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/02-interfaces/", title: "ooo_to_mem and mem_to_ooo")
 
@@ -8,6 +8,8 @@
 = The Main Boundary to the Backend: `ooo_to_mem` and `mem_to_ooo`
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 Once the high-level map is in place, the next useful boundary is the pair of interfaces between MemBlock and the backend. They tell you what the rest of the core expects MemBlock to accept, and what kinds of results or feedback MemBlock is responsible for returning.
 

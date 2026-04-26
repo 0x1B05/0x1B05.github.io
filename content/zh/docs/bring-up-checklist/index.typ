@@ -1,7 +1,9 @@
-#import "../index.typ": template, tufted
+#import "../index.typ": template, tufted, doc-toc
 #show: template.with(locale: "zh", route: "docs/bring-up-checklist/", title: "Bring-up 检查清单参考")
 
 = Bring-up 检查清单参考
+
+#doc-toc("zh")
 
 #tufted.margin-note[
   一页可快速扫读的 \

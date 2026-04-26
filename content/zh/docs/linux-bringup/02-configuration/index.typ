@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "zh", route: "docs/linux-bringup/02-configuration/", title: "OpenSBI 在启动链路里做什么")
 
@@ -8,6 +8,8 @@
 = OpenSBI 在启动链路里做什么
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 #tufted.margin-note[
   参考资料 \

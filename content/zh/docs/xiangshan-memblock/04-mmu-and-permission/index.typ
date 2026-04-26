@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/04-mmu-and-permission/", title: "DTLB、PTW 与 PMP")
 
@@ -8,6 +8,8 @@
 = DTLB、PTW 和 PMP：为什么地址翻译与权限检查在这里集中出现
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 MemBlock 也是地址翻译和权限检查真正开始进入控制面的位置。等 load、store、prefetch、向量访存这些路径都叠在一起之后，MMU 这一侧就不再只是“后台服务”，而会直接影响整个访存子系统的调度与一致性。
 

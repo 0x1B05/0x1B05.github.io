@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "en", route: "docs/linux-bringup/03-styling/", title: "How I Use NEMU, NPC, and gem5 Differently")
 
@@ -8,6 +8,8 @@
 = How I Use NEMU, NPC, and gem5 Differently
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 #tufted.margin-note[
   Sources \

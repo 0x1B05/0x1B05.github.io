@@ -1,7 +1,9 @@
-#import "../index.typ": template, tufted
+#import "../index.typ": template, tufted, doc-toc
 #show: template.with(locale: "en", route: "docs/bring-up-checklist/", title: "Bring-up Checklist Reference")
 
 = Bring-up Checklist Reference
+
+#doc-toc("en")
 
 #tufted.margin-note[
   Reusable prompts \

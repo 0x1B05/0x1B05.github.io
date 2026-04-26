@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/07-review-checklist/", title: "MemBlock Review Checklist")
 
@@ -8,6 +8,8 @@
 = How I Would Review MemBlock: A Checklist for High-Risk Paths
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 After reading the subsystem by pieces, this page compresses the questions into a checklist I can use during review or targeted test design. MemBlock is large enough that, without fixed questions in hand, reading quickly turns into scrolling.
 

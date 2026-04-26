@@ -1,4 +1,4 @@
-#import "../index.typ": template, tufted, content-card, locale-url, series-begin
+#import "../index.typ": template, tufted, content-card, locale-url, series-begin, doc-toc
 #import "./series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/", title: "香山 MemBlock")
 
@@ -21,6 +21,8 @@
 }
 
 = 香山 MemBlock 解读：从访存总图到高风险路径
+
+#doc-toc("zh")
 
 这个系列是我读香山 MemBlock 时整理出来的一条复查路径。它不会对着 `MemBlock.scala` 逐行翻译，而是先把几个最容易迷路的点摆出来：MemBlock 在协调什么、哪些接口先看、哪些控制交互值得多留意。
 

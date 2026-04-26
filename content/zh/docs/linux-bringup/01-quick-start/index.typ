@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "zh", route: "docs/linux-bringup/01-quick-start/", title: "RISC-V 特权级与启动上下文")
 
@@ -8,6 +8,8 @@
 = RISC-V 特权级与启动上下文
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 #tufted.margin-note[
   延伸阅读 \

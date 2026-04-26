@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "zh", route: "docs/linux-bringup/03-styling/", title: "我如何区分使用 NEMU、NPC 和 gem5")
 
@@ -8,6 +8,8 @@
 = 我如何区分使用 NEMU、NPC 和 gem5
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 #tufted.margin-note[
   参考资料 \

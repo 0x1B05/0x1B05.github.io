@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/04-mmu-and-permission/", title: "DTLB, PTW, and PMP")
 
@@ -8,6 +8,8 @@
 = DTLB, PTW, and PMP: Why Translation and Permission Checks Converge Here
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 MemBlock is also where translation and permission machinery stop looking like background services and start looking like active scheduling constraints. Once loads, stores, prefetch, and vector paths are all in play, the MMU-facing side becomes part of the core control story.
 

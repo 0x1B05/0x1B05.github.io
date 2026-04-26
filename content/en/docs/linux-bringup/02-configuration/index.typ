@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": linux-bringup-series
 #show: template.with(locale: "en", route: "docs/linux-bringup/02-configuration/", title: "What OpenSBI Does in the Boot Chain")
 
@@ -8,6 +8,8 @@
 = What OpenSBI Does in the Boot Chain
 
 #series-navbar("en", nav)
+
+#doc-toc("en")
 
 #tufted.margin-note[
   Sources \

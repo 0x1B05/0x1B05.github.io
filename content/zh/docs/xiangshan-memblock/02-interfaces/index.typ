@@ -1,4 +1,4 @@
-#import "../../index.typ": template, tufted, series-context, series-navbar
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
 #import "../series.typ": xiangshan-memblock-series
 #show: template.with(locale: "zh", route: "docs/xiangshan-memblock/02-interfaces/", title: "ooo_to_mem 与 mem_to_ooo")
 
@@ -8,6 +8,8 @@
 = MemBlock 和后端之间的大门：`ooo_to_mem` / `mem_to_ooo`
 
 #series-navbar("zh", nav)
+
+#doc-toc("zh")
 
 一旦把总图立住，下一步最有用的入口就是 MemBlock 和后端之间的那对接口。它们会先告诉你：后端究竟希望 MemBlock 吃进什么、又希望它吐出什么。这样读内部连线时，不会失去系统边界感。
 

@@ -1,4 +1,4 @@
-#import "../index.typ": template, tufted, content-card, locale-url, series-begin
+#import "../index.typ": template, tufted, content-card, locale-url, series-begin, doc-toc
 #import "./series.typ": xiangshan-memblock-series
 #show: template.with(locale: "en", route: "docs/xiangshan-memblock/", title: "XiangShan MemBlock")
 
@@ -21,6 +21,8 @@
 }
 
 = Reading XiangShan MemBlock: From the Memory Subsystem Map to Review Hotspots
+
+#doc-toc("en")
 
 This series is the path I use when revisiting XiangShan MemBlock. It does not paraphrase `MemBlock.scala` line by line. It starts with the places where I am most likely to get lost: what MemBlock coordinates, which interfaces to read first, and which control interactions deserve extra attention.
 

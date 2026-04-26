@@ -1,4 +1,4 @@
-#import "../../../config.typ": series-context as shared-series-context, series-navbar as shared-series-navbar, series-begin as shared-series-begin
+#import "../../../config.typ": series-context as shared-series-context, series-navbar as shared-series-navbar, series-begin as shared-series-begin, doc-toc as shared-doc-toc
 #import "../index.typ": template, tufted, content-card, locale-url
 #import "./registry.typ": series-registry, note-registry
 #show: template.with(locale: "zh", route: "docs/", title: "文档")
@@ -6,6 +6,7 @@
 #let series-context = shared-series-context
 #let series-navbar = shared-series-navbar
 #let series-begin = shared-series-begin
+#let doc-toc = shared-doc-toc
 
 #let docs-card(entry, label: none) = content-card(
   locale-url("zh", route: entry.route),

@@ -1,0 +1,97 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="store-sets-update-flow" name="Store Sets Violation Update Flow">
+    <mxGraphModel dx="2343" dy="3205" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1300" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="JVIDrEj0UCv_0DBIMyv7-1" connectable="0" parent="1" style="group" value="" vertex="1">
+          <mxGeometry height="980" width="2080" x="20" y="20" as="geometry" />
+        </mxCell>
+        <mxCell id="su_outer" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="980" width="2070" as="geometry" />
+        </mxCell>
+        <mxCell id="su_header" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="Violation Update Flow" vertex="1">
+          <mxGeometry height="48" width="2080" as="geometry" />
+        </mxCell>
+        <mxCell id="su_violation" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#dc2626;strokeWidth=2;" value="ordering violation detected&#xa;load executed before an older&#xa;conflicting store resolved" vertex="1">
+          <mxGeometry height="130" width="320" x="80" y="105" as="geometry" />
+        </mxCell>
+        <mxCell id="su_capture" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="capture culprit PCs&#xa;load PC + offending store PC" vertex="1">
+          <mxGeometry height="110" width="330" x="75" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="su_lookup" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="SSIT lookup on both sides&#xa;load PC -&gt; load SSID&#xa;store PC -&gt; store SSID" vertex="1">
+          <mxGeometry height="130" width="370" x="70" y="540" as="geometry" />
+        </mxCell>
+        <mxCell id="su_both_invalid" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="both SSIDs invalid?" vertex="1">
+          <mxGeometry height="160" width="230" x="630" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="su_alloc" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="allocate new SSID k&#xa;SSIT[load PC] = k&#xa;SSIT[store PC] = k" vertex="1">
+          <mxGeometry height="130" width="360" x="565" y="790" as="geometry" />
+        </mxCell>
+        <mxCell id="su_one_valid" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="exactly one SSID valid?" vertex="1">
+          <mxGeometry height="160" width="230" x="880" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="su_propagate" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#cffafe;strokeColor=#0891b2;strokeWidth=2;" value="propagate existing SSID&#xa;fill the missing SSIT entry" vertex="1">
+          <mxGeometry height="130" width="320" x="835" y="395" as="geometry" />
+        </mxCell>
+        <mxCell id="su_diff" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="different SSIDs?" vertex="1">
+          <mxGeometry height="160" width="230" x="1290" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="su_keep" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#f8fafc;strokeColor=#64748b;strokeWidth=2;" value="keep current SSID&#xa;the pair was already in one set" vertex="1">
+          <mxGeometry height="130" width="360" x="1650" y="165" as="geometry" />
+        </mxCell>
+        <mxCell id="su_update" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ddd6fe;strokeColor=#7c3aed;strokeWidth=2;" value="update LFST with the resolved SSID&#xa;LFST[SSID] = offending store frontier" vertex="1">
+          <mxGeometry height="130" width="670" x="1090" y="620" as="geometry" />
+        </mxCell>
+        <mxCell id="su_replay" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fecaca;strokeColor=#b91c1c;strokeWidth=2;" value="squash and replay the younger load&#xa;future fetches now see the learned relation" vertex="1">
+          <mxGeometry height="110" width="670" x="1090" y="850" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_0" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_violation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;" target="su_capture" value="violation trap">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_1" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_capture" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.546;exitY=1.021;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;exitPerimeter=0;" target="su_lookup" value="read PCs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_2" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="su_both_invalid" value="read SSIT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_3" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_both_invalid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;" target="su_alloc" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_4" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_both_invalid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="su_one_valid" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_5" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_one_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="su_propagate" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_6" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_one_valid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="su_diff" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_8" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_diff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="su_keep" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_9" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_alloc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="su_update" value="new set ready">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_10" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_propagate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.25;entryY=0;entryDx=0;entryDy=0;fontSize=20;" target="su_update" value="reuse known SSID">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_12" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_keep" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;fontSize=20;" target="su_update" value="existing SSID">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_13" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#dc2626;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="su_replay" value="repair pipeline">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_merge" parent="JVIDrEj0UCv_0DBIMyv7-1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="merge the two sets&#xa;pick one winner SSID&#xa;retire the loser mapping" vertex="1">
+          <mxGeometry height="130" width="360" x="1240" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_7" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_diff" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;fontSize=20;" target="su_merge" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="su_edge_11" edge="1" parent="JVIDrEj0UCv_0DBIMyv7-1" source="su_merge" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;" target="su_update" value="winner SSID">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

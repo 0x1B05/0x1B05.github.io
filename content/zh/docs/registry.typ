@@ -1,9 +1,11 @@
 #import "./linux-bringup/series.typ": linux-bringup-series
 #import "./xiangshan-memblock/series.typ": xiangshan-memblock-series
+#import "./arch-paper-reading/series.typ": arch-paper-reading-series
 
 #let series-registry = (
   linux-bringup-series,
   xiangshan-memblock-series,
+  arch-paper-reading-series,
 )
 
 #let note-registry = (

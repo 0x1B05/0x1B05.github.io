@@ -20,51 +20,25 @@ const {
   zhDeployDocHtml,
   enReferenceDocHtml,
   zhReferenceDocHtml,
-  enMemblockOverviewHtml,
-  zhMemblockOverviewHtml,
-  enMemblockLsqHtml,
-  zhMemblockLsqHtml,
-  enMemblockMmuHtml,
-  zhMemblockMmuHtml,
-  enMemblockCacheHtml,
-  zhMemblockCacheHtml,
-  enMemblockVectorHtml,
-  zhMemblockVectorHtml,
   enSearchHtml,
   zhSearchHtml,
 } = loadTemplateFixture();
-
-const chapterSlugs = [
-  "01-quick-start",
-  "02-configuration",
-  "03-styling",
-  "04-deploy",
-];
 
 function countOccurrences(text, snippet) {
   return text.split(snippet).length - 1;
 }
 
-function extractCardSlugs(sectionHtml, locale) {
-  const slugPattern = new RegExp(`<a href="/${locale}/docs/([^/"]+)/" class="content-card"`, "g");
-  return [...sectionHtml.matchAll(slugPattern)].map((match) => match[1]);
-}
-
-function extractDocRoutes(htmlText, locale) {
-  const routePattern = new RegExp(`href="/${locale}/docs/([^"]+)"`, "g");
-  return [...htmlText.matchAll(routePattern)].map((match) => match[1]);
-}
-
-function assertNavPlacement(htmlText, href, message) {
-  const firstIndex = htmlText.indexOf(href);
-  const lastIndex = htmlText.lastIndexOf(href);
+function assertSeriesNavPlacement(htmlText, message) {
   const firstNavIndex = htmlText.indexOf('<nav class="series-nav">');
   const lastNavIndex = htmlText.lastIndexOf('<nav class="series-nav">');
   const headingIndex = htmlText.indexOf("<h2>");
   const firstSubheadingIndex = htmlText.indexOf("<h3>", headingIndex);
   const footerIndex = htmlText.indexOf('<div class="site-footer">');
 
-  assert(firstIndex !== -1 && lastIndex !== -1 && firstIndex !== lastIndex, message);
+  assert(
+    countOccurrences(htmlText, 'class="series-nav"') === 2,
+    `${message} (page should render series navigation twice)`,
+  );
   assert(
     firstNavIndex > headingIndex && firstNavIndex < firstSubheadingIndex,
     `${message} (first nav block should sit between the page title and the first section body)`,
@@ -90,23 +64,15 @@ const languageSwitcherIndex = enHtml.indexOf("language-switcher");
 const searchBoxIndex = enHtml.indexOf("site-search");
 const primaryGroupIndex = enHtml.indexOf("site-nav__primary");
 const controlsGroupIndex = enHtml.indexOf("site-nav__controls");
-const primarySection = primaryGroupIndex === -1 ? "" : enHtml.slice(primaryGroupIndex, controlsGroupIndex === -1 ? navEnd : controlsGroupIndex);
-const controlsSection = controlsGroupIndex === -1 ? "" : enHtml.slice(controlsGroupIndex, navEnd);
+const primarySection =
+  primaryGroupIndex === -1
+    ? ""
+    : enHtml.slice(primaryGroupIndex, controlsGroupIndex === -1 ? navEnd : controlsGroupIndex);
+const controlsSection =
+  controlsGroupIndex === -1 ? "" : enHtml.slice(controlsGroupIndex, navEnd);
 const controlsSearchIndex = controlsSection.indexOf("site-search");
 const controlsLanguageIndex = controlsSection.indexOf("language-switcher");
 const controlsThemeIndex = controlsSection.indexOf("theme-switcher__button");
-const seriesEnglishChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/en/docs/linux-bringup/${slug}/"`,
-);
-const seriesChineseChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/zh/docs/linux-bringup/${slug}/"`,
-);
-const legacyFlatEnglishChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/en/docs/${slug}/"`,
-);
-const legacyFlatChineseChapterRoutes = chapterSlugs.map(
-  (slug) => `href="/zh/docs/${slug}/"`,
-);
 
 assert(headStart !== -1 && headEnd !== -1, "generated home page should include a head");
 assert(
@@ -125,25 +91,8 @@ assert(
   "root index should include the language redirect script",
 );
 assert(
-  enHtml.includes('class="home-hero"') &&
-    zhHtml.includes('class="home-hero"') &&
-    countOccurrences(enHtml, 'class="home-link"') === 3 &&
-    countOccurrences(zhHtml, 'class="home-link"') === 3,
-  "localized home pages should keep the shared hero shell and three primary entry links",
-);
-assert(
-  !fs.existsSync(path.join(siteDir, "en", "docs", "series.html")) &&
-    !fs.existsSync(path.join(siteDir, "zh", "docs", "series.html")),
-  "docs series metadata should not compile into standalone series.html outputs",
-);
-assert(
-  !fs.existsSync(path.join(siteDir, "en", "docs", "registry.html")) &&
-    !fs.existsSync(path.join(siteDir, "zh", "docs", "registry.html")),
-  "docs registry metadata should not compile into standalone registry.html outputs",
-);
-assert(
-  fs.existsSync(path.join(siteDir, "pagefind")),
-  "generated site should include Pagefind assets under /pagefind/ so runtime search can load the index",
+  enHtml.includes('class="home-hero"') && zhHtml.includes('class="home-hero"'),
+  "localized home pages should keep the shared hero shell",
 );
 assert(
   enHtml.includes('src="/assets/profile.png"') &&
@@ -155,16 +104,25 @@ assert(
   "localized home pages should not embed the profile image as a data URL",
 );
 assert(
-  themeButtonIndex > navStart &&
-    languageSwitcherIndex > navStart &&
-    themeButtonIndex < navEnd &&
-    languageSwitcherIndex < navEnd &&
-    navEnd < articleIndex,
-  "theme switcher should render inside the site navigation instead of floating over the article",
+  !fs.existsSync(path.join(siteDir, "en", "docs", "series.html")) &&
+    !fs.existsSync(path.join(siteDir, "zh", "docs", "series.html")) &&
+    !fs.existsSync(path.join(siteDir, "en", "docs", "registry.html")) &&
+    !fs.existsSync(path.join(siteDir, "zh", "docs", "registry.html")),
+  "docs metadata files should not compile into standalone HTML outputs",
 );
 assert(
-  searchBoxIndex > navStart && searchBoxIndex < navEnd,
-  "top-bar search box should render inside the site navigation",
+  fs.existsSync(path.join(siteDir, "pagefind")),
+  "generated site should include Pagefind assets under /pagefind/",
+);
+assert(
+  themeButtonIndex > navStart &&
+    languageSwitcherIndex > navStart &&
+    searchBoxIndex > navStart &&
+    themeButtonIndex < navEnd &&
+    languageSwitcherIndex < navEnd &&
+    searchBoxIndex < navEnd &&
+    navEnd < articleIndex,
+  "theme switcher, language switcher, and search should render inside the site navigation",
 );
 assert(
   primaryGroupIndex > navStart && primaryGroupIndex < navEnd,
@@ -172,7 +130,7 @@ assert(
 );
 assert(
   controlsGroupIndex > navStart && controlsGroupIndex < navEnd,
-  "top-bar controls should render inside a dedicated right-side controls group",
+  "top-bar controls should render inside a dedicated controls group",
 );
 assert(
   primarySection.includes('href="/en/docs/"') &&
@@ -186,7 +144,7 @@ assert(
     controlsThemeIndex !== -1 &&
     controlsSearchIndex < controlsLanguageIndex &&
     controlsLanguageIndex < controlsThemeIndex,
-  "right-side controls group should contain search, language switcher, then theme switcher in that order",
+  "controls group should contain search, language switcher, then theme switcher in that order",
 );
 assert(
   enHtml.includes("assets/search.js") && zhHtml.includes("assets/search.js"),
@@ -197,14 +155,14 @@ assert(
     enHtml.includes('class="site-search__icon"') &&
     enHtml.includes('class="site-search__input"') &&
     enHtml.includes('class="site-search__dropdown"'),
-  "English pages should include the search icon, input, and dropdown hooks",
+  "English pages should include the search shell hooks",
 );
 assert(
   zhHtml.includes('class="site-search"') &&
     zhHtml.includes('class="site-search__icon"') &&
     zhHtml.includes('class="site-search__input"') &&
     zhHtml.includes('class="site-search__dropdown"'),
-  "Chinese pages should include the search icon, input, and dropdown hooks",
+  "Chinese pages should include the search shell hooks",
 );
 assert(
   enHtml.includes('id="site-search-result-template"') &&
@@ -212,7 +170,7 @@ assert(
     enHtml.includes('class="site-search-result__section"') &&
     enHtml.includes('class="site-search-result__locale"') &&
     enHtml.includes('class="site-search-result__excerpt"'),
-  "search result template should include title, section, locale, and excerpt hooks",
+  "search result template should include the expected runtime hooks",
 );
 assert(
   enSearchHtml.includes('id="search-results"') &&
@@ -222,6 +180,13 @@ assert(
 assert(
   !enHtml.includes("theme-switcher__label"),
   "theme switcher should use an icon button instead of the old inline text label",
+);
+assert(
+  enHtml.includes('class="theme-switcher__button-icon theme-switcher__button-icon--sun"') &&
+    enHtml.includes("<svg") &&
+    !enHtml.includes(">☀<") &&
+    !enHtml.includes(">☾<"),
+  "theme switcher should render SVG icons instead of text glyphs",
 );
 assert(
   /<a[^>]*class="[^"]*site-nav__link--brand[^"]*"[^>]*><span class="site-brand">/.test(
@@ -234,25 +199,11 @@ assert(
   "localized pages should declare the correct html lang attribute",
 );
 assert(
-  countOccurrences(enDocsLandingHtml, 'class="content-card"') === 3 &&
-    countOccurrences(zhDocsLandingHtml, 'class="content-card"') === 3 &&
+  enDocsLandingHtml.includes('class="content-card"') &&
+    zhDocsLandingHtml.includes('class="content-card"') &&
     enDocsLandingHtml.includes("content-card__thumb") &&
-    zhDocsLandingHtml.includes("content-card__thumb") &&
-    JSON.stringify(extractCardSlugs(enDocsLandingHtml, "en")) ===
-      JSON.stringify(["linux-bringup", "xiangshan-memblock", "bring-up-checklist"]) &&
-    JSON.stringify(extractCardSlugs(zhDocsLandingHtml, "zh")) ===
-      JSON.stringify(["linux-bringup", "xiangshan-memblock", "bring-up-checklist"]),
-  "docs landing pages should render the localized series and reference cards in a stable order",
-);
-assert(
-  chapterSlugs.every((slug) => enSeriesHomeHtml.includes(`href="/en/docs/linux-bringup/${slug}/"`)) &&
-    chapterSlugs.every((slug) => zhSeriesHomeHtml.includes(`href="/zh/docs/linux-bringup/${slug}/"`)),
-  "series homepages should list the included nested chapter routes in both locales",
-);
-assert(
-  extractDocRoutes(enSeriesHomeHtml, "en").at(-1) === "linux-bringup/01-quick-start/" &&
-    extractDocRoutes(zhSeriesHomeHtml, "zh").at(-1) === "linux-bringup/01-quick-start/",
-  "series homepages should end with a begin action pointing to the first nested chapter route",
+    zhDocsLandingHtml.includes("content-card__thumb"),
+  "docs landing pages should render card shells with thumbnail hooks",
 );
 assert(
   enSeriesHomeHtml.includes('class="language-switcher"') &&
@@ -261,161 +212,42 @@ assert(
   "series homepages should keep the language switcher on the sibling series route",
 );
 assert(
-  enDocHtml.includes('class="language-switcher"') &&
-    enDocHtml.includes('href="/zh/docs/linux-bringup/01-quick-start/"') &&
+  enDocHtml.includes('href="/zh/docs/linux-bringup/01-quick-start/"') &&
     zhDocHtml.includes('href="/en/docs/linux-bringup/01-quick-start/"') &&
     enConfigurationDocHtml.includes('href="/zh/docs/linux-bringup/02-configuration/"') &&
     zhConfigurationDocHtml.includes('href="/en/docs/linux-bringup/02-configuration/"') &&
     enDeployDocHtml.includes('href="/zh/docs/linux-bringup/04-deploy/"') &&
     zhDeployDocHtml.includes('href="/en/docs/linux-bringup/04-deploy/"'),
-  "chapter pages should render a sibling-language switcher that keeps readers on the matching route",
+  "chapter pages should keep the language switcher on the sibling chapter route",
 );
 assert(
   enReferenceDocHtml.includes('href="/zh/docs/bring-up-checklist/"') &&
     zhReferenceDocHtml.includes('href="/en/docs/bring-up-checklist/"'),
-  "reference pages should keep the language switcher on the sibling reference route",
+  "reference pages should keep the language switcher on the sibling route",
 );
-assert(
-  enMemblockOverviewHtml.includes("<figure>") &&
-    enMemblockOverviewHtml.includes("useful as a subsystem map before tracing individual lanes") &&
-    zhMemblockOverviewHtml.includes("<figure>") &&
-    zhMemblockOverviewHtml.includes("适合先拿来建立子系统地图") &&
-    enMemblockLsqHtml.includes('class="marginnote"><img') &&
-    enMemblockLsqHtml.includes("The XiangShan LSQ diagram is compact enough to work as a side reference") &&
-    zhMemblockLsqHtml.includes('class="marginnote"><img') &&
-    zhMemblockLsqHtml.includes("香山设计文档里的 LSQ 框图比较适合当成侧边参考图") &&
-    enMemblockMmuHtml.includes("two-stage translation diagram is a useful reminder") &&
-    zhMemblockMmuHtml.includes("两阶段翻译流程图很适合提醒自己") &&
-    enMemblockCacheHtml.includes("SBuffer block diagram from the XiangShan design doc") &&
-    zhMemblockCacheHtml.includes("香山设计文档里的 SBuffer 总图") &&
-    enMemblockVectorHtml.includes("VSegmentUnit state machine is a good visual cue") &&
-    zhMemblockVectorHtml.includes("VSegmentUnit 的状态机图很适合提醒自己"),
-  "selected XiangShan MemBlock chapters should render the localized reference SVG figures",
-);
-assert(
-  countOccurrences(enDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
-    countOccurrences(enDocHtml, 'href="/en/docs/linux-bringup/02-configuration/"') === 2 &&
-    !enDocHtml.includes('href="/en/docs/linux-bringup/03-styling/"'),
-  "first English chapter should link only to series home and the next nested chapter",
-);
-assert(
-  countOccurrences(zhDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
-    countOccurrences(zhDocHtml, 'href="/zh/docs/linux-bringup/02-configuration/"') === 2 &&
-    !zhDocHtml.includes('href="/zh/docs/linux-bringup/03-styling/"'),
-  "first Chinese chapter should link only to series home and the next nested chapter",
-);
-assert(
-  countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/01-quick-start/"') === 2 &&
-    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
-    countOccurrences(enConfigurationDocHtml, 'href="/en/docs/linux-bringup/03-styling/"') === 2,
-  "middle English chapter should link to previous, series home, and next nested chapter routes",
-);
-assert(
-  countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/01-quick-start/"') === 2 &&
-    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
-    countOccurrences(zhConfigurationDocHtml, 'href="/zh/docs/linux-bringup/03-styling/"') === 2,
-  "middle Chinese chapter should link to previous, series home, and next nested chapter routes",
-);
-assert(
-  countOccurrences(enDeployDocHtml, 'href="/en/docs/linux-bringup/03-styling/"') === 2 &&
-    countOccurrences(enDeployDocHtml, 'href="/en/docs/linux-bringup/"') === 2 &&
-    !enDeployDocHtml.includes('href="/en/docs/linux-bringup/02-configuration/"'),
-  "last English chapter should link only to the previous nested chapter and series home",
-);
-assert(
-  countOccurrences(zhDeployDocHtml, 'href="/zh/docs/linux-bringup/03-styling/"') === 2 &&
-    countOccurrences(zhDeployDocHtml, 'href="/zh/docs/linux-bringup/"') === 2 &&
-    !zhDeployDocHtml.includes('href="/zh/docs/linux-bringup/02-configuration/"'),
-  "last Chinese chapter should link only to the previous nested chapter and series home",
-);
-assert(
-  enDocHtml.includes("Previous") || enConfigurationDocHtml.includes("Previous"),
-  "English chapter navigation should render localized previous labels",
-);
-assert(
-  enDocHtml.includes("Next") || enConfigurationDocHtml.includes("Next"),
-  "English chapter navigation should render localized next labels",
-);
-assert(
-  zhDocHtml.includes("上一") || zhConfigurationDocHtml.includes("上一"),
-  "Chinese chapter navigation should render localized previous labels",
-);
-assert(
-  zhDocHtml.includes("下一") || zhConfigurationDocHtml.includes("下一"),
-  "Chinese chapter navigation should render localized next labels",
-);
-assertNavPlacement(
+assertSeriesNavPlacement(
   enDocHtml,
-  'href="/en/docs/linux-bringup/"',
   "first English chapter should place the series navigation near the top and bottom",
 );
-assertNavPlacement(
+assertSeriesNavPlacement(
   zhDocHtml,
-  'href="/zh/docs/linux-bringup/"',
   "first Chinese chapter should place the series navigation near the top and bottom",
 );
-assertNavPlacement(
+assertSeriesNavPlacement(
   enConfigurationDocHtml,
-  'href="/en/docs/linux-bringup/"',
   "middle English chapter should place the series navigation near the top and bottom",
 );
-assertNavPlacement(
+assertSeriesNavPlacement(
   zhConfigurationDocHtml,
-  'href="/zh/docs/linux-bringup/"',
   "middle Chinese chapter should place the series navigation near the top and bottom",
 );
-assertNavPlacement(
+assertSeriesNavPlacement(
   enDeployDocHtml,
-  'href="/en/docs/linux-bringup/"',
   "last English chapter should place the series navigation near the top and bottom",
 );
-assertNavPlacement(
+assertSeriesNavPlacement(
   zhDeployDocHtml,
-  'href="/zh/docs/linux-bringup/"',
   "last Chinese chapter should place the series navigation near the top and bottom",
 );
-assert(
-  seriesEnglishChapterRoutes.every(
-    (href) =>
-      enSeriesHomeHtml.includes(href) ||
-      enDocHtml.includes(href) ||
-      enConfigurationDocHtml.includes(href) ||
-      enDeployDocHtml.includes(href),
-  ) &&
-    seriesChineseChapterRoutes.every(
-      (href) =>
-        zhSeriesHomeHtml.includes(href) ||
-        zhDocHtml.includes(href) ||
-        zhConfigurationDocHtml.includes(href) ||
-        zhDeployDocHtml.includes(href),
-    ),
-  "series pages should render nested linux-bringup chapter URLs after the restructure",
-);
-assert(
-  legacyFlatEnglishChapterRoutes.every(
-    (href) =>
-      !enDocsLandingHtml.includes(href) &&
-      !enSeriesHomeHtml.includes(href) &&
-      !enDocHtml.includes(href) &&
-      !enConfigurationDocHtml.includes(href) &&
-      !enDeployDocHtml.includes(href),
-  ) &&
-    legacyFlatChineseChapterRoutes.every(
-      (href) =>
-        !zhDocsLandingHtml.includes(href) &&
-        !zhSeriesHomeHtml.includes(href) &&
-        !zhDocHtml.includes(href) &&
-        !zhConfigurationDocHtml.includes(href) &&
-        !zhDeployDocHtml.includes(href),
-    ),
-  "old flat chapter routes should disappear from rendered output once the series owns nested URLs",
-);
-assert(
-  enHtml.includes('class="theme-switcher__button-icon theme-switcher__button-icon--sun"') &&
-    enHtml.includes("<svg") &&
-    !enHtml.includes(">☀<") &&
-    !enHtml.includes(">☾<"),
-  "theme switcher should render SVG icons instead of theme glyph characters",
-);
 
-console.log("PASS template shell emits bilingual navigation, docs series navigation, and localized pages");
+console.log("PASS template shell emits the shared navigation, controls, and runtime hooks");

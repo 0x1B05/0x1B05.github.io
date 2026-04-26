@@ -1,0 +1,73 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="store-sets-store-flow" name="Store Sets Store Fetch Flow">
+    <mxGraphModel dx="2009" dy="2747" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ss_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="660" width="2280" x="60" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_outer" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="660" width="2280" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_header" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="Fetch A Store" vertex="1">
+          <mxGeometry height="48" width="2280" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_fetch" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="store fetch&#xa;read store PC" vertex="1">
+          <mxGeometry height="110" width="250" x="50" y="185" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="SSIT lookup&#xa;PC -&gt; SSID" vertex="1">
+          <mxGeometry height="110" width="260" x="380" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_has_ssid" parent="ss_group" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="SSID valid?" vertex="1">
+          <mxGeometry height="130" width="220" x="710" y="175" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_no_set" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#f8fafc;strokeColor=#64748b;strokeWidth=2;" value="no existing set&#xa;no LFST update yet" vertex="1">
+          <mxGeometry height="120" width="380" x="1060" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="LFST lookup&#xa;SSID -&gt; previous frontier" vertex="1">
+          <mxGeometry height="100" width="300" x="950" y="310" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_prev" parent="ss_group" style="rhombus;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="previous frontier present?" vertex="1">
+          <mxGeometry height="130" width="220" x="1410" y="295" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_first" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="first store in this set&#xa;no older frontier to chain behind" vertex="1">
+          <mxGeometry height="120" width="420" x="1730" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_chain" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="store chain update&#xa;remember previous frontier&#xa;then wait behind that store" vertex="1">
+          <mxGeometry height="140" width="420" x="1730" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_0" edge="1" parent="ss_group" source="ss_fetch" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_ssit" value="fetch store PC">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_1" edge="1" parent="ss_group" source="ss_ssit" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_has_ssid" value="read SSIT">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_2" edge="1" parent="ss_group" source="ss_has_ssid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.3;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_no_set" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_3" edge="1" parent="ss_group" source="ss_has_ssid" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_lfst" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_4" edge="1" parent="ss_group" source="ss_lfst" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_prev" value="read LFST">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_5" edge="1" parent="ss_group" source="ss_prev" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.3;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_first" value="no">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_6" edge="1" parent="ss_group" source="ss_prev" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.7;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_chain" value="yes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_publish" parent="ss_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="publish this store&#xa;LFST[SSID] = current store" vertex="1">
+          <mxGeometry height="120" width="420" x="1730" y="270" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_7" edge="1" parent="ss_group" source="ss_first" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=20;edgeStyle=orthogonalEdgeStyle;" target="ss_publish" value="become frontier">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_edge_8" edge="1" parent="ss_group" source="ss_chain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;fontSize=20;" target="ss_publish" value="publish after chaining">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

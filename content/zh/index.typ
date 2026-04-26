@@ -8,13 +8,12 @@
   #html.span(class: "home-link__description")[#description]
 ]
 
-= 0x1B05
-
 #html.div(class: "home-hero")[
   #html.div(class: "home-hero__copy")[
-    #html.span(class: "home-kicker")[体系结构笔记与进行中的工作]
 
-    == 从 CPU 基础走向性能导向的系统工作
+    这里是 `0x1B05` 的个人站点。这里主要放我正在做的项目、体系结构笔记，以及一些持续补充的教程和阅读记录。现在的内容大多围绕 `RISC-V`、Linux bring-up、模拟器与调试工具、香山及其相关基础设施展开；如果你想快速浏览站点内容，直接从 #link(locale-url("zh", route: "docs/"))[`Docs`] 和 #link(locale-url("zh", route: "blog/"))[`Blog`] 两个入口开始会更合适。
+
+    == 关于我
 
     我是上海科技大学电子信息硕士生，目前在一生一芯课题组。做完一生一芯 B 线之后，我还在继续补 CPU、数字系统、体系结构和系统软件之间的那条线。这个站点主要用来放我现在读到、做到、调到的一些东西。
 
@@ -38,12 +37,12 @@
   #home-link(
     locale-url("zh", route: "docs/"),
     "学习笔记与参考",
-    "整理体系结构笔记、bring-up 记录，以及之后还会反复翻看的参考页面。",
+    "整理体系结构笔记、Linux bring-up 记录、paper reading 系列，以及之后还会反复翻看的参考页面。",
   )
   #home-link(
     locale-url("zh", route: "blog/"),
     "实验记录与文章",
-    "放一些短文、阅读笔记和阶段性记录。",
+    "放一些更短的工具笔记、bring-up 过程里的具体问题，以及围绕 OpenSBI、checkpoint、调试工具的阅读记录。",
   )
   #home-link(
     locale-url("zh", route: "cv/"),

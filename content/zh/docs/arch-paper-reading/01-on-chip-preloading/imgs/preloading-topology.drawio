@@ -1,0 +1,204 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="preloading-topology" name="On-Chip Preloading Topology">
+    <mxGraphModel dx="1958" dy="4258" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pl_main_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="510" width="2590" x="90" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_main_outer" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="510" width="2350" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_main_header" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Issue-Critical Datapath" vertex="1">
+          <mxGeometry height="48" width="2350" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_group" connectable="0" parent="pl_main_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="368" width="600" x="1000" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table" parent="rpt_table_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="368" width="600" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_header" parent="rpt_table_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dcfce7;strokeColor=#0f766e;strokeWidth=2;" value="RPT entry" vertex="1">
+          <mxGeometry height="56" width="600" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_col_0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="52" width="220" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_col_1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="stored state" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r0c0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="valid" vertex="1">
+          <mxGeometry height="52" width="220" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r0c1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="entry live" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="108" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r1c0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="PC tag" vertex="1">
+          <mxGeometry height="52" width="220" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r1c1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="load/store PC" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r2c0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="prev addr" vertex="1">
+          <mxGeometry height="52" width="220" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r2c1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="last real address" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="212" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r3c0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="stride" vertex="1">
+          <mxGeometry height="52" width="220" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r3c1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="delta between real executions" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="264" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r4c0" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="state" vertex="1">
+          <mxGeometry height="52" width="220" y="316" as="geometry" />
+        </mxCell>
+        <mxCell id="rpt_table_r4c1" parent="rpt_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=1;" value="initial / transient / steady / no prediction" vertex="1">
+          <mxGeometry height="52" width="380" x="220" y="316" as="geometry" />
+        </mxCell>
+        <mxCell id="btb" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="BTB / Branch Predictor&#xa;future control path" vertex="1">
+          <mxGeometry height="90" width="220" x="20" y="90" as="geometry" />
+        </mxCell>
+        <mxCell id="lapc" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="LA-PC&#xa;scan predicted path&#xa;no retirement" vertex="1">
+          <mxGeometry height="120" width="250" x="290" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="future_ls" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="Future load / store PCs&#xa;look-ahead scan window" vertex="1">
+          <mxGeometry height="100" width="280" x="600" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="steady_gate" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="steady gate&#xa;state == steady" vertex="1">
+          <mxGeometry height="90" width="190" x="1720" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="dup_gate" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="duplicate gate&#xa;ORL CAM lookup" vertex="1">
+          <mxGeometry height="90" width="220" x="2070" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="cache_gate" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="cache tag check&#xa;block absent" vertex="1">
+          <mxGeometry height="90" width="220" x="1710" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="issue_preload" parent="pl_main_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="preload issue&#xa;allocate req&#xa;send to memory" vertex="1">
+          <mxGeometry height="120" width="220" x="2080" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="pl_main_group" source="btb" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="lapc" value="predicted path">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="pl_main_group" source="lapc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="future_ls" value="scan future PCs">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="pl_main_group" source="future_ls" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="rpt_table" value="PC lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="pl_main_group" source="rpt_table" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="steady_gate" value="candidate addr">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="pl_main_group" source="steady_gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="dup_gate" value="only steady">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="pl_main_group" source="dup_gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="cache_gate" value="not duplicate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="pl_main_group" source="cache_gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="issue_preload" value="not cached">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_orl_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="410" width="1260" x="1050" y="710" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_orl_outer" parent="pl_orl_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="410" width="1260" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_orl_header" parent="pl_orl_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="Outstanding Request Tracking" vertex="1">
+          <mxGeometry height="48" width="1260" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_group" connectable="0" parent="pl_orl_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="306" width="520" x="120" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table" parent="orl_table_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="306" width="520" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_header" parent="orl_table_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="ORL CAM entry" vertex="1">
+          <mxGeometry height="56" width="520" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_col_0" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="50" width="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_col_1" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="role" vertex="1">
+          <mxGeometry height="50" width="320" x="200" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r0c0" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="valid" vertex="1">
+          <mxGeometry height="50" width="200" y="106" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r0c1" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="slot in use" vertex="1">
+          <mxGeometry height="50" width="320" x="200" y="106" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r1c0" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="block tag" vertex="1">
+          <mxGeometry height="50" width="200" y="156" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r1c1" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="candidate preload block" vertex="1">
+          <mxGeometry height="50" width="320" x="200" y="156" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r2c0" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="req ID" vertex="1">
+          <mxGeometry height="50" width="200" y="206" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r2c1" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="in-flight request handle" vertex="1">
+          <mxGeometry height="50" width="320" x="200" y="206" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r3c0" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="done" vertex="1">
+          <mxGeometry height="50" width="200" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="orl_table_r3c1" parent="orl_table_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="clear when filled / killed" vertex="1">
+          <mxGeometry height="50" width="320" x="200" y="256" as="geometry" />
+        </mxCell>
+        <mxCell id="memory_side" parent="pl_orl_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="L2 / memory interface&#xa;preload queue&#xa;fill returns later" vertex="1">
+          <mxGeometry height="120" width="320" x="800" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_train_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="310" width="880" x="90" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_train_outer" parent="pl_train_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="310" width="880" as="geometry" />
+        </mxCell>
+        <mxCell id="pl_train_header" parent="pl_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="Retirement / Look-Ahead Limits" vertex="1">
+          <mxGeometry height="48" width="880" as="geometry" />
+        </mxCell>
+        <mxCell id="real_exec" parent="pl_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="retired load / store&#xa;real addr appears" vertex="1">
+          <mxGeometry height="90" width="280" x="60" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="distance_ctl" parent="pl_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="distance / redirect limits&#xa;LA-limit d&#xa;ORL full stall&#xa;branch redirect reset" vertex="1">
+          <mxGeometry height="120" width="380" x="410" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="train_update" parent="pl_train_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="RPT training writeback&#xa;update prev addr + stride + state" vertex="1">
+          <mxGeometry height="90" width="330" x="100" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_10" edge="1" parent="pl_train_group" source="real_exec" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="train_update" value="retire">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" edge="1" parent="1" source="issue_preload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="orl_table_header" value="reserve ORL slot">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_8" edge="1" parent="1" source="orl_table_r3c1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="dup_gate" value="CAM hit?">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9" edge="1" parent="1" source="issue_preload" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="memory_side" value="preload req">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_11" edge="1" parent="1" source="train_update" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.25;entryY=1;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="rpt_table_r4c1" value="state writeback">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1020" y="995" />
+              <mxPoint x="1020" y="630" />
+              <mxPoint x="1405" y="630" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_12" edge="1" parent="1" source="distance_ctl" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#dc2626;strokeWidth=4;jumpStyle=arc;exitX=0.75;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1.0;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="lapc" value="stall / reset">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="785" y="610" />
+              <mxPoint x="505" y="610" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -1,0 +1,118 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.8.9 Safari/537.36" version="29.6.1">
+  <diagram id="colt-topology" name="CoLT Topology">
+    <mxGraphModel dx="2009" dy="2747" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="ct_fill_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="460" width="2140" x="90" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_fill_outer" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#16A34A;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="460" width="1920" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_fill_header" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Fill-Time Coalescing" vertex="1">
+          <mxGeometry height="48" width="1920" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_detect" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="contiguity detector&#xa;VPN contiguous?&#xa;PPN contiguous?&#xa;attrs same?" vertex="1">
+          <mxGeometry height="120" width="320" x="660" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_sa_bank" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="CoLT-SA bank&#xa;set-associative&#xa;valid bits + base PPN" vertex="1">
+          <mxGeometry height="140" width="290" x="1170" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_fa_bank" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="CoLT-FA bank&#xa;fully associative&#xa;base VPN + length" vertex="1">
+          <mxGeometry height="140" width="310" x="1160" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_refill" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="TLB refill&#xa;write coalesced entry" vertex="1">
+          <mxGeometry height="110" width="250" x="1620" y="198" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="376" width="420" x="40" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_header" parent="ct_fill_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="walk return bundle" vertex="1">
+          <mxGeometry height="56" width="420" x="40" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_col_0" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="VPN" vertex="1">
+          <mxGeometry height="64" width="210" x="40" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_col_1" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="PPN" vertex="1">
+          <mxGeometry height="64" width="210" x="250" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r0c0" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n" vertex="1">
+          <mxGeometry height="64" width="210" x="40" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r0c1" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p" vertex="1">
+          <mxGeometry height="64" width="210" x="250" y="190" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r1c0" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+1" vertex="1">
+          <mxGeometry height="64" width="210" x="40" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r1c1" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+1" vertex="1">
+          <mxGeometry height="64" width="210" x="250" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r2c0" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+2" vertex="1">
+          <mxGeometry height="64" width="210" x="40" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r2c1" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+2" vertex="1">
+          <mxGeometry height="64" width="210" x="250" y="318" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r3c0" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+3" vertex="1">
+          <mxGeometry height="64" width="210" x="40" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_run_r3c1" parent="ct_fill_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+3" vertex="1">
+          <mxGeometry height="64" width="210" x="250" y="382" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="ct_fill_group" source="ct_run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ct_detect" value="observe bundle">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="ct_fill_group" source="ct_detect" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ct_sa_bank" value="SA eligible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="ct_fill_group" source="ct_detect" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;edgeStyle=orthogonalEdgeStyle;" target="ct_fa_bank" value="FA eligible">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="ct_fill_group" source="ct_sa_bank" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;fillColor=#fa6800;dashed=1;dashPattern=12 8;" target="ct_refill" value="write SA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="ct_fill_group" source="ct_fa_bank" style="rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;edgeStyle=orthogonalEdgeStyle;fillColor=#60a917;dashed=1;dashPattern=12 8;" target="ct_refill" value="write FA">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_hit_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="390" width="1860" x="120" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_hit_outer" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="390" width="1860" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_hit_header" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="Hit-Time Expansion" vertex="1">
+          <mxGeometry height="48" width="1860" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_lookup" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="later VPN request&#xa;hit one coalesced entry" vertex="1">
+          <mxGeometry height="120" width="340" x="150" y="135" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_hit_sa" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="SA hit path&#xa;set lookup&#xa;valid-bit select&#xa;PPN = base PPN + delta" vertex="1">
+          <mxGeometry height="130" width="390" x="830" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_hit_fa" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="FA hit path&#xa;range check&#xa;PPN = base PPN + (vpn - base VPN)" vertex="1">
+          <mxGeometry height="130" width="390" x="830" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="ct_hit_group" source="ct_lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ct_hit_sa" value="SA request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" edge="1" parent="ct_hit_group" source="ct_lookup" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ct_hit_fa" value="FA request">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ct_expand" parent="ct_hit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="expanded hit&#xa;translation returned" vertex="1">
+          <mxGeometry height="120" width="160" x="1560" y="150" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_8" edge="1" parent="ct_hit_group" source="ct_hit_sa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;dashed=1;dashPattern=12 8;" target="ct_expand" value="later hit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_9" edge="1" parent="ct_hit_group" source="ct_hit_fa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;dashed=1;dashPattern=12 8;" target="ct_expand" value="later hit">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="1" source="ct_refill" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="ct_lookup" value="future requests consume refill">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

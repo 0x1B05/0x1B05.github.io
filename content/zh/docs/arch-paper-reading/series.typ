@@ -1,0 +1,45 @@
+#let arch-paper-reading-series = (
+  id: "arch-paper-reading",
+  title: "体系结构论文阅读与方法整理",
+  summary: "整理体系结构相关论文中的核心问题、关键机制、硬件结构、设计权衡与适用边界，作为一个持续扩展的阅读系列。",
+  route: "docs/arch-paper-reading/",
+  thumbnail: "reading-notes.svg",
+  begin-route: "docs/arch-paper-reading/01-on-chip-preloading/",
+  chapters: (
+    (
+      id: "on-chip-preloading",
+      title: "沿未来指令流提前把数据叫回来：On-Chip Preloading",
+      summary: "从 LA-PC 和 RPT 入手，解释这类早期 preloading 方案怎样把控制流 look-ahead 用到数据访问时机上。",
+      route: "docs/arch-paper-reading/01-on-chip-preloading/",
+      order: 1,
+    ),
+    (
+      id: "feedback-directed-prefetching",
+      title: "给预取器加一个反馈控制环：Feedback Directed Prefetching",
+      summary: "把预取器当成一个需要 runtime feedback 调节的系统，讲清 accuracy、lateness、pollution 怎样共同决定 aggressiveness。",
+      route: "docs/arch-paper-reading/02-feedback-directed-prefetching/",
+      order: 2,
+    ),
+    (
+      id: "spatial-memory-streaming",
+      title: "学会 region 内稀疏 block 组合：Spatial Memory Streaming",
+      summary: "围绕 spatial pattern、AGT 和 PHT，解释 SMS 怎样在大 region 里学习离散 block 组合，而不是只盯着 stride。",
+      route: "docs/arch-paper-reading/03-spatial-memory-streaming/",
+      order: 3,
+    ),
+    (
+      id: "colt",
+      title: "把 superpage 吃不到的 contiguity 利用起来：CoLT",
+      summary: "围绕 intermediate contiguity 和 translation reach，解释 CoLT 怎样在 base-page TLB 与 superpage 之间找到更实用的中间地带。",
+      route: "docs/arch-paper-reading/04-colt/",
+      order: 4,
+    ),
+    (
+      id: "store-sets",
+      title: "让 load 只等真正相关的 store：Store Sets",
+      summary: "围绕 SSIT、LFST 和 violation-driven learning，解释 store sets 怎样在激进执行和错误 replay 之间找到平衡。",
+      route: "docs/arch-paper-reading/05-store-sets/",
+      order: 5,
+    ),
+  ),
+)

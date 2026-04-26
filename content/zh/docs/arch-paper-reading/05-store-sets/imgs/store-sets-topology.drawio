@@ -1,0 +1,127 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="store-sets-topology" name="Store Sets Topology">
+    <mxGraphModel dx="2044" dy="1923" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="st_tables_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="760" width="860" x="760" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="st_tables_outer" parent="st_tables_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="760" width="860" as="geometry" />
+        </mxCell>
+        <mxCell id="st_tables_header" parent="st_tables_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="Dependence Tables" vertex="1">
+          <mxGeometry height="48" width="860" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_group" connectable="0" parent="st_tables_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="266" width="540" x="160" y="470" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst" parent="ss_lfst_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="266" width="540" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_header" parent="ss_lfst_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fce7f3;strokeColor=#be185d;strokeWidth=2;" value="LFST" vertex="1">
+          <mxGeometry height="56" width="540" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_col_0" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="SSID" vertex="1">
+          <mxGeometry height="70" width="270" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_col_1" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="last fetched store" vertex="1">
+          <mxGeometry height="70" width="270" x="270" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_r0c0" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="7" vertex="1">
+          <mxGeometry height="70" width="270" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_r0c1" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="inum 41" vertex="1">
+          <mxGeometry height="70" width="270" x="270" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_r1c0" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="3" vertex="1">
+          <mxGeometry height="70" width="270" y="196" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_lfst_r1c1" parent="ss_lfst_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#be185d;strokeWidth=1;" value="inum 35" vertex="1">
+          <mxGeometry height="70" width="270" x="270" y="196" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_group" connectable="0" parent="st_tables_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="346" width="660" x="100" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit" parent="ss_ssit_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="346" width="660" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_header" parent="ss_ssit_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="SSIT" vertex="1">
+          <mxGeometry height="56" width="660" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_col_0" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="PC index" vertex="1">
+          <mxGeometry height="58" width="330" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_col_1" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="SSID" vertex="1">
+          <mxGeometry height="58" width="330" x="330" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r0c0" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="load A" vertex="1">
+          <mxGeometry height="58" width="330" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r0c1" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="7" vertex="1">
+          <mxGeometry height="58" width="330" x="330" y="114" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r1c0" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="store X" vertex="1">
+          <mxGeometry height="58" width="330" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r1c1" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="7" vertex="1">
+          <mxGeometry height="58" width="330" x="330" y="172" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r2c0" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="load B" vertex="1">
+          <mxGeometry height="58" width="330" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r2c1" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="3" vertex="1">
+          <mxGeometry height="58" width="330" x="330" y="230" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r3c0" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="store Y" vertex="1">
+          <mxGeometry height="58" width="330" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_ssit_r3c1" parent="ss_ssit_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=20;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=1;" value="3" vertex="1">
+          <mxGeometry height="58" width="330" x="330" y="288" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="st_tables_group" source="ss_ssit_r1c1" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_lfst_r0c1" value="SSID select">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_load_pc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="load PC&#xa;dispatch / rename" vertex="1">
+          <mxGeometry height="100" width="220" x="230" y="300" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_store_pc" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="store PC&#xa;dispatch / rename" vertex="1">
+          <mxGeometry height="100" width="220" x="230" y="520" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_load_wait" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="load wait target&#xa;PC -&gt; SSIT -&gt; SSID -&gt; LFST&#xa;wait for one store inum" vertex="1">
+          <mxGeometry height="120" width="420" x="1020" y="1130" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_store_chain" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="store chain&#xa;new store waits for previous frontier&#xa;then publishes itself into LFST" vertex="1">
+          <mxGeometry height="120" width="420" x="1020" y="980" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_issue" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="issue stage&#xa;load may go or wait&#xa;store advances the chain" vertex="1">
+          <mxGeometry height="120" width="420" x="1610" y="1050" as="geometry" />
+        </mxCell>
+        <mxCell id="ss_violation" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="violation feedback&#xa;real ordering mistake triggers learning" vertex="1">
+          <mxGeometry height="110" width="300" x="240" y="700" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="1" source="ss_load_pc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_ssit" value="load lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="1" source="ss_store_pc" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_ssit" value="store lookup">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="1" source="ss_lfst_r1c0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_load_wait" value="frontier store">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="1" source="ss_lfst_r1c0" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_store_chain" value="previous store">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="1" source="ss_load_wait" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="ss_issue" value="wait / go">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="1" source="ss_store_chain" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#64748b;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="ss_issue" value="chain / publish">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" edge="1" parent="1" source="ss_violation" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#dc2626;strokeWidth=4;jumpStyle=arc;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;dashed=1;fontSize=20;dashPattern=12 8;" target="ss_ssit" value="update after mistake">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

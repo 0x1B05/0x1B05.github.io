@@ -1,0 +1,91 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="fdp-update-flow" name="Feedback Directed Prefetching Interval Update">
+    <mxGraphModel dx="2044" dy="1923" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1500" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="fu_apply_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="350" width="1780" x="350" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_apply_outer" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="350" width="1780" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_apply_header" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="Commit Control Outputs" vertex="1">
+          <mxGeometry height="48" width="1780" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_level" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="level update&#xa;raise / lower / hold" vertex="1">
+          <mxGeometry height="120" width="280" x="110" y="130" as="geometry" />
+        </mxCell>
+        <mxCell id="cfg_table" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="config table&#xa;level -&gt; distance / degree" vertex="1">
+          <mxGeometry height="120" width="360" x="530" y="210" as="geometry" />
+        </mxCell>
+        <mxCell id="insert_map" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="policy map&#xa;pollution -&gt; MID / LRU-4 / LRU" vertex="1">
+          <mxGeometry height="120" width="320" x="540" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="apply" parent="fu_apply_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="apply&#xa;next interval knobs" vertex="1">
+          <mxGeometry height="120" width="220" x="1080" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_5" edge="1" parent="fu_apply_group" source="cfg_level" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="cfg_table" value="level id">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_7" edge="1" parent="fu_apply_group" source="cfg_table" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="apply" value="distance / degree">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_8" edge="1" parent="fu_apply_group" source="insert_map" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="apply" value="insertion policy">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_close_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="520" width="700" x="1030" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_close_outer" parent="fu_close_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="520" width="700" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_close_header" parent="fu_close_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="Close Window / Classify" vertex="1">
+          <mxGeometry height="48" width="700" as="geometry" />
+        </mxCell>
+        <mxCell id="evict_gate" parent="fu_close_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#fee2e2;strokeColor=#ef4444;strokeWidth=2;" value="eviction gate&#xa;count &gt; Tinterval" vertex="1">
+          <mxGeometry height="100" width="240" x="60" y="60" as="geometry" />
+        </mxCell>
+        <mxCell id="smooth" parent="fu_close_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="smooth metrics&#xa;1/2 old + 1/2 now" vertex="1">
+          <mxGeometry height="110" width="240" x="440" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="classify2" parent="fu_close_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#e0e7ff;strokeColor=#4338ca;strokeWidth=2;" value="classify&#xa;accuracy&#xa;lateness&#xa;pollution" vertex="1">
+          <mxGeometry height="120" width="280" x="220" y="340" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="fu_close_group" source="evict_gate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="smooth" value="window closes">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="fu_close_group" source="smooth" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="classify2" value="smoothed metrics">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_sample_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="280" width="860" x="140" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_sample_outer" parent="fu_sample_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#0f766e;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="280" width="860" as="geometry" />
+        </mxCell>
+        <mxCell id="fu_sample_header" parent="fu_sample_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dff7f5;strokeColor=#0f766e;strokeWidth=2;" value="Sampling Window" vertex="1">
+          <mxGeometry height="48" width="860" as="geometry" />
+        </mxCell>
+        <mxCell id="interval_start" parent="fu_sample_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="interval start&#xa;clear local counters" vertex="1">
+          <mxGeometry height="100" width="220" x="30" y="110" as="geometry" />
+        </mxCell>
+        <mxCell id="accumulate" parent="fu_sample_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="accumulate events&#xa;pref-total / used-total&#xa;late-total / pollution-total" vertex="1">
+          <mxGeometry height="130" width="360" x="430" y="95" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="fu_sample_group" source="interval_start" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="accumulate" value="open window">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="1" source="accumulate" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=1.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.0;entryY=0.5;entryDx=0;entryDy=0;fontSize=20;" target="evict_gate" value="track evictions">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_4" edge="1" parent="1" source="classify2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="cfg_level" value="decision">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_6" edge="1" parent="1" source="classify2" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;" target="insert_map" value="pollution class">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

@@ -8,13 +8,12 @@
   #html.span(class: "home-link__description")[#description]
 ]
 
-= 0x1B05
-
 #html.div(class: "home-hero")[
   #html.div(class: "home-hero__copy")[
-    #html.span(class: "home-kicker")[Architecture notes and work in progress]
 
-    == From CPU fundamentals to performance-oriented systems work
+    This is 0x1B05's personal site. It mostly collects the projects I am working on, architecture notes, and a growing set of tutorials and reading logs. Right now the content is centered on `RISC-V`, Linux bring-up, simulators and debugging tools, and reading through XiangShan and the infrastructure around it. If you want a quick way in, start with #link(locale-url("en", route: "docs/"))[`Docs`] and #link(locale-url("en", route: "blog/"))[`Blog`].
+
+    == About Me
 
     I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. After finishing the B-track training, I have kept working through the line between CPUs, digital systems, architecture, and system software. This site is where I put the things I am reading, building, and debugging along the way.
 
@@ -38,12 +37,12 @@ My near-term work is centered on a few connected goals:
   #home-link(
     locale-url("en", route: "docs/"),
     "Study notes and references",
-    "Architecture notes, bring-up records, and reference pages I expect to revisit.",
+    "Architecture notes, Linux bring-up records, paper-reading series, and reference pages I expect to revisit.",
   )
   #home-link(
     locale-url("en", route: "blog/"),
     "Experiment logs and writing",
-    "Short notes, reading logs, and writeups from ongoing systems work.",
+    "Shorter notes on tools, concrete bring-up problems, and reading logs around OpenSBI, checkpointing, and debugging workflows.",
   )
   #home-link(
     locale-url("en", route: "cv/"),

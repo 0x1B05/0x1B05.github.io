@@ -1,0 +1,170 @@
+<mxfile host="Electron" agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.6.1 Chrome/142.0.7444.265 Electron/39.5.2 Safari/537.36" version="29.6.1">
+  <diagram id="colt-structures" name="CoLT Entry Structures">
+    <mxGraphModel dx="2405" dy="2262" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="2400" pageHeight="1600" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="cs_source_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="460" width="1460" x="470" y="180" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_source_outer" parent="cs_source_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="460" width="1460" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_source_header" parent="cs_source_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="Source Bundle" vertex="1">
+          <mxGeometry height="48" width="1460" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run" parent="cs_source_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="366" width="620" x="420" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_header" parent="cs_source_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dbeafe;strokeColor=#1d4ed8;strokeWidth=2;" value="source translation run" vertex="1">
+          <mxGeometry height="56" width="620" x="420" y="70" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_col_0" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="VPN" vertex="1">
+          <mxGeometry height="62" width="310" x="420" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_col_1" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="PPN" vertex="1">
+          <mxGeometry height="62" width="310" x="730" y="126" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r0c0" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n" vertex="1">
+          <mxGeometry height="62" width="310" x="420" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r0c1" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p" vertex="1">
+          <mxGeometry height="62" width="310" x="730" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r1c0" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+1" vertex="1">
+          <mxGeometry height="62" width="310" x="420" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r1c1" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+1" vertex="1">
+          <mxGeometry height="62" width="310" x="730" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r2c0" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+2" vertex="1">
+          <mxGeometry height="62" width="310" x="420" y="312" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r2c1" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+2" vertex="1">
+          <mxGeometry height="62" width="310" x="730" y="312" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r3c0" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="n+3" vertex="1">
+          <mxGeometry height="62" width="310" x="420" y="374" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_run_r3c1" parent="cs_source_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=22;fillColor=#ffffff;strokeColor=#1d4ed8;strokeWidth=1;" value="p+3" vertex="1">
+          <mxGeometry height="62" width="310" x="730" y="374" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_compare_group" connectable="0" parent="1" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="710" width="2160" x="120" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_compare_outer" parent="cs_compare_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#7c3aed;strokeWidth=2;" value="" vertex="1">
+          <mxGeometry height="710" width="2160" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_compare_header" parent="cs_compare_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=24;fontStyle=1;fillColor=#ede9fe;strokeColor=#7c3aed;strokeWidth=2;" value="Alternative Encodings" vertex="1">
+          <mxGeometry height="48" width="2160" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_group" connectable="0" parent="cs_compare_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="520" width="760" x="100" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa" parent="cs_sa_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="386" width="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_header" parent="cs_sa_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#fef3c7;strokeColor=#d97706;strokeWidth=2;" value="CoLT-SA entry" vertex="1">
+          <mxGeometry height="56" width="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_col_0" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="66" width="262" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_col_1" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="payload" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r0c0" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="tag" vertex="1">
+          <mxGeometry height="66" width="262" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r0c1" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="set-selected VPN tag" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r1c0" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="valid bits" vertex="1">
+          <mxGeometry height="66" width="262" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r1c1" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="1 1 1 1 0 0 0 0" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r2c0" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="base PPN" vertex="1">
+          <mxGeometry height="66" width="262" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r2c1" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="p" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r3c0" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="attrs" vertex="1">
+          <mxGeometry height="66" width="262" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_r3c1" parent="cs_sa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#d97706;strokeWidth=1;" value="shared permissions / page attrs" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_group" connectable="0" parent="cs_compare_group" style="group;pointerEvents=0;" value="" vertex="1">
+          <mxGeometry height="520" width="760" x="1300" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa" parent="cs_fa_group" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=none;strokeWidth=0;" value="" vertex="1">
+          <mxGeometry height="386" width="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_header" parent="cs_fa_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#dcfce7;strokeColor=#16a34a;strokeWidth=2;" value="CoLT-FA entry" vertex="1">
+          <mxGeometry height="56" width="760" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_col_0" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="field" vertex="1">
+          <mxGeometry height="66" width="262" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_col_1" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="payload" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="56" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r0c0" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="base VPN" vertex="1">
+          <mxGeometry height="66" width="262" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r0c1" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="n" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="122" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r1c0" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="length" vertex="1">
+          <mxGeometry height="66" width="262" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r1c1" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="4 pages" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="188" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r2c0" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="base PPN" vertex="1">
+          <mxGeometry height="66" width="262" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r2c1" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="p" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="254" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r3c0" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="attrs" vertex="1">
+          <mxGeometry height="66" width="262" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_r3c1" parent="cs_fa_group" style="rounded=0;whiteSpace=wrap;html=1;fontSize=18;fillColor=#ffffff;strokeColor=#16a34a;strokeWidth=1;" value="shared permissions / page attrs" vertex="1">
+          <mxGeometry height="66" width="497" x="262" y="320" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_sa_formula" parent="cs_compare_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ffedd5;strokeColor=#c2410c;strokeWidth=2;" value="SA hit path&#xa;select valid-bit slot&#xa;PPN = base PPN + offset_from_first_valid" vertex="1">
+          <mxGeometry height="110" width="680" x="140" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_2" edge="1" parent="cs_compare_group" source="cs_sa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;fontStyle=1;labelBackgroundColor=#ffffff;" target="cs_sa_formula" value="hit: valid-bit select&#xa;then add base-PPN delta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="cs_fa_formula" parent="cs_compare_group" style="rounded=1;whiteSpace=wrap;html=1;fontSize=18;fontStyle=1;align=center;fillColor=#ccfbf1;strokeColor=#0f766e;strokeWidth=2;" value="FA hit path&#xa;range hit if vpn in [base VPN, base VPN + length)&#xa;PPN = base PPN + (vpn - base VPN)" vertex="1">
+          <mxGeometry height="110" width="680" x="1340" y="580" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_3" edge="1" parent="cs_compare_group" source="cs_fa" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;fontStyle=1;labelBackgroundColor=#ffffff;" target="cs_fa_formula" value="hit: range check&#xa;then add VPN delta">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="edge_0" edge="1" parent="1" source="cs_run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;fontStyle=1;labelBackgroundColor=#ffffff;" target="cs_sa" value="encode as CoLT-SA">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="680" />
+              <mxPoint x="600" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="edge_1" edge="1" parent="1" source="cs_run" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;html=1;endArrow=block;endSize=8;strokeColor=#2563eb;strokeWidth=4;jumpStyle=arc;exitX=0.5;exitY=1.0;exitDx=0;exitDy=0;entryX=0.5;entryY=0.0;entryDx=0;entryDy=0;fontSize=20;fontStyle=1;labelBackgroundColor=#ffffff;" target="cs_fa" value="encode as CoLT-FA">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1200" y="680" />
+              <mxPoint x="1800" y="680" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

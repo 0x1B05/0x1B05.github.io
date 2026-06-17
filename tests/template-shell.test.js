@@ -28,11 +28,16 @@ function countOccurrences(text, snippet) {
   return text.split(snippet).length - 1;
 }
 
+function indexOfPattern(text, pattern, fromIndex = 0) {
+  const match = text.slice(fromIndex).match(pattern);
+  return match === null ? -1 : fromIndex + match.index;
+}
+
 function assertSeriesNavPlacement(htmlText, message) {
   const firstNavIndex = htmlText.indexOf('<nav class="series-nav">');
   const lastNavIndex = htmlText.lastIndexOf('<nav class="series-nav">');
-  const headingIndex = htmlText.indexOf("<h2>");
-  const firstSubheadingIndex = htmlText.indexOf("<h3>", headingIndex);
+  const headingIndex = indexOfPattern(htmlText, /<h2(?:\s[^>]*)?>/);
+  const firstSubheadingIndex = indexOfPattern(htmlText, /<h[3-6](?:\s[^>]*)?>/, headingIndex);
   const footerIndex = htmlText.indexOf('<div class="site-footer">');
 
   assert(

@@ -6,7 +6,7 @@ Production URL: `https://0x1B05.github.io/`
 
 ## Requirements
 
-- `typst`
+- `typst >= 0.15.0`
 - `make`
 - `node`
 - `npm`

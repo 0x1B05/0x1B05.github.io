@@ -23,5 +23,9 @@ assert(
   config.includes("let nav-links = if header-links == auto {"),
   "template should only build the branded default nav when custom header-links are not provided",
 );
+assert(
+  !/html\.script\([^)]*\)\[\]/.test(config),
+  "external script tags should use Typst 0.15-compatible html.script(...) calls without an empty content body",
+);
 
 console.log("PASS template API keeps legacy customization compatibility");

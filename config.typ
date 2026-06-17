@@ -462,7 +462,6 @@
   ),
   content,
 ) = {
-  show: tufted.template-math
   show: tufted.template-refs
   show: tufted.template-notes
   show: tufted.template-figures
@@ -478,9 +477,9 @@
         html.meta(charset: "utf-8")
         html.meta(name: "viewport", content: "width=device-width, initial-scale=1")
         html.title(title)
-        html.script(src: site-url("assets/theme-bootstrap.js"))[]
+        html.script(src: site-url("assets/theme-bootstrap.js"))
         for (script-link) in head-scripts {
-          html.script(src: script-link)[]
+          html.script(src: script-link)
         }
         for (css-link) in css {
           html.link(rel: "stylesheet", href: css-link)
@@ -491,11 +490,11 @@
         make-header(header-links, locale: locale, route: route)
         html.article(
           html.section({
-            html.script(src: site-url("assets/theme-switcher.js"))[]
-            html.script(src: site-url("assets/language-switcher.js"))[]
-            html.script(src: site-url("assets/search.js"))[]
+            html.script(src: site-url("assets/theme-switcher.js"))
+            html.script(src: site-url("assets/language-switcher.js"))
+            html.script(src: site-url("assets/search.js"))
             for (script-link) in body-scripts {
-              html.script(src: script-link)[]
+              html.script(src: script-link)
             }
             content
             site-footer(resolved-footer-locale)

@@ -1220,19 +1220,16 @@ a.footnote-ref-link {
 MATH NOTATION
 *******************************************************************************/
 
-figure[role="math"] {
-    font-size: 1.4em;
+math {
+    color: inherit;
+}
+
+math[display="block"] {
+    display: block;
+    max-width: 100%;
     margin-block: 1em;
-}
-
-html.theme-dark [role="math"] {
-    filter: invert(1) hue-rotate(180deg);
-}
-
-@media (prefers-color-scheme: dark) {
-    html:not(.theme-light) [role="math"] {
-        filter: invert(1) hue-rotate(180deg);
-    }
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 

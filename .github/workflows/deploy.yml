@@ -30,7 +30,9 @@ jobs:
         id: pages
         uses: actions/configure-pages@v5
       - name: Setup Typst
-        uses: typst-community/setup-typst@v4
+        uses: typst-community/setup-typst@v5
+        with:
+          typst-version: 0.15.0
       - name: Build site
         run: make pages
       - name: Upload GitHub Pages artifact

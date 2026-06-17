@@ -67,5 +67,13 @@ assert(
   /npm\s+ci|npm\s+install/.test(deployWorkflow),
   "GitHub Pages deploy workflow should install npm dependencies before building the site",
 );
+assert(
+  /typst-version:\s*0\.15\.0/.test(deployWorkflow),
+  "GitHub Pages deploy workflow should pin Typst 0.15.0 so HTML export changes do not drift silently",
+);
+assert(
+  /typst\s*>=\s*0\.15\.0/.test(readme),
+  "README should document the Typst 0.15.0 minimum required by the HTML template",
+);
 
 console.log("PASS template build rules avoid over-rebuilds and clean-checkout test failures");

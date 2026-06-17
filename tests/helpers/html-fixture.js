@@ -86,6 +86,14 @@ const zhReferenceDocPath = path.join(
   "bring-up-checklist",
   "index.html",
 );
+const zhArchPreloadingPath = path.join(
+  siteDir,
+  "zh",
+  "docs",
+  "arch-paper-reading",
+  "01-on-chip-preloading",
+  "index.html",
+);
 const enMemblockOverviewPath = path.join(
   siteDir,
   "en",
@@ -187,6 +195,7 @@ const requiredHtmlPaths = [
   zhDeployDocPath,
   enReferenceDocPath,
   zhReferenceDocPath,
+  zhArchPreloadingPath,
   enMemblockOverviewPath,
   zhMemblockOverviewPath,
   enMemblockLsqPath,
@@ -295,6 +304,7 @@ function loadTemplateFixture() {
     zhDeployDocHtml: readHtmlIfExists(zhDeployDocPath),
     enReferenceDocHtml: readHtmlIfExists(enReferenceDocPath),
     zhReferenceDocHtml: readHtmlIfExists(zhReferenceDocPath),
+    zhArchPreloadingHtml: readHtmlIfExists(zhArchPreloadingPath),
     enMemblockOverviewHtml: readHtmlIfExists(enMemblockOverviewPath),
     zhMemblockOverviewHtml: readHtmlIfExists(zhMemblockOverviewPath),
     enMemblockLsqHtml: readHtmlIfExists(enMemblockLsqPath),

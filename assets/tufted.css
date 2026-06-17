@@ -843,19 +843,20 @@ CONTENT ENTRY CARDS
 
 .content-grid {
     display: grid;
-    gap: 1rem;
-    width: min(100%, 44rem);
-    margin: 1.35rem 0 2rem;
+    gap: 0.85rem;
+    width: min(100%, 42rem);
+    margin: 1.2rem 0 1.8rem;
 }
 
 .content-card,
 .content-card:link,
 .content-card:visited {
     display: grid;
-    grid-template-columns: 6.5rem minmax(0, 1fr);
+    grid-template-columns: 5.25rem minmax(0, 1fr);
     gap: 1rem;
     align-items: center;
-    padding: 1rem;
+    padding: 0.9rem 1rem;
+    line-height: 1.5;
 }
 
 .content-card__thumb,
@@ -867,8 +868,10 @@ CONTENT ENTRY CARDS
 }
 
 .content-card__thumb {
-    padding: 0.75rem;
-    border-radius: 1.1rem;
+    box-sizing: border-box;
+    width: 5.25rem;
+    padding: 0.55rem;
+    border-radius: 1rem;
     background: var(--surface-soft);
 }
 
@@ -876,29 +879,31 @@ CONTENT ENTRY CARDS
 .content-card__thumb svg {
     display: block;
     width: 100%;
+    height: auto;
     max-height: none;
+    margin: 0;
 }
 
 .content-card__label {
-    margin-bottom: 0.35rem;
+    margin-bottom: 0.25rem;
     color: var(--text-faint);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
 }
 
 .content-card__title {
     color: var(--text-main);
     font-weight: 700;
-    font-size: 1.24rem;
-    line-height: 1.35;
+    font-size: 1.14rem;
+    line-height: 1.32;
 }
 
 .content-card__description {
-    margin-top: 0.3rem;
+    margin-top: 0.25rem;
     color: var(--text-muted);
-    font-size: 1.02rem;
+    font-size: 0.98rem;
     line-height: 1.55;
 }
 
@@ -1295,16 +1300,6 @@ RESPONSIVE LAYOUT
         grid-template-columns: 1fr;
     }
 
-    .content-card,
-    .content-card:link,
-    .content-card:visited {
-        grid-template-columns: 1fr;
-    }
-
-    .content-card__thumb {
-        max-width: 7rem;
-    }
-
     .theme-switcher__menu {
         min-width: min(11rem, calc(100vw - 2rem));
     }
@@ -1316,5 +1311,13 @@ RESPONSIVE LAYOUT
 
     .site-search-result__header {
         flex-direction: column;
+    }
+}
+
+@media (max-width: 520px) {
+    .content-card,
+    .content-card:link,
+    .content-card:visited {
+        grid-template-columns: 1fr;
     }
 }

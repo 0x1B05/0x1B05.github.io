@@ -1,7 +1,7 @@
 #import "../index.typ": template, tufted
 #show: template.with(
   locale: "en",
-  route: "blog/2025-04-16-monkeys-apes/",
+  route: "blog/libcheckpoint-alpha/",
   title: "Reading LibCheckpointAlpha as Infrastructure",
 )
 

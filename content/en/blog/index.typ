@@ -9,21 +9,21 @@ This section is for notes that are not ready, or not worth, turning into full do
 
 #html.div(class: "content-grid")[
   #content-card(
-    locale-url("en", route: "blog/2025-10-30-normal-distribution/"),
+    locale-url("en", route: "blog/opensbi/"),
     "research-log.svg",
     "Why OpenSBI Became Hard to Ignore",
     "A short note on how Linux bring-up turns M-mode firmware and the SBI boundary from background reading into an operational concern.",
     label: "Bring-up Note",
   )
   #content-card(
-    locale-url("en", route: "blog/2024-10-04-iterators-generators/"),
+    locale-url("en", route: "blog/lightsss/"),
     "workflow-guide.svg",
     "What LightSSS Seems to Optimize For",
     "A reading note on why lightweight snapshots matter when long RTL runs make full reruns and full-wave debugging too expensive.",
     label: "Tool Note",
   )
   #content-card(
-    locale-url("en", route: "blog/2025-04-16-monkeys-apes/"),
+    locale-url("en", route: "blog/libcheckpoint-alpha/"),
     "reading-notes.svg",
     "Reading LibCheckpointAlpha as Infrastructure",
     "A short reflection on checkpoint restoration, bootloader linkage, and why this kind of plumbing changes how the whole stack is understood.",

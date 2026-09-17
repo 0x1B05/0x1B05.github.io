@@ -1,7 +1,7 @@
 #import "../index.typ": template, tufted
 #show: template.with(
   locale: "en",
-  route: "blog/2025-10-30-normal-distribution/",
+  route: "blog/opensbi/",
   title: "Why OpenSBI Became Hard to Ignore",
 )
 

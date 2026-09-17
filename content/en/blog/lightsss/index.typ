@@ -1,7 +1,7 @@
 #import "../index.typ": template, tufted
 #show: template.with(
   locale: "en",
-  route: "blog/2024-10-04-iterators-generators/",
+  route: "blog/lightsss/",
   title: "What LightSSS Seems to Optimize For",
 )
 

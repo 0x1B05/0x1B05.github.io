@@ -9,21 +9,21 @@
 
 #html.div(class: "content-grid")[
   #content-card(
-    locale-url("zh", route: "blog/2025-10-30-normal-distribution/"),
+    locale-url("zh", route: "blog/opensbi/"),
     "research-log.svg",
     "为什么一做 Linux Bring-up 就绕不开 OpenSBI",
     "一篇短笔记，记录我为什么会从抽象的特权级阅读，走到不得不认真看待 M 模式固件和 SBI 边界。",
     label: "Bring-up 笔记",
   )
   #content-card(
-    locale-url("zh", route: "blog/2024-10-04-iterators-generators/"),
+    locale-url("zh", route: "blog/lightsss/"),
     "workflow-guide.svg",
     "我理解的 LightSSS 在优化什么",
     "一篇阅读笔记，记录轻量级仿真快照为什么能在长时间 RTL 调试里明显改善回放与定位效率。",
     label: "工具笔记",
   )
   #content-card(
-    locale-url("zh", route: "blog/2025-04-16-monkeys-apes/"),
+    locale-url("zh", route: "blog/libcheckpoint-alpha/"),
     "reading-notes.svg",
     "把 LibCheckpointAlpha 当作基础设施来读",
     "一篇围绕 checkpoint 恢复和 bootloader 链接的小文章，解释为什么这种基础设施会改变我对整条软件栈的理解。",

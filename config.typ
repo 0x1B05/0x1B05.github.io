@@ -1,11 +1,9 @@
 #import "@preview/tufted:0.1.1"
 
 #let site-name = "0x1B05"
-#let site-tagline-en = "Personal essays, notes, and documentation."
-#let site-tagline-zh = "一个用于发布个人文章、笔记与文档的网站。"
 #let footer-year = "2026"
-#let footer-label-en = "Personal site"
-#let footer-label-zh = "个人博客"
+
+// --- URL helpers ---
 
 #let site-home-url() = "/"
 #let site-url(path) = "/" + path
@@ -29,16 +27,13 @@
   }
 }
 
-#let opposite-locale(locale) = if locale == "zh" { "en" } else { "zh" }
-#let locale-badge(locale) = if locale == "zh" { "中" } else { "EN" }
+// --- Localized copy ---
 
-#let locale-copy(locale) = if locale == "zh" {
-  (
+#let locale-copy-table = (
+  zh: (
     nav_docs: "文档",
     nav_blog: "博客",
     nav_cv: "简历",
-    docs_series: "系列",
-    docs_reference: "参考",
     docs_toc: "目录",
     callout_note: "备注",
     callout_tip: "提示",
@@ -66,16 +61,13 @@
     search_section_docs: "文档",
     search_section_blog: "博客",
     search_section_cv: "简历",
-    footer_label: footer-label-zh,
-    footer_tagline: site-tagline-zh,
-  )
-} else {
-  (
+    footer_label: "个人博客",
+    footer_tagline: "一个用于发布个人文章、笔记与文档的网站。",
+  ),
+  en: (
     nav_docs: "Docs",
     nav_blog: "Blog",
     nav_cv: "CV",
-    docs_series: "Series",
-    docs_reference: "Reference",
     docs_toc: "Contents",
     callout_note: "Note",
     callout_tip: "Tip",
@@ -103,68 +95,45 @@
     search_section_docs: "Docs",
     search_section_blog: "Blog",
     search_section_cv: "CV",
-    footer_label: footer-label-en,
-    footer_tagline: site-tagline-en,
-  )
-}
+    footer_label: "Personal site",
+    footer_tagline: "Personal essays, notes, and documentation.",
+  ),
+)
+
+#let locale-copy(locale) = locale-copy-table.at(locale, default: locale-copy-table.en)
+
+// --- Icons ---
+
+#let theme-icon-paths = (
+  sun: "M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z",
+  moon: "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z",
+  search: "M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z",
+  system: "M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25",
+)
 
 #let theme-icon(kind, class: "") = {
-  let stroke-width = if kind == "system" { "1.6" } else { "2.0" }
   let svg-attrs = (
     xmlns: "http://www.w3.org/2000/svg",
     viewBox: "0 0 24 24",
     fill: "none",
     stroke: "currentColor",
-    "stroke-width": stroke-width,
+    "stroke-width": if kind == "system" { "1.6" } else { "2.0" },
     "aria-hidden": "true",
   ) + if class == "" { (:) } else { (class: class) }
 
-  if kind == "sun" {
-    html.elem("svg", attrs: svg-attrs)[
-      #html.elem(
-        "path",
-        attrs: (
-          d: "M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z",
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-        ),
-      )[]
-    ]
-  } else if kind == "moon" {
-    html.elem("svg", attrs: svg-attrs)[
-      #html.elem(
-        "path",
-        attrs: (
-          d: "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z",
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-        ),
-      )[]
-    ]
-  } else if kind == "search" {
-    html.elem("svg", attrs: svg-attrs)[
-      #html.elem(
-        "path",
-        attrs: (
-          d: "M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z",
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-        ),
-      )[]
-    ]
-  } else {
-    html.elem("svg", attrs: svg-attrs)[
-      #html.elem(
-        "path",
-        attrs: (
-          d: "M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25",
-          "stroke-linecap": "round",
-          "stroke-linejoin": "round",
-        ),
-      )[]
-    ]
-  }
+  html.elem("svg", attrs: svg-attrs)[
+    #html.elem(
+      "path",
+      attrs: (
+        d: theme-icon-paths.at(kind, default: theme-icon-paths.system),
+        "stroke-linecap": "round",
+        "stroke-linejoin": "round",
+      ),
+    )[]
+  ]
 }
+
+// --- Header ---
 
 #let brand-logo() = html.span(class: "site-brand")[
   #html.span(class: "site-brand__light")[#image("assets/logo-light.svg", alt: site-name)]#html.span(class: "site-brand__dark")[#image("assets/logo-dark.svg", alt: site-name)]
@@ -313,6 +282,8 @@
   },
 )
 
+// --- Page components ---
+
 #let site-footer(locale) = {
   let copy = locale-copy(locale)
 
@@ -357,6 +328,8 @@
   ]
 }
 
+// --- Callouts ---
+
 #let callout(kind, title, body) = html.elem("aside", attrs: (class: "callout callout--" + kind))[
   #if title != none [
     #html.div(class: "callout__title")[#title]
@@ -378,6 +351,8 @@
 #let definition(body, title: auto, locale: "en") = callout-kind("definition", body, title: title, locale: locale)
 
 #let warning(body, title: auto, locale: "en") = callout-kind("warning", body, title: title, locale: locale)
+
+// --- Series navigation ---
 
 #let series-context(series, route) = {
   let normalized = normalize-route(route)
@@ -435,6 +410,8 @@
     ]
   ]
 }
+
+// --- Page shell ---
 
 #let site-web(
   header-links: none,
@@ -495,26 +472,14 @@
   )
 }
 
-#let template(body, title: site-name, header-links: auto, ..options) = {
-  // Legacy passthrough remains supported; localized keys are peeled off before the old ..options, handoff to site-web.
-  let named-options = options.named()
-  let locale = named-options.at("locale", default: "en")
-  let route = named-options.at("route", default: "")
-  let lang = named-options.at("lang", default: locale)
-  let footer-locale = named-options.at("footer-locale", default: locale)
-  let forwarded-options = named-options
-  if "locale" in forwarded-options {
-    let _ = forwarded-options.remove("locale")
-  }
-  if "route" in forwarded-options {
-    let _ = forwarded-options.remove("route")
-  }
-  if "lang" in forwarded-options {
-    let _ = forwarded-options.remove("lang")
-  }
-  if "footer-locale" in forwarded-options {
-    let _ = forwarded-options.remove("footer-locale")
-  }
+#let template(
+  body,
+  title: site-name,
+  locale: "en",
+  route: "",
+  header-links: auto,
+  ..options,
+) = {
   let copy = locale-copy(locale)
   let nav-links = if header-links == auto {
     (
@@ -527,17 +492,13 @@
     header-links
   }
 
-  let page = site-web.with(
+  site-web.with(
     header-links: nav-links,
     title: title,
     locale: locale,
-    lang: lang,
+    lang: locale,
     route: route,
-    footer-locale: footer-locale,
-    ..forwarded-options,
-  )
-
-  page[
-    #body
-  ]
+    footer-locale: locale,
+    ..options,
+  )(body)
 }

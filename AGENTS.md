@@ -23,7 +23,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
   - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js` — header controls and root-gateway redirect; preferences are persisted in `localStorage` under keys like `tufted-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
-  - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`, `content-thumbnails/` (card thumbnails referenced by landing pages).
+  - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`. Card thumbnails go in `assets/content-thumbnails/` (create it when you add the first card).
 - `Makefile` — the entire build pipeline (see below).
 - `.github/workflows/deploy.yml` — CI/CD to GitHub Pages.
 - `_site/` — generated build output; never edit by hand. `.deps/` (typst-generated Make depfiles), `node_modules/`, `.reference/`, and `plans/` are also local-only and gitignored.
@@ -167,7 +167,7 @@ Other building blocks:
 - `#doc-toc("en" | "zh")` — table of contents for the current page, used near the top of docs chapters and series landing pages.
 - `#tufted.margin-note[…]` — marginal side note (also used for "further reading" link blocks); `tufted` comes from the ancestor `index.typ` import.
 - `#figure(image("imgs/<file>.svg"), caption: […])` — captioned figure.
-- `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; thumbnails are files in `assets/content-thumbnails/` referenced by bare filename.
+- `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.
 - `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
 - Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.

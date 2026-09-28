@@ -1,4 +1,6 @@
-#import "../index.typ": template, tufted
+#import "../index.typ": (
+  definition, example, note, template, tip, tufted, warning,
+)
 #show: template.with(locale: "en", route: "cv/", title: "CV")
 
 = 0x1B05

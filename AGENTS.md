@@ -160,7 +160,7 @@ Callouts (`note`, `tip`, `example`, `definition`, `warning`) render as titled bo
 #warning(title: "Do not do this")[The explanation.]
 ```
 
-Docs pages get locale-bound callouts and `doc-toc` through the re-export block in `content/<locale>/docs/index.typ` (chapters import them from `../../index.typ`). On any other page, import what you need from the nearest ancestor `index.typ` (or from `config.typ` directly, passing `locale:` to callouts).
+Locale-bound callouts, `doc-toc`, and the series helpers are re-exported from each locale root (`content/<locale>/index.typ`) and again from each section landing page, so every page imports them from the nearest ancestor `index.typ` (blog posts use `../index.typ`, docs chapters `../../index.typ`, and so on). Importing from `config.typ` directly is only needed when building new kinds of pages; in that case pass `locale:` to callouts yourself.
 
 Other building blocks:
 
@@ -171,6 +171,24 @@ Other building blocks:
 - `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
 - Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.
+
+### Adding a new callout kind
+
+The five kinds share one implementation (`callout-kind` in `config.typ`), so a new kind (say `important`) takes three small edits:
+
+1. `config.typ` — add a one-line wrapper next to the existing ones:
+   ```typst
+   #let important(body, title: auto, locale: "en") = callout-kind("important", body, title: title, locale: locale)
+   ```
+2. `config.typ` — add the default title to both `locale-copy` tables (the field name must be `callout_` + the kind name): `callout_important: "重要",` in the zh table and `callout_important: "Important",` in the en table.
+3. `assets/tufted.css` — add one accent line in each of the three theme paths (the tinted background is derived from the accent via `color-mix`, so nothing else is needed):
+   ```css
+   .callout--important { --callout-accent: #3a7ca5; }
+   html.theme-dark .callout--important { --callout-accent: #81a1c1; }
+   /* and the same line inside the prefers-color-scheme: dark block */
+   ```
+
+Then bind it to the locale in each locale root (`content/<locale>/index.typ`, next to the other `shared-*` aliases) so the whole locale tree can use it.
 
 ## Build and Test Commands
 

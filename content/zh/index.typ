@@ -1,10 +1,17 @@
 #import "../../config.typ": (
-  content-card as shared-content-card, locale-url, profile-image, template,
-  tufted,
+  content-card, doc-toc, locale-url, profile-image, series-begin,
+  series-context, series-navbar, template, tufted,
+  note as shared-note, tip as shared-tip, example as shared-example,
+  definition as shared-definition, warning as shared-warning,
 )
 #show: template.with(locale: "zh", route: "")
 
-#let content-card = shared-content-card
+// 绑定中文标题的 callout,重新导出给整个中文内容树使用。
+#let note(body, title: auto) = shared-note(body, title: title, locale: "zh")
+#let tip(body, title: auto) = shared-tip(body, title: title, locale: "zh")
+#let example(body, title: auto) = shared-example(body, title: title, locale: "zh")
+#let definition(body, title: auto) = shared-definition(body, title: title, locale: "zh")
+#let warning(body, title: auto) = shared-warning(body, title: title, locale: "zh")
 
 #let home-link(href, title, description) = html.a(
   href: href,

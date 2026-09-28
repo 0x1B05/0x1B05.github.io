@@ -217,7 +217,7 @@
 #let theme-switcher(locale) = {
   let copy = locale-copy(locale)
 
-  html.elem("div", attrs: (class: "theme-switcher"))[
+  html.div(class: "theme-switcher")[
     #html.elem(
       "button",
       attrs: (
@@ -303,7 +303,7 @@
         }
       ]
       #if locale != none [
-        #html.elem("div", attrs: (class: "site-nav__controls"))[
+        #html.div(class: "site-nav__controls")[
           #site-search(locale)
           #language-switcher(locale, route)
           #theme-switcher(locale)
@@ -316,7 +316,7 @@
 #let site-footer(locale) = {
   let copy = locale-copy(locale)
 
-  html.div(class: "site-footer")[
+  html.elem("footer", attrs: (class: "site-footer"))[
     #html.span(class: "site-footer__copy")[#("© " + footer-year)]
     #html.a(href: site-home-url())[#site-name]
     #html.span(class: "site-footer__meta")[#(copy.footer_label + " · " + copy.footer_tagline)]
@@ -347,7 +347,7 @@
 #let doc-toc(locale) = {
   let copy = locale-copy(locale)
 
-  html.div(class: "doc-toc")[
+  html.elem("nav", attrs: (class: "doc-toc"))[
     #html.div(class: "doc-toc__title")[#copy.docs_toc]
     #outline(
       title: none,
@@ -357,37 +357,27 @@
   ]
 }
 
-#let callout(kind, title, body) = html.div(class: "callout callout--" + kind)[
+#let callout(kind, title, body) = html.elem("aside", attrs: (class: "callout callout--" + kind))[
   #if title != none [
     #html.div(class: "callout__title")[#title]
   ]
   #html.div(class: "callout__body")[#body]
 ]
 
-#let note(body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).callout_note } else { title }
-  callout("note", resolved-title, body)
+#let callout-kind(kind, body, title: auto, locale: "en") = {
+  let resolved-title = if title == auto { locale-copy(locale).at("callout_" + kind) } else { title }
+  callout(kind, resolved-title, body)
 }
 
-#let tip(body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).callout_tip } else { title }
-  callout("tip", resolved-title, body)
-}
+#let note(body, title: auto, locale: "en") = callout-kind("note", body, title: title, locale: locale)
 
-#let example(body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).callout_example } else { title }
-  callout("example", resolved-title, body)
-}
+#let tip(body, title: auto, locale: "en") = callout-kind("tip", body, title: title, locale: locale)
 
-#let definition(body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).callout_definition } else { title }
-  callout("definition", resolved-title, body)
-}
+#let example(body, title: auto, locale: "en") = callout-kind("example", body, title: title, locale: locale)
 
-#let warning(body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).callout_warning } else { title }
-  callout("warning", resolved-title, body)
-}
+#let definition(body, title: auto, locale: "en") = callout-kind("definition", body, title: title, locale: locale)
+
+#let warning(body, title: auto, locale: "en") = callout-kind("warning", body, title: title, locale: locale)
 
 #let series-context(series, route) = {
   let normalized = normalize-route(route)

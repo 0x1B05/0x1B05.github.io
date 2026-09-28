@@ -1,4 +1,7 @@
-#import "../index.typ": content-card, locale-url, template, tufted
+#import "../index.typ": (
+  content-card, definition, example, locale-url, note, template, tip, tufted,
+  warning,
+)
 #show: template.with(locale: "zh", route: "blog/", title: "博客")
 
 = 博客

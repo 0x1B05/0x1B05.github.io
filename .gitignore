@@ -1,4 +1,5 @@
 _site/
+.deps/
 .DS_Store
 .reference/
 node_modules/

@@ -24,17 +24,15 @@
 
 原论文：#link(paper)[Feedback Directed Prefetching: Improving the Performance and Bandwidth-Efficiency of Hardware Prefetchers (DOI)]
 
-传统的硬件预取器常被看成一个地址预测问题：如果程序正在访问 `A, A+1, A+2`，那就提前把 `A+3, A+4` 拿回来。预取是基于历史行为的 speculative memory request，因此带来性能收益的同时，也会引入两个副作用：
+传统的硬件预取器基本是个地址预测问题：程序在访问 `A, A+1, A+2`，就提前把 `A+3, A+4` 取回来。prefetch 是基于历史行为的 speculative memory request，有收益，也有两个副作用。
 
-首先它会占用带宽。prefetch 会额外发 memory request；如果这些 request 太多，或者距离和粒度过大，就会增加 DRAM bank conflict、DRAM row/page conflict、memory bus contention 和 queueing delay。更直接的问题是 demand request 可能被挤慢。
+一是占带宽。prefetch 会额外发 memory request，发得太多、距离和粒度太大，会增加 DRAM bank conflict、DRAM row/page conflict、memory bus contention 和 queueing delay，demand request 直接被挤慢。
 
-第二点, 它会造成 cache pollution. prefetch 把数据带进 cache 以后，不一定真的会被用到。如果这些 prefetched blocks 挤掉了原本后面还会用到的 demand-fetched blocks，就会造成 cache pollution。更糟的是，cache pollution 不是孤立问题。被挤掉的数据将来又会 miss，新的 miss 又可能再触发更多 prefetch，于是形成一个正反馈：无用 prefetch 增加 miss，miss 又触发更多 prefetch。
+二是 cache pollution。prefetch 带回来的数据不一定会被用到；如果它们挤掉了后面还会用到的 demand-fetched blocks，就是 pollution。而且 pollution 会自我放大：被挤掉的数据将来又会 miss，新的 miss 又可能触发更多 prefetch——无用 prefetch 增加 miss，miss 又触发更多 prefetch，一个正反馈。
 
-这两个副作用会导致 prefetcher 在性能和带宽消耗上都可能变得不稳定。
+作者先跑了一组实验确认这个问题真实存在：把一个 stream-based prefetcher 的 aggressiveness 从 No prefetching、Very Conservative、Middle-of-the-Road 到 Very Aggressive 一路调上去，看 17 个 memory-intensive SPEC2000 benchmark 的表现。结果对很多 benchmark，aggressive prefetching 性能明显上升；但对 ammp、applu 这类，aggressive prefetching 反而严重拖后腿。没有一种固定 aggressiveness 对所有程序都最好。
 
-作者观察到 prefetcher 没有一个固定 aggressiveness 能对所有程序都最好。作者把一个 stream-based prefetcher 的 aggressiveness 从 No prefetching、Very Conservative、Middle-of-the-Road 到 Very Aggressive 一路调上去，然后看 17 个 memory-intensive SPEC2000 benchmark 的表现。结果是：对很多 benchmark，aggressive prefetching 性能明显上升；但对 ammp、applu 这类 benchmark，aggressive prefetching 反而严重拖后腿。
-
-`FDP` 这篇 paper 的位置就在这里。它没有重新设计地址预测器，而是拿一个 stream prefetcher 当被控对象。这类 prefetcher 的基本单位是一个访问流；FDP 在外面加一层反馈控制，分别观察方向是否可靠、数据是否回来太晚、是否污染 cache，再动态调 `distance`、`degree` 和预取 line 的插入位置。
+`FDP` 这篇 paper 就是从这儿下手的。它没有重新设计地址预测器，而是拿一个现成的 stream prefetcher 当被控对象，在外面加一层反馈控制：分别观察方向是否可靠、数据是否回来太晚、是否污染 cache，再动态调 `distance`、`degree` 和预取 line 的插入位置。
 
 == stream prefetcher
 
@@ -44,7 +42,7 @@
 3. Training: 继续观察接下来的 miss，看这是上升地址流还是下降地址流。
 4. Monitor and Request: 一旦方向确定，就开始沿这个方向预取。
 
-可以把它理解成一种方向跟踪器：看到连续几个 cache block 沿同一个方向移动，就认为这里存在一个 stream，然后沿着这个方向提前取后面的 block。
+本质上它是个方向跟踪器：连续几个 cache block 沿同一个方向移动，就认为存在一条 stream，然后沿这个方向提前取后面的 block。
 
 比如程序连续访问`100, 101, 102, 103`,预取器就可能判断这是一个向上的 stream，接着预取 `104, 105, ...`。如果访问序列是`200, 199, 198, 197` 那就是向下的 stream。
 
@@ -72,23 +70,21 @@
 
 另一种情况：accuracy 也不算差，但预取 line 插进 cache 之后，把本来有用的 demand line 挤掉了。后面程序又要用那条被挤掉的 line，于是多了一次 demand miss。这种预取在单条 line 上可能有用，但对整体 cache replacement 行为是负收益。
 
-所以 `FDP` 把预取器的失败拆成三类，而不是混成一个分数：
+所以 `FDP` 把预取器的失败拆成三类分别看：
 
 - `accuracy`：发出去的 prefetch 里，有多少最终真的被 demand request 用到了。$"accuracy" = "useful prefetches" / "total prefetches sent to memory"$
   - prefetch line 填进 L2 时带一个 `pref-bit`。如果后面 demand 命中这条 line，就说明这次 prefetch 被用上了。硬件维护两个计数器：`pref-total` 记录总共发了多少 prefetch，`used-total` 记录其中多少后来被 demand 用到。
 - `lateness`：猜对的东西有没有来得足够早, $"lateness" = "late useful prefetches" / "useful prefetches"$
   - 光看 cache line 不够，因为 late 的那一刻，数据可能还没进 cache。paper 的做法是把 `pref-bit` 也放进 L2 MSHR。这样 demand 请求到来时，如果发现自己要的 block 正在某个 prefetch MSHR entry 里等待返回，就把这次记为 late。
 - `pollution`：预取是否造成额外 cache miss。
-  - 最难精确追踪。理想情况下，硬件要知道“某条 demand line 是不是因为某次 prefetch 插入才被逐出”，这需要很重的因果记录。`FDP` 没这么做，而是用了一个小的 filter 近似记录。某条 demand line 被 prefetch 挤掉时，在 filter 里打一个标记；之后如果 demand miss 又碰到这个标记，就把它当作一次 pollution 事件。这个 filter 会有 aliasing，但控制器需要的是足够稳定的方向信号，而不是精确归因。
-
-这三个信号对应的动作不一样。低 accuracy 通常说明该降低 aggressiveness；高 accuracy 但 late 很高，反而可能说明请求需要更早发出或一次多发几个；pollution 高则说明 cache 插入策略或 aggressiveness 已经带来明显副作用。
+  - 最难精确追踪。理想情况下，硬件要知道“某条 demand line 是不是因为某次 prefetch 插入才被逐出”，这需要很重的因果记录。`FDP` 用一个小 filter 近似：某条 demand line 被 prefetch 挤掉时，在 filter 里打一个标记；之后如果 demand miss 又碰到这个标记，就记为一次 pollution 事件。filter 会有 aliasing，但控制器只要稳定的方向信号，不需要精确归因。
 
 #figure(
   image("imgs/fdp-structures.svg"),
-  caption: [`FDP` 加的不是一个新地址预测器，而是一套反馈账本：cache line 上的 `pref-bit` 负责记录 useful，MSHR 上的 `pref-bit` 负责记录 late，pollution filter 负责近似追踪被 prefetch 挤掉的 demand line。],
+  caption: [`FDP` 加的是一套反馈账本：cache line 上的 `pref-bit` 负责记录 useful，MSHR 上的 `pref-bit` 负责记录 late，pollution filter 负责近似追踪被 prefetch 挤掉的 demand line。],
 )
 
-== FDP总体结构
+== FDP 总体结构
 
 FDP = 一个普通 prefetcher + 一个运行时反馈控制器
 
@@ -111,11 +107,11 @@ Prefetcher 运行一段时间
 
 这是一个闭环控制系统。
 
-=== 采样窗按 eviction 切，而不是按指令数切
+=== 采样窗按 eviction 切
 
 `FDP` 不是每个周期都调档。它按 interval 收集一段时间内的 useful、late、pollution 事件，然后在 interval 结束时统一更新策略。
 
-这个 interval 的边界不是指令数，而是 `eviction-count`。当 L2 里发生的 eviction 数超过阈值 `Tinterval`，这一轮采样窗结束。实验里 `Tinterval` 取 `8192`。
+这个 interval 的边界按 `eviction-count` 算，不按指令数。当 L2 里发生的 eviction 数超过阈值 `Tinterval`，这一轮采样窗结束。实验里 `Tinterval` 取 `8192`。
 
 这个选择和控制目标有关，因为 `FDP` 调的是 cache 和带宽压力。两个程序片段可能都执行了一百万条指令，但一个几乎不碰内存，另一个频繁替换 L2。按指令数切，前者会给控制器一堆低信息量样本；按 eviction 切，至少能保证每轮更新都看到了足够多的 cache 行为。
 
@@ -129,7 +125,7 @@ interval 结束后，`FDP` 不会直接拿本轮统计量生硬决策。它会�
 new_metric = old_metric / 2 + interval_metric / 2
 ```
 
-这一步看起来普通，但很重要。预取器控制最怕抖：这一轮晚了一点就猛加，下一轮污染高一点又猛降，最后系统自己制造噪声。平滑的作用就是让控制器记得一点历史，不被一个短窗口里的偶然事件牵着走。
+少了这一步，控制器会抖：这一轮 late 高一点就猛加档，下一轮 pollution 高一点又猛降档，系统自己制造噪声。平滑让控制器记住一点历史，不被单个短窗口里的偶然事件牵着走。
 
 平滑之后，控制器把 `accuracy` 分成高、中、低，把 `lateness` 分成 late / not-late，把 `pollution` 分成 polluting / not-polluting。组合起来就是 12 种情况。paper 用一张控制表决定下一步调不调 aggressiveness。
 
@@ -148,7 +144,7 @@ new_metric = old_metric / 2 + interval_metric / 2
 
 == 五个 aggressiveness 档位
 
-paper 最后没有让 `distance` 和 `degree` 任意组合，而是收敛成五个档位：
+paper 把 `distance` 和 `degree` 的组合收敛成五个档位，不让它们任意组合：
 
 - 档位 1：`distance = 4`, `degree = 1`
 - 档位 2：`distance = 8`, `degree = 1`
@@ -164,7 +160,7 @@ paper 最后没有让 `distance` 和 `degree` 任意组合，而是收敛成五�
 
 == 插入位置也要调
 
-`FDP` 另一个重要点是，它没有只调发请求的 aggressiveness。它还调 prefetched line 插入 cache 的位置。
+`FDP` 除了调发请求的 aggressiveness，还调 prefetched line 插进 cache 的位置。
 
 普通 demand line 刚被程序访问过，放在比较热的位置很自然。但 prefetch line 只是预测出来的未来需求。它可能很快会被用到，也可能完全没用。如果一进 cache 就给它 `MRU` 待遇，等于让 speculative data 和 demand data 使用同一套最高生存优先级，这很容易造成 pollution。
 
@@ -183,18 +179,18 @@ paper 最后没有让 `distance` 和 `degree` 任意组合，而是收敛成五�
 
 == 贡献：把预取控制拆成三个反馈信号
 
-`FDP` 最后报告了性能提升和带宽效率提升，但更重要的是它把硬件预取器从单纯的地址预测器，扩展成一个带反馈的控制系统。
+`FDP` 最后报告了性能提升和带宽效率提升，但更有意思的是它把硬件预取器从单纯的地址预测器，扩展成一个带反馈的控制系统。
 
-它的核心思想接近控制论。传统 aggressive prefetcher 如果遇到适合预取的程序，会明显减少 miss penalty；但如果程序不适合，它可能因为带宽竞争和 cache pollution 让性能变差。作者指出，prefetcher 可能形成正反馈：pollution 导致 demand miss，demand miss 又触发更多 prefetch，进一步加剧污染和带宽竞争。FDP 加的就是 negative feedback，也就是给已有 prefetcher 增加一个自适应控制层。
+传统 aggressive prefetcher 遇到适合预取的程序，会明显减少 miss penalty；遇到不适合的，可能因为带宽竞争和 cache pollution 反而变慢。开头提过那个正反馈环路，FDP 加的就是 negative feedback：给已有 prefetcher 套一个自适应控制层。
 
-一个强 prefetcher 不只是会带来 hit，也会带来资源压力。它可能取晚，可能取错，也可能造成 cache pollution。这三种失败模式最后都可能表现为性能不好，但修法不一样。
+一个强 prefetcher 会带来 hit，也会带来资源压力。它可能取晚，可能取错，也可能造成 cache pollution。这三种失败模式最后都表现为性能不好，但修法不一样。
 
-`FDP` 的贡献就是把它们分开测、分开调：
+`FDP` 的做法是把它们分开测、分开调：
 
 - direction problem 看 accuracy
 - timing problem 看 lateness
 - cache side effect 看 pollution
 
-这也是为什么它比“按准确率调强度”更稳。准确率只能告诉你方向对不对，不能告诉你来不来得及，也不能告诉你有没有造成 cache side effect。预取控制必须同时看这三件事。
+只按准确率调强度看不到后两件事，这就是它不如 FDP 稳的原因。
 
 #series-navbar("zh", nav)

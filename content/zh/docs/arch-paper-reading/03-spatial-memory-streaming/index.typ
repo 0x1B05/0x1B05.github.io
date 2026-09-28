@@ -24,12 +24,12 @@
 
 原论文：#link(paper)[Spatial Memory Streaming (DOI)]
 
-这篇 paper 的切入点很明确：很多 commercial workload 的 miss 不是简单的 next-line，也不是干净的 stride。程序每次进到某段代码，可能会在一个较大的地址区域里访问一组 block；这些 block 不连续，访问顺序也未必稳定，但“这一组 block 会一起出现”这件事本身是稳定的。
+这篇 paper 的出发点：很多 commercial workload 的 miss 既不是简单的 next-line，也不是干净的 stride。程序每次进到某段代码，会在一个较大的地址区域里访问一组 block；这些 block 不连续，访问顺序也未必稳定，但“这一组 block 会一起出现”这件事本身是稳定的。
 
-`Spatial Memory Streaming` 把这个现象叫做 region-level spatial correlation。它不直接预测“下一个地址”，而是预测“这一轮 region 里会访问哪些 block”。预测结果是一张 bitmask，硬件再把 bitmask 展开成一串 prefetch 请求。
+`Spatial Memory Streaming` 把这个现象叫做 region-level spatial correlation。它预测的不是“下一个地址”，而是“这一轮 region 里会访问哪些 block”。预测结果是一张 bitmask，硬件再把 bitmask 展开成一串 prefetch 请求。
 
 #tip(title: "预测对象")[
-  `SMS` 不是继续提高 next-line/stride prefetch 的 aggressiveness，而是把预测对象从单个地址换成一个 region 内的访问形状。
+  `SMS` 换掉了预测对象：从单个地址变成一个 region 内的访问形状。这和继续加大 next-line/stride prefetch 的 aggressiveness 是两条路。
 ]
 
 == 问题背景：stride 看不出来的相关性
@@ -48,7 +48,7 @@
 
 == Region generation 和 pattern
 
-SMS 不是一看到访问就马上训练长期历史。它先定义一轮 `spatial region generation`，再把这一轮内访问过的 block 汇总成 pattern。
+SMS 不会一看到访问就马上训练长期历史。它先定义一轮 `spatial region generation`，再把这一轮内访问过的 block 汇总成 pattern。
 
 #definition(title: "SMS 的基本对象")[
   - `spatial region`: 固定大小的连续地址区间，论文推荐配置里是 `2KB`。
@@ -61,18 +61,18 @@ SMS 不是一看到访问就马上训练长期历史。它先定义一轮 `spati
 
 === 一个 2KB region 的例子
 
-假设 region 大小是 `2KB`，cache block 是 `64B`，那一个 region 里有 `32` 个 block。某次访问先碰到这个 region 的第 `4` 个 block，它就是 trigger。后续在同一轮 generation 中，程序又访问了第 `7`、`12`、`13` 个 block。
+假设 region 大小是 `2KB`，cache block 是 `64B`，一个 region 里就有 `32` 个 block。某次访问先碰到这个 region 的第 `4` 个 block，它就是 trigger。后续在同一轮 generation 中，程序又访问了第 `7`、`12`、`13` 个 block。
 
-这一轮最后写出的训练样本不是完整地址序列，而是：
+这一轮最后写出的训练样本只有三样：
 - trigger `PC`
 - trigger offset = `4`
 - pattern bits = `4, 7, 12, 13`
 
-这里稳定的是“这条代码从 region 内 offset `4` 开始时，常常会点亮这几个位置”。至于这次 region base 是 `R`，下次是不是换成另一个对象地址，并不是训练 key 的主要部分。
+这里稳定的是“这条代码从 region 内 offset `4` 开始时，常常会点亮这几个位置”。这次 region base 是 `R`，下次换成别的对象地址也没关系，region base 本来就不是训练 key 的一部分。
 
 == 训练结构：AGT 如何过滤训练样本
 
-`AGT` 是 `Active Generation Table`，负责跟踪还活着的 generation。它没有一上来就给每个 generation 分配完整 bit vector，而是拆成 `filter table` 和 `accumulation table` 两级。
+`AGT` 是 `Active Generation Table`，负责跟踪还活着的 generation。它把跟踪拆成 `filter table` 和 `accumulation table` 两级，避免一上来就给每个 generation 分配完整 bit vector。
 
 #figure(
   image("imgs/sms-structures.svg"),
@@ -94,10 +94,10 @@ SMS 不是一看到访问就马上训练长期历史。它先定义一轮 `spati
 
 当同一轮 generation 出现第二个不同 block，SMS 才把它看成值得记录的 pattern 候选。entry 会从 filter table 转到 accumulation table，后续每访问一个新的 block offset，就把对应 bit 置 1。
 
-这一步是 SMS 的噪声控制：它不是把所有访问都写进历史，而是等一轮 generation 表现出“多个 block 成组出现”之后，才开始付出 bitmask 的成本。
+这一步是 SMS 的噪声控制：等一轮 generation 表现出“多个 block 成组出现”之后，才开始付出 bitmask 的成本；之前的单点访问不进历史。
 
 #warning(title: "AGT 的容量取舍")[
-  filter table 太小，会过早丢掉刚开始的 generation；accumulation table 太小，会让已经长出 pattern 的 generation 被提前挤掉。论文推荐的 `32-entry filter + 64-entry accumulation` 不是为了堆很大的表，而是为了让多数 generation 能活到自然结束。
+  filter table 太小，会过早丢掉刚开始的 generation；accumulation table 太小，会让已经长出 pattern 的 generation 被提前挤掉。论文推荐 `32-entry filter + 64-entry accumulation`，目的是让多数 generation 能活到自然结束，不靠堆大表。
 ]
 
 === 训练结束：成熟 pattern 写入 PHT
@@ -124,11 +124,11 @@ SMS 不是一看到访问就马上训练长期历史。它先定义一轮 `spati
 
 === 为什么 PHT 用 PC + offset
 
-`PHT` 的 key 不是完整地址，而是：
+`PHT` 的 key 由两部分组成，不含完整地址：
 - trigger access 的静态 `PC`
 - trigger 在 region 内的 offset
 
-这一步是 SMS 能预测新 region 的关键。很多 commercial workload 一直在处理不同对象、记录、节点。绝对地址经常变化，但访问它们的代码路径和对象内部布局比较稳定。如果用完整地址做 key，很多地址可能只出现一次；如果用 `PC + offset`，同一段代码处理新对象时仍然可以复用以前学到的 pattern。
+这是 SMS 能预测新 region 的关键。很多 commercial workload 一直在处理不同对象、记录、节点。绝对地址经常变化，但访问它们的代码路径和对象内部布局比较稳定。如果用完整地址做 key，很多地址可能只出现一次；如果用 `PC + offset`，同一段代码处理新对象时仍然可以复用以前学到的 pattern。
 
 #tip(title: "为什么 SMS 能碰 cold miss")[
   `PHT` 复用的是代码上下文里的 region 形状，不是旧地址本身。只要同一段代码在新 region 上重复类似 pattern，SMS 就有机会在第一次访问这个 region 时预取后面的 block。
@@ -166,7 +166,7 @@ region_base + block_offset * block_size
 7. 已经在 cache 里的 block、资源暂时发不出去的 block，可以跳过或延后。
 
 #example(title: "同一张 pattern，换一个 region base 回放")[
-  训练时学到的 pattern 是 `{4, 7, 12, 13}`。下次 trigger 命中 `PHT`，但新的 region base 变成 `R'`。prediction register 发出的不是旧地址，而是 `R' + 4 * 64B`、`R' + 7 * 64B`、`R' + 12 * 64B`、`R' + 13 * 64B`。
+  训练时学到的 pattern 是 `{4, 7, 12, 13}`。下次 trigger 命中 `PHT`，但新的 region base 变成 `R'`。prediction register 发出的是新地址：`R' + 4 * 64B`、`R' + 7 * 64B`、`R' + 12 * 64B`、`R' + 13 * 64B`。
 ]
 
 == 设计取舍：region 粒度、训练成本与带宽
@@ -177,7 +177,7 @@ SMS 的结构需要同时处理三件事：训练样本不能太脏，历史 key
 
 如果 region 里常有一组 block 一起出现，一个直接的想法是把 cache line 做大，或者用 sectored cache。paper 的判断是：这不等价。
 
-SMS 扩大的是访问模式表达，不是数据搬运粒度。大 cache line 会把 region 里没用的 block 也带回来，带宽浪费、false sharing、cache pollution 都会变严重。sectored cache 能缓解一部分带宽问题，但它仍然把训练窗口绑在 cache 组织上，容易把 interleaved generation 切碎。
+大 cache line 会把 region 里没用的 block 也带回来，带宽浪费、false sharing、cache pollution 都会变严重。sectored cache 能缓解一部分带宽问题，但它仍然把训练窗口绑在 cache 组织上，容易把 interleaved generation 切碎。SMS 扩大的是访问模式的表达能力，数据搬运粒度没变。
 
 AGT 的意义正在这里：cache 仍然以 `64B` block 为基本单位搬数据，SMS 只在旁边观察哪些 block 经常在同一轮 generation 里一起出现。
 
@@ -189,13 +189,13 @@ AGT 的意义正在这里：cache 仍然以 `64B` block 为基本单位搬数据
 - `64-entry accumulation table`
 - `16K-entry, 16-way PHT`
 
-region 太小，稀疏 correlation 会被切碎；region 太大，bit vector 变长，PHT/AGT 成本上升，pattern 也更容易混入无关 block。`2KB` 表达的是一个折中：很多有价值的 spatial correlation 明显大于 cache line，但还没大到需要无限扩大 region。
+region 太小，稀疏 correlation 会被切碎；region 太大，bit vector 变长，PHT/AGT 成本上升，pattern 也更容易混入无关 block。`2KB` 是个折中：很多 spatial correlation 的跨度明显大于 cache line，但还没大到需要无限扩大 region。
 
-AGT 太小会让 live generation 被提前替换，最后写入 PHT 的 pattern 不是完整形状，而是容量截断后的残片。PHT 太小则会丢掉长期 pattern，尤其是多个代码路径、多个 trigger offset 都在竞争历史项时。
+AGT 太小会让 live generation 被提前替换，最后写入 PHT 的 pattern 是容量截断后的残片，不是完整形状。PHT 太小则会丢掉长期 pattern，尤其是多个代码路径、多个 trigger offset 都在竞争历史项时。
 
 === 边界和失败模式
 
-SMS 的实验重点不是证明“多发 prefetch 总会更快”，而是证明 commercial workload 里存在 region-level spatial correlation：它比 next-line/stride 更复杂，但又足够稳定，可以用硬件历史表学出来。
+SMS 的实验想证明的是：commercial workload 里存在 region-level spatial correlation——比 next-line/stride 复杂，但足够稳定，可以用硬件历史表学出来。
 
 它适合的场景大概有几个特征：
 - 同一段代码会反复处理结构相似的数据对象。
@@ -207,6 +207,6 @@ SMS 的实验重点不是证明“多发 prefetch 总会更快”，而是证明
   如果同一个 `PC + offset` 在不同上下文下对应完全不同的 pattern，`PHT` 会学到混杂 bitmask；如果 generation 交错太多、AGT 容量不够，pattern 会在训练时被截断；如果预测出来的 block 很多但很少真正使用，收益会被带宽和 cache pollution 吃掉。
 ]
 
-SMS 的价值不在于更激进，而在于换了预测单位。它用 region generation 收集训练样本，用 `PC + offset` 做跨地址复用，再用 bitmask 表达稀疏 block 集合。只要程序里存在稳定的 region 形状，它就能覆盖传统 stride/next-line 很难预测的 miss。
+SMS 的关键不是更激进，是换了预测单位：region generation 收集训练样本，`PC + offset` 做跨地址复用，bitmask 表达稀疏 block 集合。只要程序里有稳定的 region 形状，它就能覆盖 stride/next-line 很难预测的 miss。
 
 #series-navbar("zh", nav)

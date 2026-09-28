@@ -1,16 +1,16 @@
 #import "../index.typ": template, tufted, doc-toc
-#show: template.with(locale: "zh", route: "docs/bring-up-checklist/", title: "Bring-up 检查清单参考")
+#show: template.with(locale: "zh", route: "docs/bring-up-checklist/", title: "Bring-up 检查清单")
 
-= Bring-up 检查清单参考
+= Bring-up 检查清单
 
 #doc-toc("zh")
 
 #tufted.margin-note[
   一页可快速扫读的 \
-  bring-up 参考清单
+  bring-up 清单
 ]
 
-这一页就是给调试时快速扫的，不走完整叙述。卡住的时候先看这些问题，确认自己没有跳过最基本的边界。
+这一页就是给调试时快速扫的，不走完整叙述。卡住的时候先把这些问题过一遍，确认没漏掉最基本的检查。
 
 == 特权级前提
 
@@ -33,12 +33,12 @@
 == 最早能看到的信号
 
 - 最早的一条 console 输出
-- 最早一个可信的 trap 落点
+- 第一个可信的 trap 落点
 - NEMU 和 NPC 首次出现分歧的位置
 - 日志开始沉默的第一个阶段
 
 == 低成本调试提示
 
-- 有没有什么可以先在不重构整条路径的前提下验证？
+- 有没有不用重构整条路径就能先验证的东西？
 - 哪一层最适合先拿已知基线做对比？
 - 现在缺的是信号，还是 transition 本身就没有发生？

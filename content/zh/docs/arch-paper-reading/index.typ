@@ -20,23 +20,23 @@
 
 #doc-toc("zh")
 
-这个系列是把我之前的 paper notes 重新整理成一组方法导向的文章。重点不是复述原文目录，而是把每篇论文提出的方法、依赖的硬件状态、更新规则和设计权衡放在一起讲清楚。
+这个系列由我之前的 paper notes 整理而来。不按原文目录复述，每篇围绕论文的方法本身：依赖什么硬件状态、更新规则是什么、权衡在哪。
 
-目前这一批文章主要集中在几类比较典型的问题上：
+目前这几篇集中在三类问题上：
 
 - latency hiding 与 prefetching
 - translation reach 与 TLB 组织
 - memory dependence prediction
 
-阅读顺序按问题类型排。前面三篇先看几种 latency-hiding 方法，后面两篇转到地址翻译和乱序执行里的内存相关性问题。
+顺序也按问题类型排：前三篇是几种 latency-hiding 方法，后两篇转到地址翻译和乱序执行里的内存相关性问题。
 
 == 建议阅读方式
 
-如果是第一次看，建议顺着编号往下读。
+第一次看的话，顺着编号往下读就行。
 
-- 第 1 篇和第 2 篇可以一起看：一个偏未来 instruction stream look-ahead，一个偏给预取器加反馈控制。
-- 第 3 篇把视角切到 region 级 spatial pattern，是和传统 stride 预取差异非常大的一篇。
-- 第 4 篇和第 5 篇分别落在 MMU 和 OOO memory ordering 上，对应 TLB reach 和 memory dependence prediction。
+- 第 1、2 篇可以一起看：一个用未来 instruction stream 做 look-ahead，一个给预取器加反馈控制。
+- 第 3 篇切到 region 级 spatial pattern，思路和传统 stride 预取差别很大。
+- 第 4、5 篇分别落在 MMU 和 OOO memory ordering 上，对应 TLB reach 和 memory dependence prediction。
 
 == 包含文章
 

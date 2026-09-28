@@ -1,9 +1,9 @@
-#import "../index.typ": template, tufted, content-card, locale-url
+#import "../index.typ": content-card, locale-url, template, tufted
 #show: template.with(locale: "zh", route: "blog/", title: "博客")
 
 = 博客
 
-这里放一些还没有必要整理成完整 docs 的东西：读工具文档时抓到的点、bring-up 里踩到的问题、还有当时觉得值得记下来的判断。
+这里放一些没有整理成 docs 的东西，先堆在这里。
 
 == 推荐阅读
 
@@ -12,25 +12,21 @@
     locale-url("zh", route: "blog/opensbi/"),
     "research-log.svg",
     "为什么一做 Linux Bring-up 就绕不开 OpenSBI",
-    "一篇短笔记，记录我为什么会从抽象的特权级阅读，走到不得不认真看待 M 模式固件和 SBI 边界。",
+    "从特权级一路读到 M 模式固件和 SBI 边界，记录为什么绕不开它。",
     label: "Bring-up 笔记",
   )
   #content-card(
     locale-url("zh", route: "blog/lightsss/"),
     "workflow-guide.svg",
-    "我理解的 LightSSS 在优化什么",
-    "一篇阅读笔记，记录轻量级仿真快照为什么能在长时间 RTL 调试里明显改善回放与定位效率。",
+    "LightSSS 在解决什么问题",
+    "读 LightSSS 的笔记：轻量级仿真快照为什么能加快长时间 RTL 调试里的回放和定位。",
     label: "工具笔记",
   )
   #content-card(
     locale-url("zh", route: "blog/libcheckpoint-alpha/"),
     "reading-notes.svg",
     "把 LibCheckpointAlpha 当作基础设施来读",
-    "一篇围绕 checkpoint 恢复和 bootloader 链接的小文章，解释为什么这种基础设施会改变我对整条软件栈的理解。",
+    "围绕 checkpoint 恢复和 bootloader 链接的读码笔记，看完对整条软件栈的理解会变。",
     label: "阅读笔记",
   )
 ]
-
-== 归档说明
-
-这些文章不会都写成教程。有些只是当时读完一份文档后的理解，有些是调试过程中顺手留下来的记录。标题和标签会尽量说明它是在讲工具、bring-up，还是某个具体项目的阅读笔记。

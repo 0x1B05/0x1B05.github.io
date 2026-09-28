@@ -37,7 +37,7 @@
 
 == device tree 和 memory map 的基本一致性
 
-我还会用一份更枯燥但很必要的 memory-map 检查：
+再往下是一份枯燥但省不掉的 memory-map 检查：
 
 - payload 放置的位置是否真是当前 firmware build 假设的那个地址
 - 有没有 reserved region 和 Linux 或当前 boot payload 想用的空间撞上
@@ -48,14 +48,14 @@
 
 == 最早的“活着”信号
 
-最先有价值的观察通常很小：
+最早的进展信号通常很小：
 
 - 一条 console 输出
 - 一个到达过的已知阶段
 - 一个落在预期位置的 trap
 - 一个至少能说明“停在这里”的 timeout 或 watchdog 迹象
 
-比起没有证据就直接猜更深层的原因，我更愿意先拿到一个可信的小进展信号。
+先拿到一个可信的小信号，比直接猜深层原因靠谱。
 
 == 当启动流程卡住时
 

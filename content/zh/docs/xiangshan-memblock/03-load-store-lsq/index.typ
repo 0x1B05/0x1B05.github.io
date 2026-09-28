@@ -11,11 +11,11 @@
 
 #doc-toc("zh")
 
-MemBlock 里最清楚的结构之一，就是“访存指令”不会被当成一个整体黑盒来处理。load、store address 和 store data 很早就被拆成不同职责，然后再通过 LSQ 和外围控制结构重新协调起来。
+MemBlock 里有一条结构很清晰：访存指令不会被当成一个整体来处理。load、store address 和 store data 很早就拆成三条职责不同的路径，再由 LSQ 和外围控制结构重新协调起来。
 
-== 那个 `loadUnits(i)` 循环非常值得反复看
+== `loadUnits(i)` 接线循环是重点
 
-给每个 `loadUnits(i)` 接线的那段循环，几乎把访存子系统最关键的依赖都摆在了一处：
+给每个 `loadUnits(i)` 接线的那段循环，把访存子系统的大部分关键依赖都摆在了一处：
 
 - 后端 issue 和 feedback
 - DCache 访问
@@ -25,18 +25,18 @@ MemBlock 里最清楚的结构之一，就是“访存指令”不会被当成�
 - misaligned load buffer
 - 写回侧的延迟错误信息
 
-这会让你很快意识到：load unit 并不是一个单独执行器，而是很多共享服务的消费者，也是很多控制结果的生产者。
+看完这个循环就清楚了：load unit 不是独立执行器，它消费一堆共享服务，也生产一堆控制结果。
 
 == 为什么 store address 和 store data 要分开
 
-乱序核里，store 的地址准备好和数据准备好，本来就不保证在同一时刻发生。所以香山把 store 路分成两条：
+乱序核里，store 的地址和数据不保证同时准备好。所以香山把 store 拆成两条路：
 
 - `StoreUnit` 负责 store-address 这一侧，例如地址相关工作和进入 SQ 前的准备
 - store-data 执行单元负责真正要写出的数据一侧
 
-这也是为什么后端接口要分别提供 `issueSta` 和 `issueStd`。这不是编码风格问题，而是微架构里本来就存在的拆分。
+后端接口分开提供 `issueSta` 和 `issueStd`，对应的就是这个拆分，和代码风格无关。
 
-== LSQ 不是“只是一个队列”
+== LSQ 管的不只是排队
 
 LSQ 在这里更像顺序和协调中心：
 
@@ -46,22 +46,20 @@ LSQ 在这里更像顺序和协调中心：
 - rollback / nuke 会通过它参与协调
 - uncache 请求也从这片区域发起
 
-所以 LSQ 不能只被理解为“memory ops 排队的地方”。它实际承担的是顺序、依赖、replay 与可见性协调。
+所以别把 LSQ 只当成 memory ops 排队的地方，它承担的是顺序、依赖、replay 和可见性协调。
 
 #tufted.margin-note[
   #image("imgs/LSQ.svg")
-  香山设计文档里的 LSQ 框图比较适合当成侧边参考图，因为队列、replay 结构和 committed-store buffering 还能保持在同一张图里看清。
+  香山设计文档里的 LSQ 框图。队列、replay 结构和 committed-store buffering 在同一张图里，适合当侧边参考。
 ]
 
-== 这一层我会重点 review 什么
-
-到这章开始，我会真的把一些问题记成检查项：
+== 这一层要记下的检查项
 
 - 各条 load lane 的角色在特殊路径借用后还保持一致吗？
 - store-address 和 store-data 两半在 LSQ 里能保证按预期重新汇合吗？
 - 多个 replay 或 rollback 原因同时出现时，会不会选错真正应该生效的那个？
 - 那些看起来对称的路径，实际上有没有隐藏的 lane-specific 例外？
 
-MemBlock 越往下读，我越不愿意默认“这几路应该是对称的”。这个警惕就是从这里开始建立的。
+MemBlock 越往下读，越不能默认“这几路应该是对称的”。这个警惕就是从 LSQ 这一层开始有的。
 
 #series-navbar("zh", nav)

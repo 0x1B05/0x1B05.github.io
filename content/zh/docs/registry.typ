@@ -11,8 +11,8 @@
 #let note-registry = (
   (
     id: "bring-up-checklist",
-    title: "Bring-up 检查清单参考",
-    summary: "一页更扁平的参考清单，用来快速回看特权级假设、firmware handoff、memory map 和调试提示。",
+    title: "Bring-up 检查清单",
+    summary: "卡住时快速回看的清单：特权级假设、firmware handoff、memory map 和调试提示。",
     route: "docs/bring-up-checklist/",
     thumbnail: "sandbox-project.svg",
     label: "清单",

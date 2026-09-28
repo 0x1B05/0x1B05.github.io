@@ -232,6 +232,11 @@
     });
   }
 
+  function setSearchPageStatus(results, message) {
+    results.innerHTML = '<p class="search-page__status"></p>';
+    results.firstChild.textContent = message;
+  }
+
   function attachSearchPage(root) {
     const results = document.getElementById("search-results");
     const template = root ? root.querySelector("#site-search-result-template") : null;
@@ -249,19 +254,16 @@
     }
 
     if (!query) {
-      results.innerHTML = '<p class="search-page__status"></p>';
-      results.firstChild.textContent = labels.hint;
+      setSearchPageStatus(results, labels.hint);
       return;
     }
 
-    results.innerHTML = '<p class="search-page__status"></p>';
-    results.firstChild.textContent = labels.loading;
+    setSearchPageStatus(results, labels.loading);
 
     fetchResults(query, FULL_RESULT_LIMIT, false)
       .then(function (fetched) {
         if (!fetched || fetched.length === 0) {
-          results.innerHTML = '<p class="search-page__status"></p>';
-          results.firstChild.textContent = labels.empty;
+          setSearchPageStatus(results, labels.empty);
           return;
         }
 
@@ -269,8 +271,7 @@
         renderResults(results, template, fetched, labels);
       })
       .catch(function () {
-        results.innerHTML = '<p class="search-page__status"></p>';
-        results.firstChild.textContent = labels.error;
+        setSearchPageStatus(results, labels.error);
       });
   }
 

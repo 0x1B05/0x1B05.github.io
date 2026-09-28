@@ -24,13 +24,13 @@
 
 #doc-toc("zh")
 
-这个系列是我读香山 MemBlock 时整理出来的一条复查路径。它不会对着 `MemBlock.scala` 逐行翻译，而是先把几个最容易迷路的点摆出来：MemBlock 在协调什么、哪些接口先看、哪些控制交互值得多留意。
+这是我读香山 MemBlock 时整理的笔记。不逐行翻 `MemBlock.scala`，先把几个容易迷路的点摆清楚：MemBlock 在协调什么、先看哪些接口、哪些控制交互容易出问题。
 
-每一章都会带一点 review 视角，但还是以读懂结构为主。先把图和路径抓住，再去看具体实现，不然很容易在端口和控制信号里散掉。
+每章会带一点 review 视角，但主线是读懂结构。先把地图立住再看实现，不然很容易在端口和控制信号里散掉。
 
 == 建议阅读方式
 
-第一次读建议按顺序来：先看访存总图，再看后端接口、Load/Store/LSQ、MMU 与权限检查、cacheable 与 uncacheable 路径、向量访存，最后看 review checklist。
+第一次读建议按顺序来：访存总图、后端接口、Load/Store/LSQ、MMU 与权限检查、cacheable 与 uncacheable 路径、向量访存，最后是 review checklist。
 
 == 包含章节
 

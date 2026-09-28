@@ -24,7 +24,7 @@
 
 原论文：#link(paper)[An Effective On-Chip Preloading Scheme to Reduce Data Access Penalty (DOI)]
 
-这篇 paper 有点老了，主要关心的问题是 L1 data cache 带来的 CPI 代价。
+这篇 paper 有点老了，关心的是 L1 data cache 带来的 CPI 代价。
 
 片上 cache 很小，而且通常是 direct-mapped。单纯的 demand fetching 处理不了 compulsory miss，也很难把数据及时准备好。所以这篇 paper 要解决的问题是：*能不能在对应 load 指令执行前，把预计会访问的数据块提前装到 data cache 里，从而减少 data access penalty？*
 
@@ -32,44 +32,44 @@
 
 === Motivation
 
-作者把支持的data reference 分成几类：
+作者把支持的 data reference 分成几类：
 - scalar: 简单变量访问
 - zero stride: 在某个 loop level 上，访问的是同一个位置
 - constant stride: 每次按固定步长推进，步长不一定小
 
-对以上规则的 load/store 地址模式做 aggressive preloading, 而对于irregular的访问, 比如链表、间接寻址、不可预测下标这类访问尽量避免预取.
+对这类规则的 load/store 地址模式做 aggressive preloading；irregular 的访问，比如链表、间接寻址、不可预测下标，就尽量不预取。
 
-作者这里还强调了 large stride。普通 cache 和常见 prefetch 对小 stride 还行，但对大 stride 帮助十分有限。比如 block 很小，stride 却是 400B，这时候访问了一个块，下一次访问的是远处另一个块，传统相邻块 prefetch 根本抓不到。这篇 paper 的目标是：只要访问模式稳定，即使 stride 很大也能提前 preload。
+作者还强调了 large stride。普通 cache 和常见 prefetch 对小 stride 还行，对大 stride 基本没办法：block 很小、stride 却是 400B 时，访问了一个块，下一次访问的是远处另一个块，相邻块 prefetch 根本抓不到。这篇 paper 想做到的是，只要访问模式稳定，stride 再大也能提前 preload。
 
 ==== 矩阵乘法
 
-矩阵乘法内层循环一下把几种 pattern 都展示出来了。例如类似：
+矩阵乘法的内层循环把几种 pattern 都凑齐了：
 - `B[i,k]`: 可能是 constant stride
 - `C[k,j]`: 也可能是 constant stride，但 stride 比较大
 - `A[i,j]`: 可能是 zero stride，因为在某个 loop level 里不断复用同一个位置
 
 === 硬件结构
 
-这篇论文的硬件结构可以拆成四个状态部件：
-- BPT(Branch Prediction Table): 因为 look-ahead PC 要沿着未来控制流跑，所以必须依赖分支预测。
-- LA-PC(Look-Ahead Program Counter): 这是一个跑在真实 PC 前面的辅助 PC，用来提前看到未来会执行哪些 load/store。
-- RPT(Reference Prediction Table): 记录每条 load/store 指令以前访问过的地址、stride 和状态，用来预测这条指令下一次会访问哪里。
-- ORL(Outstanding Request List): 记录已经发出去但还没回来的 preload 请求，防止重复发同一个块。
+硬件部分可以拆成四个状态部件：
+- BPT(Branch Prediction Table): look-ahead PC 要沿未来控制流跑，必须依赖分支预测。
+- LA-PC(Look-Ahead Program Counter): 跑在真实 PC 前面的辅助 PC，提前看到未来会执行哪些 load/store。
+- RPT(Reference Prediction Table): 记录每条 load/store 以前访问过的地址、stride 和状态，预测它下一次会访问哪里。
+- ORL(Outstanding Request List): 记录已发出还没回来的 preload 请求，避免同一个块重复发。
 
-整个系统运行时，真实 `PC` 负责提交程序语义；`LA-PC` 沿预测控制流提前推进。`LA-PC` 走到某条历史上见过的 load/store 时，会查 RPT 预测下一次访问地址。如果对应 block 不在 cache，且没在 ORL 里，就发一个 preload 请求。
+运行时，真实 `PC` 负责提交程序语义，`LA-PC` 沿预测控制流提前推进。`LA-PC` 走到某条历史上见过的 load/store，就查 RPT 预测下一次访问地址；对应 block 不在 cache、也没在 ORL 里，就发一个 preload 请求。
 
 ==== decoupled architecture
 
-作者把这个设计和 decoupled architecture 做过比较。两者都试图把数据访问准备提前到实际计算之前，但这套 preloading 方案更轻量，因为：
+作者把这个设计和 decoupled architecture 做过比较。两者都想把数据访问的准备提前到实际计算之前，但这套 preloading 方案更轻量：
 + 不需要完整拆成两条执行流
-+ 不需要编译器特别配合
++ 不需要编译器配合
 + 也不需要解码整个预测出来的未来指令流
 
-这是他们强调“硬件支持简单、成本更低”的地方。
+按作者的说法，好处就是硬件支持简单、成本低。
 
 === RPT
 
-`RPT` 是 `Reference Prediction Table`。它按“哪条 load/store 指令”建表。RPT 的每个 entry 都对应一条 load/store 指令, 每个 RPT entry 里有 4 个字段：
+`RPT` 是 `Reference Prediction Table`，按“哪条 load/store 指令”建表，每个 entry 对应一条 load/store 指令，有 4 个字段：
 - `PC tag`: 对应这条 `load/store` 指令本身的地址
 - `prev-addr`: 上一次这条指令真正访问到的操作数地址
 - `stride`: 最近学到的步长
@@ -83,22 +83,22 @@
 
 *只有真实程序执行到那条 load/store，并且真正算出了有效地址，`RPT` 才更新。*
 
-1. 第一次看到某条 load/store, 分配表项, 记下 `prev-addr = addr`, `stride = 0`, 状态进 `initial`
-2. 第二次看到同一条指令, 新的 `stride = addr - old_prev_addr`, `prev-addr = addr`, 状态转到 `transient`
-3. 如果下一次地址正好等于 `prev-addr + stride`, 说明 stride 连续成立, 状态进入或保持 `steady`
-4. 如果在 `steady` 状态下失配, 说明原来的稳定模式崩了, 更新 `prev-addr`, 先退回 `initial`
-5. 如果在 `transient` 状态下又失配, 说明上次看到的 stride 很可能只是偶然, 用新的地址差重写 `stride`, 进入 `no prediction`
+1. 第一次看到某条 load/store，分配表项，记下 `prev-addr = addr`, `stride = 0`，状态进 `initial`
+2. 第二次看到同一条指令，新的 `stride = addr - old_prev_addr`, `prev-addr = addr`，状态转到 `transient`
+3. 下一次地址正好等于 `prev-addr + stride`，说明 stride 连续成立，状态进入或保持 `steady`
+4. 在 `steady` 状态下失配，说明原来的稳定模式崩了，更新 `prev-addr`，退回 `initial`
+5. 在 `transient` 状态下又失配，说明上次看到的 stride 很可能只是巧合，用新的地址差重写 `stride`，进入 `no prediction`
 
-LA-PC 只消费RPT, 遇到 load 时，这里分成两种情况。
-1. LA-PC 遇到某条 load 指令，但 RPT 里没有 entry，或者 entry 在 no prediction那就什么也不做。
-2. LA-PC 遇到的 load 在 RPT 里有 entry，而且当前允许预测, 那就生成预测地址：`predicted address = prev-addr + stride`
+LA-PC 只读 RPT，不更新它。遇到 load 时分两种情况：
+1. RPT 里没有这条指令的 entry，或者 entry 在 `no prediction`，什么也不做。
+2. 有 entry 且当前状态允许预测，就生成预测地址：`predicted address = prev-addr + stride`
 
 然后检查：
 - 这个 block 是不是已经在 cache 里
 - 这个请求是不是已经在 ORL 里挂着了
 如果都不是，就发起一次 preload，并把这个请求地址登记进 ORL。
 
-==== 用一条规则 load 走一遍会更清楚
+==== 举个例子
 
 #example(title: "用一条规则 load 走一遍")[
   假设同一条 load 的实际地址依次是：
@@ -113,7 +113,7 @@ LA-PC 只消费RPT, 遇到 load 时，这里分成两种情况。
   3. 第三次看到 `1128`, 正好满足 `1064 + 64`, `prev-addr = 1128`, `state = steady`
   4. 第四次看到 `1192`, 继续满足 `1128 + 64`, `steady` 维持, 到这一步以后，`LA-PC` 才会比较放心地在未来提前用这条 load 做 preload。
 
-  如果后来突然来了一个 `1400`, 这就说明原来的规则断了, 这条 load 会从 `steady` 退回去
+  如果后来突然来了 `1400`，说明原来的规则断了，这条 load 会从 `steady` 退回去
 ]
 
 #figure(
@@ -159,7 +159,7 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
     - 命中，这个地址对应的是一条 load/store，而且以前见过它的地址模式。
     - 没命中，就当它不是一个可预测的 load/store，不做 preload。
 
-这里隐含了一个重要前提：*固定长度指令*
+这里有个隐含前提：*固定长度指令*
 这篇论文的目标机器是典型 RISC-like 结构，例子里也是固定 4-byte instruction。所以 LA-PC 平时可以按固定步长推进：`LA-PC = LA-PC + 4`。如果是变长 ISA，事情会复杂很多，因为不解码就未必知道下一条指令边界。
 
 此外这套机制*依赖历史已见过的代码行为*。如果一段代码是第一次执行，真实 `PC` 还没训练过 `RPT`/`BPT`，那 `LA-PC` 就没法从表里知道：
@@ -172,9 +172,9 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
   500: lw r4, 0(r2)
 ```
 
-第一次程序实际执行到 `500` 时，真实 PC 会取指、解码、算出地址，然后把 “指令地址 500 是一条 `load/store`，它最近访问了什么地址” 记进 `RPT`
+程序第一次实际执行到 `500` 时，真实 PC 取指、解码、算出地址，然后把“指令地址 500 是一条 `load/store`，最近访问了什么地址”记进 `RPT`。
 
-以后 LA-PC 如果跑到地址 `500`，它根本不需要再把那条 `lw` 解码一遍。它只需要查 `RPT[500]`: 如果查到了，就说明 500 这个地址是条 memory instruction, 而且它有历史模式可用, 于是就可以基于该 entry 的 `prev-addr + stride` 生成 preload 地址。
+以后 LA-PC 跑到地址 `500`，不需要再把那条 `lw` 解码一遍，只要查 `RPT[500]`：查到了，说明 500 是条 memory instruction，而且有历史模式可用，就可以用这个 entry 的 `prev-addr + stride` 生成 preload 地址。
 
 #figure(
   image("imgs/preloading-topology.svg"),
@@ -200,15 +200,15 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
 - 小 d：预测保守，但可能来不及
 - 大 d：预测激进，但错误代价更高
 
-论文实验里看到，对于较受限的 memory model，`d` 设在一个中等区间通常比较好，大致像 $6 <= d <= 26$ 这样的范围会比较合理。如果内存系统已经很流水、很宽松，就没那么需要把 `d` 拉得很大。
+论文实验里，较受限的 memory model 下 `d` 取中等区间比较好，大致 $6 <= d <= 26$。内存系统本身已经很流水、很宽松的话，就不需要把 `d` 拉得太大。
 
-=== miss时怎么处理
+=== miss 时怎么处理
 
-==== 读miss
+==== 读 miss
 
-如果真实 PC 发生 read miss，cache controller 会先查 ORL。
-- 如果这个块已经被某次 preload 请求过了, 那就等待这个已经在路上的块到达。这个等待比完整 miss 短，论文叫它 hit-wait
-- 如果 ORL 里没有, 那就发一个正常 demand load，而且它优先级高于那些排队中的 preload(buffered preload requests)
+真实 PC 发生 read miss 时，cache controller 先查 ORL。
+- 块已经被某次 preload 请求过了，就等这个已经在路上的块到达。这个等待比完整 miss 短，论文叫它 hit-wait
+- ORL 里没有，就发正常的 demand load，优先级高于排队中的 preload(buffered preload requests)
 
 一个典型的仲裁策略：
 
@@ -219,11 +219,11 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
       发 preload
 ```
 
-可以想象 cache/memory 控制器前面有两个来源 Demand queue && Preload queue, 仲裁器每一拍或者每次通道空闲时，先看 Demand queue。通道可用时:
+相当于 cache/memory 控制器前面挂着两个队列：Demand queue 和 Preload queue。仲裁器每次通道空闲时，先看 Demand queue：
 1. 如果 Demand queue 非空，选 demand
-2. 否则，如果 Preoad queue 非空，选 preload
+2. 否则，如果 Preload queue 非空，选 preload
 
-==== 写miss
+==== 写 miss
 
 论文采用的是 *write-allocate, copy-back*。也就是说，写 miss 时先把 block 取回来，再更新目标字。如果 block size 大于一个字，还可以像读 miss 一样触发后续 preload 逻辑。
 
@@ -231,7 +231,7 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
 
 ==== 错误分支预测
 
-如果 LA-PC 是因为错误分支走到某条路径上，发出去的 preload 请求可能就都没意义。所以论文说，若因为 branch prediction 错误需要重置 LA-PC，还在本地缓冲中的 preload 请求会被 flush。
+如果 LA-PC 是因为错误分支走到某条路径上，发出的 preload 请求可能全都没用。所以 branch prediction 出错、需要重置 LA-PC 时，还在本地缓冲中的 preload 请求会被 flush。
 
 一个 preload 请求可能处在三种不同阶段：
 + 阶段 A：刚被产生，还在本地 buffer / queue 里排队
@@ -259,12 +259,12 @@ LA-PC 和真实 PC 一样，也是按预测的指令流前进：
 
 作者用的是 trace-driven simulation。程序跑在一台 DECStation 5000 (R3000 MIPS) 上，采集 data references 和 reference 间隔，再做模拟。
 
-作者这里实验比较了三种架构：
+实验比较了三种架构：
 1. Pure Data Cache: 就是*纯 cache*，没有预装机制。这是 baseline。
 2. add-cost: 原来大小为 N KB 的 data cache 保留不变，另外再加上 256-entry RPT + 256-entry BPT。这代表*愿意多花芯片面积*的设计。
 3. no-cost: 把 N KB cache 砍成 N/2 KB，然后把省出来的面积拿来放 RPT/BPT。这代表*总面积不变*的设计。
 
-还设计了三种memory model
+memory model 也分三种：
 1. non-overlapped: 最保守的模型。一次 miss 基本会把后续推进卡死，等这次访存回来再说。这样的系统里，即使会预取，能发挥的空间也有限。
   ```
   A: [issue][----latency----][transfer]

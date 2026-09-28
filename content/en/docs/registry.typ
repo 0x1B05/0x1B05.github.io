@@ -1,18 +1,19 @@
-#import "./linux-bringup/series.typ": linux-bringup-series
-#import "./xiangshan-memblock/series.typ": xiangshan-memblock-series
+// Registry of docs series and standalone notes shown on the docs landing page.
+// Add a series: create docs/<slug>/series.typ, import it here, and list it in
+// series-registry. Add a note: append an entry to note-registry.
+// Thumbnails live in assets/content-thumbnails/.
 
 #let series-registry = (
-  linux-bringup-series,
-  xiangshan-memblock-series,
+  // my-series,
 )
 
 #let note-registry = (
-  (
-    id: "bring-up-checklist",
-    title: "Bring-up Checklist Reference",
-    summary: "A flat reference sheet for privilege assumptions, firmware handoff, memory map checks, and first-response debugging prompts.",
-    route: "docs/bring-up-checklist/",
-    thumbnail: "sandbox-project.svg",
-    label: "Checklist",
-  ),
+  // (
+  //   id: "<note-id>",
+  //   title: "<note title>",
+  //   summary: "<one-line summary>",
+  //   route: "docs/<slug>/",
+  //   thumbnail: "<thumbnail.svg>",
+  //   label: "<card label>",
+  // ),
 )

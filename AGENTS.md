@@ -23,18 +23,154 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
   - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js` — header controls and root-gateway redirect; preferences are persisted in `localStorage` under keys like `tufted-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
-  - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`, `content-thumbnails/`.
+  - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`, `content-thumbnails/` (card thumbnails referenced by landing pages).
 - `Makefile` — the entire build pipeline (see below).
-- `tests/` — plain Node test scripts (no test framework) plus `tests/helpers/` fixtures.
 - `.github/workflows/deploy.yml` — CI/CD to GitHub Pages.
 - `_site/` — generated build output; never edit by hand. `.deps/` (typst-generated Make depfiles), `node_modules/`, `.reference/`, and `plans/` are also local-only and gitignored.
 
-### Content model
+## Content model
 
-- Pages apply the shell with `#show: template.with(locale: "en" | "zh", route: "<path>/", title: "…")`. Routes are directory-style and must end with a trailing slash.
-- Doc **series** are declared in a `series.typ` inside the series directory (id, title, summary, route, thumbnail, ordered `chapters` list). `content/<locale>/docs/registry.typ` aggregates all `series.typ` files plus standalone reference notes into `series-registry`/`note-registry` for the docs landing page.
-- Files the Makefile excludes from page compilation (they are imports/metadata, not pages): `series.typ`, `registry.typ`, and any file under a path component starting with `_` (`content/**/_*.typ` are shared Typst includes whose changes trigger rebuilds of dependent pages).
+- Pages apply the shell with `#show: template.with(locale: "en" | "zh", route: "<path>/", title: "…")`. Routes are directory-style, must match the page's directory, and must end with a trailing slash.
+- Content directories and file slugs are kebab-case; blog post directories are named by topic slug (no date prefix).
 - English and Chinese trees must stay structurally mirrored; the header language switcher navigates to the *same route* in the opposite locale.
+- Files the Makefile excludes from page compilation (they are imports/metadata, not pages): `series.typ`, `registry.typ`, and any file under a path component starting with `_` (`content/**/_*.typ` are shared Typst includes).
+
+## Writing Content
+
+### Anatomy of a page
+
+Every page is an `index.typ` in its own directory, with images in an `imgs/` subdirectory next to it:
+
+```typst
+#import "../index.typ": template, tufted
+#show: template.with(
+  locale: "en",          // or "zh"
+  route: "blog/<slug>/", // must match the directory, trailing slash
+  title: "<page title>",
+)
+
+= <page title>
+
+Content goes here.
+```
+
+The relative import depth varies (`../index.typ`, `../../index.typ`, …) because each locale root re-exports the shell; importing from the nearest ancestor `index.typ` is what makes the dependency visible to the build.
+
+### Adding a blog post
+
+1. Create `content/<locale>/blog/<slug>/index.typ` using the page skeleton above (route `blog/<slug>/`). Put images in `content/<locale>/blog/<slug>/imgs/`.
+2. Add a card for it at the top of the grid in `content/<locale>/blog/index.typ` (newest first) — a commented example lives in that file.
+3. Mirror the same directory and card in the other locale.
+
+### Adding a docs series
+
+A **series** is a directory `content/<locale>/docs/<series-slug>/` containing:
+
+1. `series.typ` — the series metadata (excluded from page compilation):
+
+```typst
+#let my-series = (
+  id: "my-series",
+  title: "<series title>",
+  summary: "<one-line summary for the docs landing card>",
+  route: "docs/my-series/",
+  thumbnail: "<thumbnail.svg>",
+  begin-route: "docs/my-series/01-first/",
+  chapters: (
+    (
+      id: "first",
+      title: "<chapter title>",
+      summary: "<one-line summary>",
+      route: "docs/my-series/01-first/",
+      order: 1,
+    ),
+    // more chapters, in reading order
+  ),
+)
+```
+
+2. Chapter pages `NN-<slug>/index.typ` (numbered prefixes keep reading order):
+
+```typst
+#import "../../index.typ": template, tufted, series-context, series-navbar, doc-toc
+#import "../series.typ": my-series
+#show: template.with(locale: "en", route: "docs/my-series/01-first/", title: "<chapter title>")
+
+#let series = my-series
+#let nav = series-context(series, "docs/my-series/01-first/")
+
+= <chapter title>
+
+#series-navbar("en", nav)
+
+#doc-toc("en")
+
+…content…
+
+#series-navbar("en", nav)
+```
+
+`series-context` computes previous/next links from the `chapters` list, so the route given here must match the chapter's `route` in `series.typ` exactly.
+
+3. A series landing page `index.typ` in the series directory, which renders the chapter list from the same metadata:
+
+```typst
+#import "../index.typ": template, tufted, content-card, locale-url, series-begin, doc-toc
+#import "./series.typ": my-series
+#show: template.with(locale: "en", route: "docs/my-series/", title: "<series title>")
+
+#let series = my-series
+
+= <series title>
+
+#doc-toc("en")
+
+<introduction>
+
+== Chapters
+
+#html.div(class: "content-grid")[
+  #for chapter in series.chapters [
+    #content-card(
+      locale-url("en", route: chapter.route),
+      "<thumbnail.svg>",
+      chapter.title,
+      chapter.summary,
+      label: "Chapter " + str(chapter.order),
+    )
+  ]
+]
+
+#series-begin("en", series.begin-route)
+```
+
+4. Register the series in `content/<locale>/docs/registry.typ`: import `series.typ` and add it to `series-registry`. The docs landing page renders its cards from this registry.
+
+### Adding a standalone docs note
+
+1. Create `content/<locale>/docs/<slug>/index.typ` as a plain page (the `doc-toc` and callout re-exports can be imported from `../index.typ`).
+2. Append an entry to `note-registry` in `content/<locale>/docs/registry.typ` — a commented example lives in that file.
+
+### Components and boxes
+
+Callouts (`note`, `tip`, `example`, `definition`, `warning`) render as titled boxes; the default title comes from `locale-copy` in `config.typ` and can be overridden with `title:`:
+
+```typst
+#note[Something worth remembering.]
+#warning(title: "Do not do this")[The explanation.]
+```
+
+Docs pages get locale-bound callouts and `doc-toc` through the re-export block in `content/<locale>/docs/index.typ` (chapters import them from `../../index.typ`). On any other page, import what you need from the nearest ancestor `index.typ` (or from `config.typ` directly, passing `locale:` to callouts).
+
+Other building blocks:
+
+- `#doc-toc("en" | "zh")` — table of contents for the current page, used near the top of docs chapters and series landing pages.
+- `#tufted.margin-note[…]` — marginal side note (also used for "further reading" link blocks); `tufted` comes from the ancestor `index.typ` import.
+- `#figure(image("imgs/<file>.svg"), caption: […])` — captioned figure.
+- `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; thumbnails are files in `assets/content-thumbnails/` referenced by bare filename.
+- `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
+- `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
+- Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.
 
 ## Build and Test Commands
 
@@ -78,7 +214,6 @@ make clean
 
 - Typst: use the `html.*` element API (`html.div`, `html.elem("svg", attrs: …)`, etc.) for markup; keep localized strings out of content files — extend the `locale-copy` table in `config.typ` instead. Helper names use kebab-case (`series-navbar`, `content-card`); CSS classes use BEM-ish names (`theme-switcher__option--dark`).
 - JavaScript: plain ES5-compatible IIFEs, no imports/build step, `const`-heavy, defensive `try/catch` around `localStorage` and `matchMedia`. `theme-bootstrap.js` must stay dependency-free and synchronous because it runs before first paint.
-- Content directories and file slugs are kebab-case; blog post directories are named by topic slug (no date prefix).
 - Keep prose and comments in the same bilingual spirit as the rest of the repo: shell/config code and docs are English; page content exists in both `en` and `zh`.
 
 ## Deployment
@@ -89,4 +224,4 @@ make clean
 
 - No secrets or credentials are stored in the repo; the only npm dependency is Pagefind, pinned via `package-lock.json` and installed with `npm ci` in CI.
 - Generated HTML embeds no third-party runtime JS; the only external reference is the Tufte CSS stylesheet loaded from cdnjs in the default `css` list of `site-web` (config.typ).
-- Never edit `_site/` directly and never commit it (gitignored); treat `node_modules/`, `.reference/`, and `plans/` as local-only.
+- Never edit `_site/` directly and never commit it (gitignored); treat `.deps/`, `node_modules/`, `.reference/`, and `plans/` as local-only.

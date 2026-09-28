@@ -1,20 +1,19 @@
-#import "./linux-bringup/series.typ": linux-bringup-series
-#import "./xiangshan-memblock/series.typ": xiangshan-memblock-series
-#import "./arch-paper-reading/series.typ": arch-paper-reading-series
+// docs 落地页展示的系列和独立笔记注册表。
+// 添加系列:新建 docs/<slug>/series.typ,在这里 import 并加进 series-registry。
+// 添加独立笔记:往 note-registry 里追加一条 entry。
+// 卡片缩略图放在 assets/content-thumbnails/。
 
 #let series-registry = (
-  linux-bringup-series,
-  xiangshan-memblock-series,
-  arch-paper-reading-series,
+  // my-series,
 )
 
 #let note-registry = (
-  (
-    id: "bring-up-checklist",
-    title: "Bring-up 检查清单",
-    summary: "卡住时快速回看的清单：特权级假设、firmware handoff、memory map 和调试提示。",
-    route: "docs/bring-up-checklist/",
-    thumbnail: "sandbox-project.svg",
-    label: "清单",
-  ),
+  // (
+  //   id: "<note-id>",
+  //   title: "<笔记标题>",
+  //   summary: "<一句话摘要>",
+  //   route: "docs/<slug>/",
+  //   thumbnail: "<thumbnail.svg>",
+  //   label: "<卡片标签>",
+  // ),
 )

@@ -23,7 +23,8 @@
 
 = Docs
 
-This section keeps the more structured side of my notes: series, shorter working notes, and checklists I expect to revisit while debugging. Right now it is mostly Linux bring-up, XiangShan MemBlock code reading, and architecture paper notes.
+// TODO: one-sentence intro for this section. Series and short notes below are
+// rendered from docs/registry.typ.
 
 == Series
 

@@ -32,7 +32,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
 
 - Pages apply the shell with `#show: template.with(locale: "en" | "zh", route: "<path>/", title: "…")`. Routes are directory-style, must match the page's directory, and must end with a trailing slash.
 - Content directories and file slugs are kebab-case; blog post directories are named by topic slug (no date prefix).
-- English and Chinese trees must stay structurally mirrored; the header language switcher navigates to the *same route* in the opposite locale.
+- English and Chinese trees must stay structurally mirrored; the header language switcher navigates to the *same route* in the opposite locale. (Current exception: `docs/arch-notes/` exists only in the en tree, since the source notes are English.)
 - Files the Makefile excludes from page compilation (they are imports/metadata, not pages): `series.typ`, `registry.typ`, and any file under a path component starting with `_` (`content/**/_*.typ` are shared Typst includes).
 
 ## Writing Content

@@ -140,6 +140,11 @@ article h4 {
     font-size: 1.24rem;
 }
 
+article h5 {
+    margin: 1.6rem 0 0.9rem;
+    font-size: 1.1rem;
+}
+
 html[lang="zh"] :is(h1, h2, h3, h4, h5, h6, .home-link__title, .content-card__title),
 html[lang="zh"] :is(h1, h2, h3, h4, h5, h6, .home-link__title, .content-card__title) em {
     font-style: normal;
@@ -1165,6 +1170,7 @@ article figure {
 figure > svg {
     max-width: 100%;
     height: auto;
+    margin-inline: auto;
     padding: 0.5rem;
     border-radius: var(--radius-md);
     background: #ffffff;

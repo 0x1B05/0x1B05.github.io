@@ -3,7 +3,10 @@
 // series-registry. Add a note: append an entry to note-registry.
 // Thumbnails live in assets/content-thumbnails/.
 
+#import "./arch-notes/series.typ": arch-notes-series
+
 #let series-registry = (
+  arch-notes-series,
   // my-series,
 )
 

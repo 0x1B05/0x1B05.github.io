@@ -912,6 +912,16 @@ CONTENT ENTRY CARDS
 DOCS SERIES
 *******************************************************************************/
 
+/* html.frame() diagrams (cetz etc.) are drawn with hardcoded dark strokes for a
+   light page; give them a light canvas so they stay readable in dark themes. */
+figure > svg {
+    max-width: 100%;
+    height: auto;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    background: #ffffff;
+}
+
 .doc-toc {
     width: min(100%, 42rem);
     margin: 1.15rem 0 1.65rem;

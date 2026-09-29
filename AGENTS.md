@@ -32,7 +32,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
 
 - Pages apply the shell with `#show: template.with(locale: "en" | "zh", route: "<path>/", title: "…")`. Routes are directory-style, must match the page's directory, and must end with a trailing slash.
 - Content directories and file slugs are kebab-case; blog post directories are named by topic slug (no date prefix).
-- English and Chinese trees must stay structurally mirrored; the header language switcher navigates to the *same route* in the opposite locale.
+- English and Chinese trees must stay structurally mirrored; the header language switcher navigates to the *same route* in the opposite locale. (Current exception: `docs/arch-notes/` exists only in the en tree, since the source notes are English.)
 - Files the Makefile excludes from page compilation (they are imports/metadata, not pages): `series.typ`, `registry.typ`, and any file under a path component starting with `_` (`content/**/_*.typ` are shared Typst includes).
 
 ## Writing Content
@@ -167,6 +167,7 @@ Other building blocks:
 - `#doc-toc("en" | "zh")` — table of contents for the current page, used near the top of docs chapters and series landing pages.
 - `#tufted.margin-note[…]` — marginal side note (also used for "further reading" link blocks); `tufted` comes from the ancestor `index.typ` import.
 - `#figure(image("imgs/<file>.svg"), caption: […])` — captioned figure.
+- `#figure(html.frame(<cetz/finite call>), caption: […])` — cetz/finite diagrams; the HTML export drops them unless wrapped in `html.frame`. Shared diagram sources live in a series-local `_diagrams/` directory (see `docs/arch-notes/`). Also note that `#grid` and `#align` contents are dropped by the HTML export and must be unwrapped.
 - `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.
 - `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.

@@ -925,21 +925,17 @@ figure > svg {
 .doc-toc {
     width: min(100%, 42rem);
     margin: 1.15rem 0 1.65rem;
-    padding: 0.95rem 1.05rem;
-    border: 1px solid var(--border);
-    border-left: 0.28rem solid var(--accent);
+    padding: 0.8rem 1.1rem 0.9rem;
     border-radius: var(--radius-md);
-    background: var(--surface-card);
-    box-shadow: var(--shadow-card);
+    background: var(--surface-soft);
 }
 
 .doc-toc__title {
-    margin-bottom: 0.45rem;
+    margin-bottom: 0.35rem;
     color: var(--text-faint);
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
 }
 
 .doc-toc nav[role="doc-toc"] {
@@ -952,14 +948,19 @@ figure > svg {
 }
 
 .doc-toc ol ol {
-    margin-top: 0.2rem;
-    padding-left: 1rem;
+    margin-top: 0.15rem;
+    padding-left: 1.1rem;
+    border-left: 1px solid var(--border);
 }
 
 .doc-toc li {
-    margin: 0.18rem 0;
-    font-size: 0.98rem;
-    line-height: 1.45;
+    margin: 0.2rem 0;
+    font-size: 0.97rem;
+    line-height: 1.5;
+}
+
+.doc-toc ol ol li {
+    font-size: 0.9rem;
 }
 
 html[lang="zh"] .doc-toc li {
@@ -970,8 +971,15 @@ html[lang="zh"] .doc-toc li {
 .doc-toc a,
 .doc-toc a:link,
 .doc-toc a:visited {
-    color: var(--text-main) !important;
+    color: var(--text-muted) !important;
     text-decoration-color: transparent !important;
+}
+
+.doc-toc li > div > a,
+.doc-toc li > div > a:link,
+.doc-toc li > div > a:visited {
+    color: var(--text-main) !important;
+    font-weight: 600;
 }
 
 .doc-toc a:hover,

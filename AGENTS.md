@@ -21,7 +21,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
   - `tufted.css` — the main stylesheet (theme tokens, layout, component styles).
   - `custom.css` — an intentionally (near-)empty override hook layered after `tufted.css`; put site-specific tweaks here rather than editing generated output.
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
-  - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js` — header controls and root-gateway redirect; preferences are persisted in `localStorage` under keys like `tufted-theme`.
+  - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js`, `dropdown.js` — header controls and root-gateway redirect; `dropdown.js` drives the language-switcher menu; preferences are persisted in `localStorage` under keys like `tufted-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
   - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`. Card thumbnails go in `assets/content-thumbnails/` (create it when you add the first card).
 - `Makefile` — the entire build pipeline (see below).
@@ -165,7 +165,7 @@ Locale-bound callouts, `doc-toc`, and the series helpers are re-exported from ea
 Other building blocks:
 
 - `#doc-toc("en" | "zh")` — table of contents for the current page, used near the top of docs chapters and series landing pages.
-- `#tufted.margin-note[…]` — marginal side note (also used for "further reading" link blocks); `tufted` comes from the ancestor `index.typ` import.
+- `#tufted.margin-note[…]` — small in-flow aside (also used for "further reading" link blocks); `tufted` comes from the ancestor `index.typ` import. Actual footnotes (`#footnote[…]`) render as superscript markers that reveal their body in a hover/focus popup, and figure captions render below the figure — the site does not use page-margin notes; the layout is a single centered column.
 - `#figure(image("imgs/<file>.svg"), caption: […])` — captioned figure.
 - `#figure(html.frame(<cetz/finite call>), caption: […])` — cetz/finite diagrams; the HTML export drops them unless wrapped in `html.frame`. Shared diagram sources live in a series-local `_diagrams/` directory (see `docs/arch-notes/`). Also note that `#grid` and `#align` contents are dropped by the HTML export and must be unwrapped.
 - `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.

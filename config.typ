@@ -109,6 +109,7 @@
   moon: "M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z",
   search: "M21 21l-4.35-4.35m1.35-5.15a6.5 6.5 0 11-13 0 6.5 6.5 0 0113 0z",
   system: "M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25",
+  globe: "M12 21a9 9 0 100-18 9 9 0 000 18zM12 3c-2 0-3.6 4-3.6 9s1.6 9 3.6 9 3.6-4 3.6-9-1.6-9-3.6-9zM3 12h18",
 )
 
 #let theme-icon(kind, class: "") = {
@@ -149,19 +150,41 @@
   html.a(href: href, class: link-class, title)
 }
 
-#let language-switcher-entry(locale, target-locale, route, label) = {
+#let language-switcher-option(locale, target-locale, route, label, badge) = {
+  let body = [
+    #html.elem("span", attrs: (class: "language-switcher__option-icon", "aria-hidden": "true"))[#badge]
+    #html.span(class: "language-switcher__option-label")[#label]
+  ]
+
   if locale == target-locale {
-    html.elem("span", attrs: (class: "language-switcher__link is-active", "aria-current": "page"))[#label]
+    html.elem("span", attrs: (class: "language-switcher__option is-active", role: "menuitem", "aria-current": "page"))[#body]
   } else {
-    html.a(href: locale-url(target-locale, route: route), class: "language-switcher__link")[#label]
+    html.a(href: locale-url(target-locale, route: route), class: "language-switcher__option", role: "menuitem")[#body]
   }
 }
 
 #let language-switcher(locale, route) = {
   let copy = locale-copy(locale)
 
-  html.elem("div", attrs: (class: "language-switcher", role: "group", "aria-label": copy.language_label))[
-    #language-switcher-entry(locale, "en", route, "EN")#html.elem("span", attrs: (class: "language-switcher__divider", "aria-hidden": "true"))[/]#language-switcher-entry(locale, "zh", route, "中")
+  html.elem("div", attrs: (class: "language-switcher", "data-dropdown": ""))[
+    #html.elem(
+      "button",
+      attrs: (
+        type: "button",
+        class: "language-switcher__button",
+        "aria-label": copy.language_label,
+        "aria-expanded": "false",
+        "aria-haspopup": "menu",
+        "aria-controls": "language-switcher-menu",
+        "data-dropdown-button": "",
+      ),
+    )[
+      #html.elem("span", attrs: (class: "language-switcher__button-icon", "aria-hidden": "true"))[#theme-icon("globe")]
+    ]
+    #html.elem("div", attrs: (id: "language-switcher-menu", class: "language-switcher__menu", role: "menu", "data-dropdown-menu": ""))[
+      #language-switcher-option(locale, "en", route, "English", "EN")
+      #language-switcher-option(locale, "zh", route, "中文", "中")
+    ]
   ]
 }
 
@@ -226,24 +249,45 @@
       "data-search-section-docs": copy.search_section_docs,
       "data-search-section-blog": copy.search_section_blog,
       "data-search-section-cv": copy.search_section_cv,
+      "data-dropdown": "",
     ),
   )[
-    #html.elem("form", attrs: (class: "site-search__form", role: "search", action: action, method: "get"))[
-      #html.elem("label", attrs: ("for": "site-search-input", class: "site-search__label"))[
-        #html.elem("span", attrs: (class: "site-search__icon", "aria-hidden": "true"))[#theme-icon("search", class: "site-search__icon-svg")]#html.span(class: "site-search__label-text")[#copy.search_label]
-      ]
-      #html.input(
-        id: "site-search-input",
-        class: "site-search__input",
-        type: "search",
-        name: "q",
-        placeholder: copy.search_placeholder,
-      )
-      #html.button(type: "submit", class: "site-search__button")[#copy.search_button]
+    #html.elem(
+      "button",
+      attrs: (
+        type: "button",
+        class: "site-search__toggle",
+        "aria-label": copy.search_label,
+        "aria-expanded": "false",
+        "aria-haspopup": "dialog",
+        "aria-controls": "site-search-panel",
+        "data-dropdown-button": "",
+      ),
+    )[
+      #html.elem("span", attrs: (class: "site-search__toggle-icon", "aria-hidden": "true"))[#theme-icon("search")]
     ]
-    #html.elem("div", attrs: (class: "site-search__dropdown", hidden: "hidden"))[
-      #html.elem("div", attrs: (class: "site-search__status"))[]
-      #html.elem("div", attrs: (class: "site-search__results"))[]
+    #html.elem("div", attrs: (id: "site-search-panel", class: "site-search__panel", "data-dropdown-menu": ""))[
+      #html.elem("form", attrs: (class: "site-search__form", role: "search", action: action, method: "get"))[
+        #html.elem("label", attrs: ("for": "site-search-input", class: "site-search__label"))[
+          #html.elem("span", attrs: (class: "site-search__icon", "aria-hidden": "true"))[#theme-icon("search", class: "site-search__icon-svg")]#html.span(class: "site-search__label-text")[#copy.search_label]
+        ]
+        #html.elem(
+          "input",
+          attrs: (
+            id: "site-search-input",
+            class: "site-search__input",
+            type: "search",
+            name: "q",
+            placeholder: copy.search_placeholder,
+            "data-dropdown-focus": "",
+          ),
+        )
+        #html.button(type: "submit", class: "site-search__button")[#copy.search_button]
+      ]
+      #html.elem("div", attrs: (class: "site-search__dropdown", hidden: "hidden"))[
+        #html.elem("div", attrs: (class: "site-search__status"))[]
+        #html.elem("div", attrs: (class: "site-search__results"))[]
+      ]
     ]
     #html.elem("template", attrs: (id: "site-search-result-template"))[
       #html.a(href: "#", class: "site-search-result")[
@@ -352,6 +396,37 @@
 
 #let warning(body, title: auto, locale: "en") = callout-kind("warning", body, title: title, locale: locale)
 
+// --- Notes and figures ---
+
+// Footnotes become superscript markers whose body pops up on hover/focus
+// (styled via .note-ref in tufted.css); nothing is placed in the page margin.
+#let template-notes(content) = {
+  show footnote: it => if target() == "html" {
+    let number = counter(footnote).display(it.numbering)
+    html.elem("span", attrs: (class: "note-ref"))[
+      #html.elem("sup", attrs: (class: "note-ref__marker", tabindex: "0"))[#number]#html.elem("span", attrs: (class: "note-ref__body"))[#it.body]
+    ]
+  }
+  content
+}
+
+// Figure captions render below the figure, like a paper (styled via
+// .figure__caption in tufted.css).
+#let template-figures(content) = {
+  show figure.caption: it => (
+    it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body
+  )
+  show figure: it => if target() == "html" {
+    html.figure[
+      #it.body
+      #if it.caption != none [
+        #html.elem("figcaption", attrs: (class: "figure__caption"))[#it.caption]
+      ]
+    ]
+  }
+  content
+}
+
 // --- Series navigation ---
 
 #let series-context(series, route) = {
@@ -430,8 +505,8 @@
   content,
 ) = {
   show: tufted.template-refs
-  show: tufted.template-notes
-  show: tufted.template-figures
+  show: template-notes
+  show: template-figures
   // Center tables in the text column via a wrapper (see .table-wrap). Inside
   // html.frame the target is paged, so diagram tables stay untouched.
   show table: it => context {
@@ -464,6 +539,7 @@
           html.section({
             html.script(src: site-url("assets/theme-switcher.js"))
             html.script(src: site-url("assets/language-switcher.js"))
+            html.script(src: site-url("assets/dropdown.js"))
             html.script(src: site-url("assets/search.js"))
             for (script-link) in body-scripts {
               html.script(src: script-link)

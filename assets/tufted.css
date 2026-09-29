@@ -83,20 +83,62 @@ BASE STYLES
 
 html {
     font-size: 12pt;
-    background: var(--surface-bg);
-    color: var(--text-main);
-}
-
-body {
-    margin: 0;
     background:
         radial-gradient(circle at top right, var(--accent-soft), transparent 28rem),
         linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 16rem),
         var(--surface-bg);
     color: var(--text-main);
+}
+
+body {
+    margin: 0 auto;
+    width: auto;
+    max-width: 46rem;
+    padding-inline: 1.5rem;
+    /* tufte-css paints its own body background (cream in light, near-black
+       in dark); let the html gradient show through the column instead. */
+    background: transparent;
+    color: var(--text-main);
     font-size: 1rem;
     line-height: 1.7;
     min-height: 100vh;
+}
+
+/* Centered single-column layout; these undo tufte-css's left-column +
+   margin-note geometry (55% text width, floated margin notes). */
+section > p,
+section > footer,
+section > table,
+section > dl,
+section > ol,
+section > ul {
+    width: auto;
+    -webkit-padding-start: 1.5rem;
+}
+
+blockquote p,
+blockquote footer {
+    width: auto;
+}
+
+article figure {
+    max-width: 100%;
+    margin: 1.6rem 0;
+    text-align: center;
+}
+
+article figcaption {
+    float: none;
+    max-width: none;
+}
+
+.figure__caption {
+    margin: 0.55rem auto 0;
+    max-width: 36rem;
+    color: var(--text-faint);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    text-align: center;
 }
 
 html[lang="zh"] body {
@@ -230,7 +272,8 @@ header nav {
     align-items: center;
     justify-content: flex-start;
     gap: 0.62rem;
-    flex-wrap: nowrap;
+    flex-wrap: wrap;
+    row-gap: 0.7rem;
     padding: 1.25rem 0 0;
 }
 
@@ -273,7 +316,7 @@ header nav .site-nav__link--brand:focus-visible {
     gap: 0.45rem;
     flex: 0 1 auto;
     min-width: 0;
-    margin-left: 1rem;
+    margin-left: auto;
 }
 
 .site-brand {
@@ -325,42 +368,41 @@ THEME SWITCHER
     display: inline-flex;
     flex: 0 0 auto;
     align-items: center;
-    gap: 0.16rem;
-    padding: 0.22rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--surface-card) 92%, transparent);
+    position: relative;
+    z-index: 20;
 }
 
-.language-switcher__link {
+.language-switcher__button-icon,
+.site-search__toggle-icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 2.3rem;
-    padding: 0.3rem 0.62rem;
-    border-radius: 999px;
-    color: var(--text-faint) !important;
-    font-size: 0.95rem;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    text-transform: uppercase;
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
-.language-switcher__link:hover,
-.language-switcher__link:focus-visible {
-    background: var(--accent-soft);
-    color: var(--text-main) !important;
+.language-switcher__button-icon svg,
+.site-search__toggle-icon svg {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
 }
 
-.language-switcher__link.is-active {
-    background: var(--surface-soft);
-    color: var(--text-main) !important;
-}
-
-.language-switcher__divider {
+.language-switcher__option-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    height: 1rem;
     color: var(--text-faint);
-    font-size: 0.82rem;
-    line-height: 1;
+    font-size: 0.68rem;
+    font-weight: 800;
+}
+
+a.language-switcher__option {
+    background-image: none;
+    text-decoration: none !important;
+    text-shadow: none !important;
 }
 
 .theme-switcher {
@@ -371,7 +413,9 @@ THEME SWITCHER
     z-index: 20;
 }
 
-.language-switcher,
+.language-switcher__button,
+.language-switcher__menu,
+.site-search__toggle,
 .theme-switcher__button,
 .theme-switcher__menu {
     border: 1px solid var(--border);
@@ -379,6 +423,8 @@ THEME SWITCHER
     box-shadow: var(--shadow-soft);
 }
 
+.language-switcher__button,
+.site-search__toggle,
 .theme-switcher__button {
     display: inline-flex;
     align-items: center;
@@ -391,6 +437,10 @@ THEME SWITCHER
     color: var(--text-faint) !important;
 }
 
+.language-switcher__button:hover,
+.language-switcher__button:focus-visible,
+.site-search__toggle:hover,
+.site-search__toggle:focus-visible,
 .theme-switcher__button:hover,
 .theme-switcher__button:focus-visible {
     background: var(--accent-soft);
@@ -411,6 +461,7 @@ THEME SWITCHER
     display: inline-flex;
 }
 
+.language-switcher__menu,
 .theme-switcher__menu {
     position: absolute;
     top: calc(100% + 0.55rem);
@@ -422,13 +473,16 @@ THEME SWITCHER
     display: none;
 }
 
+.language-switcher__menu.is-open,
 .theme-switcher__menu.is-open {
     display: grid;
     gap: 0.2rem;
 }
 
+.language-switcher__option,
 .theme-switcher__option {
     appearance: none;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: 1.15rem minmax(0, 1fr);
     align-items: center;
@@ -443,6 +497,8 @@ THEME SWITCHER
     cursor: pointer;
 }
 
+.language-switcher__option:hover,
+.language-switcher__option:focus-visible,
 .theme-switcher__option:hover,
 .theme-switcher__option:focus-visible {
     background: var(--accent-soft);
@@ -481,12 +537,14 @@ THEME SWITCHER
     height: 1rem;
 }
 
+.language-switcher__option-label,
 .theme-switcher__option-label {
     color: var(--text-main);
     font-size: 0.98rem;
     font-weight: 600;
 }
 
+.language-switcher__option.is-active,
 .theme-switcher__option.is-active {
     background: var(--surface-soft);
     border-color: var(--border-strong) !important;
@@ -505,11 +563,28 @@ SITE SEARCH
 
 .site-search {
     display: inline-flex;
-    flex: 0 1 18.5rem;
-    min-width: min(100%, 14rem);
-    max-width: 18.5rem;
+    flex: 0 0 auto;
+    align-items: center;
     position: relative;
-    z-index: 15;
+    z-index: 20;
+}
+
+.site-search__panel {
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    right: 0;
+    display: none;
+    width: min(22rem, calc(100vw - 2rem));
+    padding: 0.45rem;
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    background: color-mix(in srgb, var(--surface-card) 96%, transparent);
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-soft);
+}
+
+.site-search__panel.is-open {
+    display: block;
 }
 
 .site-search__form {
@@ -517,6 +592,7 @@ SITE SEARCH
     grid-template-columns: auto minmax(0, 1fr) auto;
     align-items: center;
     gap: 0.55rem;
+    box-sizing: border-box;
     width: 100%;
     margin: 0;
     padding: 0.24rem 0.32rem 0.24rem 0.58rem;
@@ -604,21 +680,10 @@ SITE SEARCH
 }
 
 .site-search__dropdown {
-    position: absolute;
-    top: calc(100% + 0.55rem);
-    left: auto;
-    right: 0;
     display: grid;
     gap: 0.3rem;
-    width: min(24rem, calc(100vw - 2rem));
-    max-width: min(24rem, calc(100vw - 2rem));
-    min-width: min(100%, 18rem);
-    padding: 0.45rem;
-    border: 1px solid var(--border);
-    border-radius: 1rem;
-    background: color-mix(in srgb, var(--surface-card) 96%, transparent);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-soft);
+    margin-top: 0.45rem;
+    padding: 0.2rem;
 }
 
 .site-search__dropdown[hidden] {
@@ -1051,6 +1116,7 @@ html.theme-dark .callout--warning { --callout-accent: #d88a92; }
     flex-wrap: wrap;
     gap: 0.75rem 0.9rem;
     align-items: center;
+    justify-content: center;
     margin: 1.35rem 0 1.75rem;
     padding: 0.95rem 0;
     border-top: 1px solid var(--border);
@@ -1271,23 +1337,53 @@ FOOTER
 FOOTNOTES AND MARGIN NOTES
 *******************************************************************************/
 
-.footnote-ref,
-.footnote-ref + .marginnote {
-    --highlight: transparent;
-    background-color: var(--highlight);
-    box-shadow: 0 0 0 5px var(--highlight);
-    border-radius: var(--radius-sm);
-    transition: background-color 0.3s ease 1s, box-shadow 0.3s ease 1s;
+/* Footnotes: a superscript marker; the note body pops up on hover/focus. */
+.note-ref {
+    position: relative;
 }
 
-.footnote-ref:hover + .marginnote {
-    --highlight: var(--accent-soft);
-    transition-delay: 0s;
+.note-ref__marker {
+    padding: 0 0.08em;
+    color: var(--link);
+    cursor: help;
 }
 
-.footnote-ref:has(+ .marginnote:hover) {
-    --highlight: color-mix(in srgb, var(--accent-soft) 80%, transparent);
-    transition-delay: 0s;
+.note-ref__body {
+    display: none;
+    position: absolute;
+    bottom: calc(100% + 0.45rem);
+    left: 50%;
+    transform: translateX(-50%);
+    width: max-content;
+    max-width: min(22rem, 82vw);
+    padding: 0.55rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    background: var(--surface-card);
+    box-shadow: var(--shadow-soft);
+    color: var(--text-main);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    text-align: left;
+    z-index: 40;
+}
+
+.note-ref:hover .note-ref__body,
+.note-ref:focus-within .note-ref__body {
+    display: block;
+}
+
+/* Standalone margin notes (tufted.margin-note) become in-flow asides. */
+.marginnote {
+    float: none;
+    display: block;
+    width: auto;
+    margin: 0.9rem 0;
+    padding-left: 1rem;
+    border-left: 2px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    line-height: 1.6;
 }
 
 a.footnote-ref-link {
@@ -1332,20 +1428,6 @@ RESPONSIVE LAYOUT
         flex-wrap: wrap;
         justify-content: flex-end;
         margin-left: 0;
-    }
-
-    .site-search {
-        order: 99;
-        flex: 1 0 100%;
-        max-width: none;
-    }
-
-    .site-search__dropdown {
-        left: 0;
-        right: 0;
-        width: auto;
-        max-width: none;
-        min-width: 100%;
     }
 }
 

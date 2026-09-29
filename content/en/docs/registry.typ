@@ -11,12 +11,12 @@
 )
 
 #let note-registry = (
-  // (
-  //   id: "<note-id>",
-  //   title: "<note title>",
-  //   summary: "<one-line summary>",
-  //   route: "docs/<slug>/",
-  //   thumbnail: "<thumbnail.svg>",
-  //   label: "<card label>",
-  // ),
+  (
+    id: "ai-inference",
+    title: "AI Inference",
+    summary: "FlashAttention, KV cache, Flash-Decoding, GQA, PagedAttention, and MLA — the attention-side toolbox of modern LLM serving.",
+    route: "docs/ai-inference/",
+    thumbnail: "ai-inference.svg",
+    label: "Note",
+  ),
 )

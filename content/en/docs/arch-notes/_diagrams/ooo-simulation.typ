@@ -343,9 +343,12 @@
       #v(6pt)
       #align(center)[
         #text(size: 8.8pt, weight: "bold", fill: _rat-accent)[Register Alias Table]
-        #v(2pt)
-        #_rat-table(cycle)
       ]
+      #v(2pt)
+      // Site note: outside align(center) so the fr columns expand to the full
+      // block width — inside align() the table shrinks to content width and
+      // its rules end up shorter than the banner/RS tables above and below.
+      #_rat-table(cycle)
       #v(7pt)
       #grid(
         columns: (1fr, 1fr),

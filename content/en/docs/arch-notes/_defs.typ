@@ -5,3 +5,11 @@
 #let redt(content) = text(fill: rgb("#DC143C"), content)
 #let bluet(content) = text(fill: rgb("#1E90FF"), content)
 #let greent(content) = text(fill: rgb("#32CD32"), content)
+
+// The HTML export silently drops text(fill: ...). ctext keeps the color as an
+// inline style so colored emphasis survives (used for register names, RF/ROB
+// headings, and status text in the source notes).
+#let ctext(color, body, weight: "regular") = {
+  let w = if weight == "bold" { "bold" } else { "normal" }
+  html.elem("span", attrs: (style: "color: " + color + "; font-weight: " + w), body)
+}

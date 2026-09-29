@@ -162,7 +162,7 @@ A hardware structure that keeps information about all instructions that are deco
       inset: 5pt,
       align: center + horizon,
       stroke: 0.55pt,
-      table.cell(fill: rgb("#E6F4EA"))[#text(fill: rgb("#0B6B37"))[V]],
+      table.cell(fill: rgb("#E6F4EA"))[#ctext("#0B6B37")[V]],
       table.cell(fill: rgb("#E8F0FE"))[#text(
         fill: rgb("#1A41AC"),
       )[DestReg\ ID]],
@@ -175,11 +175,11 @@ A hardware structure that keeps information about all instructions that are deco
       table.cell(fill: rgb("#E8F0FE"))[#text(
         fill: rgb("#1A41AC"),
       )[Store\ Data]],
-      table.cell(fill: rgb("#FDECEC"))[#text(fill: rgb("#C5221F"))[PC]],
+      table.cell(fill: rgb("#FDECEC"))[#ctext("#C5221F")[PC]],
       table.cell(fill: rgb("#E6F4EA"))[#text(
         fill: rgb("#0B6B37"),
       )[Result/data\ valid bits +\ control bits]],
-      table.cell(fill: rgb("#FDECEC"))[#text(fill: rgb("#C5221F"))[Exception?]],
+      table.cell(fill: rgb("#FDECEC"))[#ctext("#C5221F")[Exception?]],
     )
   ],
   caption: [Layout of one ROB entry. It holds the destination or store result, the status needed to decide readiness, and the information needed for precise recovery.],
@@ -212,16 +212,16 @@ A register value can be in the register file, reorder buffer, (or bypass/forward
 )[
   | *Instruction* | *Operation* | *Dependence* | *ROB role* |
   | :------------ | :---------- | :---------------------- | :----------- |
-  | I0 | MUL R1, R2 -> #text(fill: rgb("#1A41AC"), weight: "bold")[R3]  |                         | E0, old R3 version |
-  | I1 | MUL #text(fill: rgb("#1A41AC"), weight: "bold")[R3], R4 -> R11 | RAW: reads R3 from I0 | E1, waits for E0 |
-  | I2 | ADD R5, R6 -> #text(fill: rgb("#1A41AC"), weight: "bold")[R3]  | WAW: newer write to R3 | E2, new R3 version |
-  | I3 | ADD #text(fill: rgb("#1A41AC"), weight: "bold")[R3], R8 -> R12 | RAW: reads R3 from I2 | E3, waits for E2 |
+  | I0 | MUL R1, R2 -> #ctext("#1A41AC", weight: "bold")[R3]  |                         | E0, old R3 version |
+  | I1 | MUL #ctext("#1A41AC", weight: "bold")[R3], R4 -> R11 | RAW: reads R3 from I0 | E1, waits for E0 |
+  | I2 | ADD R5, R6 -> #ctext("#1A41AC", weight: "bold")[R3]  | WAW: newer write to R3 | E2, new R3 version |
+  | I3 | ADD #ctext("#1A41AC", weight: "bold")[R3], R8 -> R12 | RAW: reads R3 from I2 | E3, waits for E2 |
 ]
 
 Initially, all registers are valid in the register file, and the ROB is empty.
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (auto, 1fr, auto),
       inset: 3pt,
@@ -238,7 +238,7 @@ Initially, all registers are valid in the register file, and the ROB is empty.
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -255,7 +255,7 @@ Initially, all registers are valid in the register file, and the ROB is empty.
 
 Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (auto, 1fr, auto),
       inset: 3pt,
@@ -273,7 +273,7 @@ Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -295,7 +295,7 @@ First check
 - R4 is available? Yes, suppose R4=4
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (auto, 1fr, auto),
       inset: 3pt,
@@ -316,7 +316,7 @@ First check
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -335,7 +335,7 @@ Suppose there's a gap between I0 and I1. When I1 wants to get R3, where could R3
 - Not in the RF, cause valid bit is zero.
 - Suppose R3 have written R3 in ROB.
   
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -353,7 +353,7 @@ Suppose there's a gap between I0 and I1. When I1 wants to get R3, where could R3
 
 Decode I2: ADD R5,R6->R3
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (auto, 1fr, auto),
       inset: 3pt,
@@ -376,7 +376,7 @@ Decode I2: ADD R5,R6->R3
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -396,7 +396,7 @@ The only reason that these two instructions are writing to R3 is because there a
 
 Decode I3: ADD R3, R8 -> R12
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (auto, 1fr, auto),
       inset: 3pt,
@@ -422,7 +422,7 @@ Decode I3: ADD R3, R8 -> R12
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -459,7 +459,7 @@ Content-addressable search is very hardware-intensive. Today, ROB size could be 
 
 Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (1.3fr, 1fr, .95fr, 2fr),
       inset: 3pt,
@@ -477,7 +477,7 @@ Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -496,7 +496,7 @@ No content-addressable search here.
 
 Decode I1: MUL R3, R4 -> R11
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (1.3fr, 1fr, .95fr, 2fr),
       inset: 3pt,
@@ -517,7 +517,7 @@ Decode I1: MUL R3, R4 -> R11
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,
@@ -535,7 +535,7 @@ Decode I1: MUL R3, R4 -> R11
 Decode I2: ADD R5,R6->R3
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Register File (RF)]
+    #ctext("#B65C00", weight: "bold")[Register File (RF)]
     #three-line-table(
       columns: (1.3fr, 1fr, .95fr, 2fr),
       inset: 3pt,
@@ -558,7 +558,7 @@ Decode I2: ADD R5,R6->R3
   
 
 
-    #text(fill: rgb("#B65C00"), weight: "bold")[Reorder Buffer (ROB)]
+    #ctext("#B65C00", weight: "bold")[Reorder Buffer (ROB)]
     #three-line-table(
       columns: (auto, auto, 1fr, 1fr, auto),
       inset: 3pt,

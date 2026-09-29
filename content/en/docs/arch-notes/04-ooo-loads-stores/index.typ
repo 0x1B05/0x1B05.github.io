@@ -102,7 +102,7 @@ This search logic is a content-addressable memory. Its content is the memory add
 == Store-Load Forwarding Complexity
 
 
-  #text(fill: rgb("#B65C00"), weight: "bold")[Store Queue]
+  #ctext("#B65C00", weight: "bold")[Store Queue]
   #three-line-table(
     inset: 3pt,
     align: center,

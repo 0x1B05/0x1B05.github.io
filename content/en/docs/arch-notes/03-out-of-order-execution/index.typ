@@ -42,8 +42,8 @@ For example, in both sequences below the first ADD waits for R3, so later indepe
 )[
   | ID  | *Sequence 1* | *Sequence 2* |
   | :-- | :----------- | :----------- |
-  | I0  | MUL #text(fill: rgb("#1A41AC"))[R3] \<- R1, R2 | LD #text(fill: rgb("#1A41AC"))[R3] \<- R1(0) |
-  | I1  | ADD R3 \<- #text(fill: rgb("#1A41AC"))[R3], R1 | ADD R3 \<- #text(fill: rgb("#1A41AC"))[R3], R1 |
+  | I0  | MUL #ctext("#1A41AC")[R3] \<- R1, R2 | LD #ctext("#1A41AC")[R3] \<- R1(0) |
+  | I1  | ADD R3 \<- #ctext("#1A41AC")[R3], R1 | ADD R3 \<- #ctext("#1A41AC")[R3], R1 |
   | I2  | ADD R4 \<- R6, R7 | ADD R4 \<- R6, R7 |
   | I3  | MUL R5 \<- R6, R8 | MUL R5 \<- R6, R8 |
   | I4  | ADD R7 \<- R9, R9 | ADD R7 \<- R9, R9 |
@@ -267,7 +267,7 @@ Initially:
 ]
 
 
-  #text(fill: rgb("#B65C00"), weight: "bold")[Register Alias Table]
+  #ctext("#B65C00", weight: "bold")[Register Alias Table]
   #three-line-table(inset: 3pt)[
     | *Reg*   | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
     | *Valid* | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1   | 1   |

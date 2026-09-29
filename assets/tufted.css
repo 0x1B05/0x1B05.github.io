@@ -1117,15 +1117,24 @@ TABLES
 
 /* Three-line-table aesthetic: heavy rules above/below, one rule under the
    header, no vertical rules. All rules are drawn on cells so they always
-   span exactly the table's content width. */
+   span exactly the table's content width. Every table is wrapped in a
+   .table-wrap (see the show rule in config.typ) that matches the text
+   column; the table itself shrinks to its content and centers inside it,
+   and overly wide tables scroll. */
 article table {
     display: block;
-    width: min(100%, 42rem);
-    margin: 1.35rem 0 1.6rem;
+    width: fit-content;
+    max-width: 100%;
+    margin: 0 auto;
     border-collapse: collapse;
     overflow-x: auto;
     font-size: 0.95rem;
     line-height: 1.5;
+}
+
+article .table-wrap {
+    width: min(100%, 42rem);
+    margin: 1.35rem 0 1.6rem;
 }
 
 article th,
@@ -1143,6 +1152,7 @@ article th {
 article thead th {
     border-top: 2px solid var(--text-main);
     border-bottom: 1px solid var(--text-main);
+    background: var(--surface-soft);
 }
 
 article table:not(:has(> thead)) > tbody > tr:first-child > td,
@@ -1157,6 +1167,36 @@ article tbody > tr:last-child > th {
 
 article tbody tr + tr {
     border-top: 1px solid var(--border);
+}
+
+/* Two tables side by side, stacking on narrow screens. */
+article .table-pair {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: min(100%, 42rem);
+    margin: 1.35rem 0 1.6rem;
+}
+
+article .table-pair > div {
+    min-width: 0;
+    text-align: center;
+}
+
+article .table-pair .table-wrap {
+    width: 100%;
+    margin: 0.35rem 0 0;
+}
+
+article .table-pair table {
+    width: 100%;
+    margin: 0;
+}
+
+@media (max-width: 760px) {
+    article .table-pair {
+        grid-template-columns: 1fr;
+    }
 }
 
 

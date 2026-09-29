@@ -267,13 +267,13 @@ Initially:
 ]
 
 
-  #ctext("#B65C00", weight: "bold")[Register Alias Table]
-  #three-line-table(inset: 3pt)[
-    | *Reg*   | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
-    | *Valid* | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1   | 1   |
-    | *Value* | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10  | 11  |
-    | *Tag*   | -- | -- | -- | -- | -- | -- | -- | -- | -- | --  | --  |
-  ]
+#ctext("#B65C00", weight: "bold")[Register Alias Table]
+#three-line-table(inset: 3pt)[
+  | *Reg*   | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
+  | *Valid* | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1   | 1   |
+  | *Value* | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10  | 11  |
+  | *Tag*   | -- | -- | -- | -- | -- | -- | -- | -- | -- | --  | --  |
+]
 
 
 ADD and MUL Execution Units have separate Tag & Value buses(output).
@@ -283,6 +283,8 @@ ADD and MUL Execution Units have separate Tag & Value buses(output).
   weight: "bold",
 )[Reservation Stations]
 
+#table-pair(
+  [
     #text(size: 9pt, weight: "bold")[RS for ADD Unit]
     #three-line-table(
       columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
@@ -295,9 +297,8 @@ ADD and MUL Execution Units have separate Tag & Value buses(output).
       | c    | 0    | --     | --     | 0    | --     | -- |
       | d    | 0    | --     | --     | 0    | --     | -- |
     ]
-  
-
-
+  ],
+  [
     #text(size: 9pt, weight: "bold")[RS for MUL Unit]
     #three-line-table(
       columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
@@ -310,7 +311,8 @@ ADD and MUL Execution Units have separate Tag & Value buses(output).
       | z    | 0    | --     | --     | 0    | --     | -- |
       | t    | 0    | --     | --     | 0    | --     | -- |
     ]
-  
+  ],
+)
 
 ==== Cycle 2
 

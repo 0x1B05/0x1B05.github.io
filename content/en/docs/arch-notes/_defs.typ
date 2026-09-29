@@ -13,3 +13,9 @@
   let w = if weight == "bold" { "bold" } else { "normal" }
   html.elem("span", attrs: (style: "color: " + color + "; font-weight: " + w), body)
 }
+
+// Two narrow tables side by side (stacks on narrow screens).
+#let table-pair(left, right) = html.div(class: "table-pair")[
+  #html.div[#left]
+  #html.div[#right]
+]

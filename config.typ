@@ -432,6 +432,11 @@
   show: tufted.template-refs
   show: tufted.template-notes
   show: tufted.template-figures
+  // Center tables in the text column via a wrapper (see .table-wrap). Inside
+  // html.frame the target is paged, so diagram tables stay untouched.
+  show table: it => context {
+    if target() == "paged" { it } else { html.div(class: "table-wrap")[#it] }
+  }
 
   let resolved-footer-locale = if footer-locale == none { lang } else { footer-locale }
 

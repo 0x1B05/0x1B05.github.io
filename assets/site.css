@@ -1,161 +1,153 @@
 /*******************************************************************************
-THEME TOKENS
+FONTS
+
+ET Book (MIT, see assets/fonts/et-book/LICENSE) — the serif face of the site.
+CJK and any missing glyphs fall through to the system serif stack in `body`.
 *******************************************************************************/
 
-:root {
-    --radius-sm: 0.35rem;
-    --radius-md: 0.8rem;
-    --radius-lg: 1.35rem;
-    --surface-bg: #f8fafc;
-    --surface-card: rgba(255, 255, 255, 0.86);
-    --surface-soft: #edf2f7;
-    --surface-strong: #d8dee9;
-    --text-main: #2e3440;
-    --text-muted: #5f6c7b;
-    --text-faint: #7b8794;
-    --link: #5e81ac;
-    --link-strong: #4c6f9a;
-    --accent: #88c0d0;
-    --accent-soft: rgba(136, 192, 208, 0.18);
-    --border: rgba(94, 129, 172, 0.18);
-    --border-strong: rgba(94, 129, 172, 0.34);
-    --shadow-soft: 0 16px 40px rgba(46, 52, 64, 0.08);
-    --shadow-card: 0 14px 32px rgba(94, 129, 172, 0.09);
-    --theme-dark-surface-bg: #2e3440;
-    --theme-dark-surface-card: rgba(59, 66, 82, 0.9);
-    --theme-dark-surface-soft: #3b4252;
-    --theme-dark-surface-strong: #4c566a;
-    --theme-dark-text-main: #eceff4;
-    --theme-dark-text-muted: #d8dee9;
-    --theme-dark-text-faint: #b8c2cf;
-    --theme-dark-link: #88c0d0;
-    --theme-dark-link-strong: #8fbcbb;
-    --theme-dark-accent: #88c0d0;
-    --theme-dark-accent-soft: rgba(136, 192, 208, 0.2);
-    --theme-dark-border: rgba(216, 222, 233, 0.14);
-    --theme-dark-border-strong: rgba(136, 192, 208, 0.38);
-    --theme-dark-shadow-soft: 0 18px 42px rgba(15, 23, 42, 0.34);
-    --theme-dark-shadow-card: 0 16px 34px rgba(15, 23, 42, 0.32);
+@font-face {
+    font-family: "et-book";
+    src: url("fonts/et-book/et-book-roman-line-figures.woff") format("woff");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
 }
 
-html.theme-dark {
-    --surface-bg: var(--theme-dark-surface-bg);
-    --surface-card: var(--theme-dark-surface-card);
-    --surface-soft: var(--theme-dark-surface-soft);
-    --surface-strong: var(--theme-dark-surface-strong);
-    --text-main: var(--theme-dark-text-main);
-    --text-muted: var(--theme-dark-text-muted);
-    --text-faint: var(--theme-dark-text-faint);
-    --link: var(--theme-dark-link);
-    --link-strong: var(--theme-dark-link-strong);
-    --accent: var(--theme-dark-accent);
-    --accent-soft: var(--theme-dark-accent-soft);
-    --border: var(--theme-dark-border);
-    --border-strong: var(--theme-dark-border-strong);
-    --shadow-soft: var(--theme-dark-shadow-soft);
-    --shadow-card: var(--theme-dark-shadow-card);
+@font-face {
+    font-family: "et-book";
+    src: url("fonts/et-book/et-book-display-italic-old-style-figures.woff") format("woff");
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
 }
 
-@media (prefers-color-scheme: dark) {
-    html:not(.theme-light) {
-        --surface-bg: var(--theme-dark-surface-bg);
-        --surface-card: var(--theme-dark-surface-card);
-        --surface-soft: var(--theme-dark-surface-soft);
-        --surface-strong: var(--theme-dark-surface-strong);
-        --text-main: var(--theme-dark-text-main);
-        --text-muted: var(--theme-dark-text-muted);
-        --text-faint: var(--theme-dark-text-faint);
-        --link: var(--theme-dark-link);
-        --link-strong: var(--theme-dark-link-strong);
-        --accent: var(--theme-dark-accent);
-        --accent-soft: var(--theme-dark-accent-soft);
-        --border: var(--theme-dark-border);
-        --border-strong: var(--theme-dark-border-strong);
-        --shadow-soft: var(--theme-dark-shadow-soft);
-        --shadow-card: var(--theme-dark-shadow-card);
-    }
+@font-face {
+    font-family: "et-book";
+    src: url("fonts/et-book/et-book-bold-line-figures.woff") format("woff");
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
 }
 
 
 /*******************************************************************************
-BASE STYLES
+THEME TOKENS
+
+Colors are declared once with light-dark(): the used value follows the
+element's color-scheme, which the theme switcher pins on <html>
+(theme-light / theme-dark); with no class it tracks the OS preference.
+*******************************************************************************/
+
+:root {
+    color-scheme: light dark;
+
+    --radius-sm: 0.35rem;
+    --radius-md: 0.8rem;
+    --radius-lg: 1.35rem;
+
+    --surface-bg: light-dark(#f8fafc, #2e3440);
+    --surface-card: light-dark(rgba(255, 255, 255, 0.86), rgba(59, 66, 82, 0.9));
+    --surface-soft: light-dark(#edf2f7, #3b4252);
+    --surface-strong: light-dark(#d8dee9, #4c566a);
+    --text-main: light-dark(#2e3440, #eceff4);
+    --text-muted: light-dark(#5f6c7b, #d8dee9);
+    --text-faint: light-dark(#7b8794, #b8c2cf);
+    --link: light-dark(#5e81ac, #88c0d0);
+    --link-strong: light-dark(#4c6f9a, #8fbcbb);
+    --accent: #88c0d0;
+    --accent-soft: light-dark(rgba(136, 192, 208, 0.18), rgba(136, 192, 208, 0.2));
+    --border: light-dark(rgba(94, 129, 172, 0.18), rgba(216, 222, 233, 0.14));
+    --border-strong: light-dark(rgba(94, 129, 172, 0.34), rgba(136, 192, 208, 0.38));
+
+    /* light-dark() only accepts colors, so shadow geometry is shared and only
+       the color varies. */
+    --shadow-soft-color: light-dark(rgba(46, 52, 64, 0.08), rgba(15, 23, 42, 0.34));
+    --shadow-card-color: light-dark(rgba(94, 129, 172, 0.09), rgba(15, 23, 42, 0.32));
+    --shadow-soft: 0 16px 40px var(--shadow-soft-color);
+    --shadow-card: 0 14px 32px var(--shadow-card-color);
+}
+
+html.theme-light {
+    color-scheme: light;
+}
+
+html.theme-dark {
+    color-scheme: dark;
+}
+
+
+/*******************************************************************************
+BASE
+
+Single centered text column (~46rem). Headings are italic serif in English;
+Chinese headings reset to upright (synthesized CJK italics look wrong).
 *******************************************************************************/
 
 html {
     font-size: 12pt;
+    /* no-repeat: the canvas background tiles by default, so on pages shorter
+       than the viewport the gradients would repeat in bands down the page. */
     background:
-        radial-gradient(circle at top right, var(--accent-soft), transparent 28rem),
-        linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 16rem),
+        radial-gradient(circle at top right, var(--accent-soft), transparent 28rem) no-repeat,
+        linear-gradient(180deg, rgba(255, 255, 255, 0.35), transparent 16rem) no-repeat,
         var(--surface-bg);
     color: var(--text-main);
 }
 
 body {
     margin: 0 auto;
-    width: auto;
     max-width: 46rem;
     padding-inline: 1.5rem;
-    /* tufte-css paints its own body background (cream in light, near-black
-       in dark); let the html gradient show through the column instead. */
-    background: transparent;
-    color: var(--text-main);
+    font-family: et-book, Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
     font-size: 1rem;
     line-height: 1.7;
-    min-height: 100vh;
-}
-
-/* Centered single-column layout; these undo tufte-css's left-column +
-   margin-note geometry (55% text width, floated margin notes). */
-section > p,
-section > footer,
-section > table,
-section > dl,
-section > ol,
-section > ul {
-    width: auto;
-    -webkit-padding-start: 1.5rem;
-}
-
-blockquote p,
-blockquote footer {
-    width: auto;
-}
-
-article figure {
-    max-width: 100%;
-    margin: 1.6rem 0;
-    text-align: center;
-}
-
-article figcaption {
-    float: none;
-    max-width: none;
-}
-
-.figure__caption {
-    margin: 0.55rem auto 0;
-    max-width: 36rem;
-    color: var(--text-faint);
-    font-size: 0.88rem;
-    line-height: 1.55;
-    text-align: center;
+    color: var(--text-main);
 }
 
 html[lang="zh"] body {
     font-size: 0.98rem;
 }
 
-img,
-svg {
-    max-height: 80vh;
-}
-
 article {
-    padding-bottom: 2rem;
+    padding: 5rem 0 2rem;
 }
 
-article > section {
-    padding-top: 1.5rem;
+article h1,
+article h2,
+article h3 {
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.15;
+}
+
+article h1 {
+    margin: 3rem 0 1.4rem;
+    font-size: 2.6rem;
+}
+
+article h2 {
+    margin: 2.2rem 0 1.2rem;
+    font-size: 1.72rem;
+}
+
+article h3 {
+    margin: 2rem 0 1rem;
+    font-size: 1.44rem;
+}
+
+article h4 {
+    margin: 1.8rem 0 1rem;
+    font-size: 1.24rem;
+}
+
+html[lang="zh"] :is(h1, h2, h3, h4, h5, h6, .home-link__title, .content-card__title),
+html[lang="zh"] :is(h1, h2, h3, h4, h5, h6, .home-link__title, .content-card__title) em {
+    font-style: normal;
+    font-synthesis: none;
+}
+
+article p {
+    margin: 1.4rem 0;
 }
 
 article p,
@@ -164,102 +156,67 @@ article li {
     line-height: 1.85;
 }
 
-article h2 {
-    font-size: 1.72rem;
-}
-
-article h3 {
-    font-size: 1.44rem;
-}
-
 html[lang="zh"] article p,
 html[lang="zh"] article li {
     font-size: 1.04rem;
     line-height: 1.88;
 }
 
-html[lang="zh"] :is(
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .home-link__title,
-    .content-card__title
-),
-html[lang="zh"] :is(
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .home-link__title,
-    .content-card__title
-) em {
-    font-style: normal !important;
+article :is(ol, ul) {
+    padding-inline-start: 1.5rem;
 }
 
-html[lang="zh"] :is(
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6,
-    .home-link__title,
-    .content-card__title
-) {
-    font-synthesis: none;
+li + li {
+    margin-top: 0.25rem;
 }
 
-p,
-li {
-    color: var(--text-main);
+img {
+    max-width: 100%;
+}
+
+img,
+svg {
+    max-height: 80vh;
+}
+
+code {
+    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 
 /*******************************************************************************
 LINKS
+
+Base link styles live in :where() so they carry zero specificity: any
+component class (nav links, cards, menu options…) overrides them plainly,
+without :link/:visited repetition or !important.
 *******************************************************************************/
 
-a,
-a:link,
-a:visited {
+:where(a:link, a:visited) {
     color: var(--link);
-    text-decoration: none !important;
-    background-image: none !important;
-    border-bottom: 0 !important;
-    box-shadow: none !important;
-    text-shadow: none !important;
+    text-decoration: none;
     transition: color 120ms ease, background-color 120ms ease, border-color 120ms ease;
 }
 
-a:hover,
-a:focus-visible {
+:where(a:hover, a:focus-visible) {
     color: var(--link-strong);
+}
+
+a:focus-visible {
     outline: none;
 }
 
-p a,
-li a,
-.site-footer a {
+:where(p a, li a, .site-footer a) {
     border-radius: var(--radius-sm);
 }
 
-p a:hover,
-p a:focus-visible,
-li a:hover,
-li a:focus-visible,
-.site-footer a:hover,
-.site-footer a:focus-visible {
+:where(p a, li a, .site-footer a):where(:hover, :focus-visible) {
     background: var(--accent-soft);
 }
 
 
 /*******************************************************************************
-NAVIGATION
+HEADER
 *******************************************************************************/
 
 header {
@@ -270,9 +227,8 @@ header {
 header nav {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 0.62rem;
     flex-wrap: wrap;
+    gap: 0.62rem;
     row-gap: 0.7rem;
     padding: 1.25rem 0 0;
 }
@@ -280,32 +236,36 @@ header nav {
 .site-nav__primary {
     display: flex;
     align-items: center;
-    flex: 0 1 auto;
-    min-width: 0;
-    gap: 0.3rem;
     flex-wrap: nowrap;
+    gap: 0.3rem;
+    min-width: 0;
 }
 
-header nav .site-nav__link {
+.site-nav__link {
     display: inline-flex;
     align-items: center;
-    color: var(--text-faint) !important;
-    font-size: 1.1rem;
-    line-height: 1.2;
     padding: 0.42rem 0.82rem;
     border-radius: 999px;
+    color: var(--text-faint);
+    font-size: 1.1rem;
+    line-height: 1.2;
     white-space: nowrap;
 }
 
-header nav .site-nav__link--brand {
-    margin-right: 2rem;
-    padding: 0;
-    background: transparent !important;
+.site-nav__link:hover,
+.site-nav__link:focus-visible {
+    background: var(--accent-soft);
+    color: var(--text-main);
 }
 
-header nav .site-nav__link--brand:hover,
-header nav .site-nav__link--brand:focus-visible {
-    background: transparent !important;
+.site-nav__link--brand {
+    margin-right: 2rem;
+    padding: 0;
+}
+
+.site-nav__link--brand:hover,
+.site-nav__link--brand:focus-visible {
+    background: transparent;
     opacity: 0.92;
 }
 
@@ -314,29 +274,27 @@ header nav .site-nav__link--brand:focus-visible {
     align-items: center;
     justify-content: flex-end;
     gap: 0.45rem;
-    flex: 0 1 auto;
-    min-width: 0;
     margin-left: auto;
 }
 
 .site-brand {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
     min-height: 2.35rem;
     width: 8rem;
     line-height: 0;
-    flex-shrink: 0;
 }
 
-.site-brand img,
-.site-brand svg {
+.site-brand img {
     display: block;
     height: 1.95rem;
     width: auto;
     max-height: none;
 }
 
+/* Light/dark logo swap. display is not a color, so light-dark() cannot help
+   here: explicit class handles a pinned theme, the media query handles the
+   default follow-the-OS case. */
 .site-brand__dark {
     display: none;
 }
@@ -361,70 +319,25 @@ html.theme-dark .site-brand__dark {
 
 
 /*******************************************************************************
-THEME SWITCHER
+HEADER CONTROLS
+
+Search, language, and theme share one visual language: a round icon button
+that opens a small dropdown panel below it. dropdown.js toggles .is-open for
+search and language; theme-switcher.js manages its own menu.
 *******************************************************************************/
 
-.language-switcher {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    position: relative;
-    z-index: 20;
-}
-
-.language-switcher__button-icon,
-.site-search__toggle-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.1rem;
-    height: 1.1rem;
-}
-
-.language-switcher__button-icon svg,
-.site-search__toggle-icon svg {
-    display: block;
-    width: 1.1rem;
-    height: 1.1rem;
-}
-
-.language-switcher__option-icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1rem;
-    height: 1rem;
-    color: var(--text-faint);
-    font-size: 0.68rem;
-    font-weight: 800;
-}
-
-a.language-switcher__option {
-    background-image: none;
-    text-decoration: none !important;
-    text-shadow: none !important;
-}
-
+.site-search,
+.language-switcher,
 .theme-switcher {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
     z-index: 20;
 }
 
-.language-switcher__button,
-.language-switcher__menu,
 .site-search__toggle,
-.theme-switcher__button,
-.theme-switcher__menu {
-    border: 1px solid var(--border);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-soft);
-}
-
 .language-switcher__button,
-.site-search__toggle,
 .theme-switcher__button {
     display: inline-flex;
     align-items: center;
@@ -432,21 +345,39 @@ a.language-switcher__option {
     position: relative;
     width: 2.7rem;
     height: 2.7rem;
+    border: 1px solid var(--border);
     border-radius: 999px;
     background: color-mix(in srgb, var(--surface-card) 90%, transparent);
-    color: var(--text-faint) !important;
+    color: var(--text-faint);
+    cursor: pointer;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-soft);
 }
 
-.language-switcher__button:hover,
-.language-switcher__button:focus-visible,
 .site-search__toggle:hover,
 .site-search__toggle:focus-visible,
+.language-switcher__button:hover,
+.language-switcher__button:focus-visible,
 .theme-switcher__button:hover,
 .theme-switcher__button:focus-visible {
     background: var(--accent-soft);
-    color: var(--text-main) !important;
+    color: var(--text-main);
 }
 
+.site-search__toggle-icon,
+.language-switcher__button-icon {
+    display: inline-flex;
+}
+
+.site-search__toggle-icon svg,
+.language-switcher__button-icon svg,
+.theme-switcher__button-icon svg {
+    display: block;
+    width: 1.1rem;
+    height: 1.1rem;
+}
+
+/* The theme button shows the sun or moon depending on the resolved theme. */
 .theme-switcher__button-icon {
     display: none;
     position: absolute;
@@ -466,11 +397,14 @@ a.language-switcher__option {
     position: absolute;
     top: calc(100% + 0.55rem);
     right: 0;
+    display: none;
     min-width: 11rem;
     padding: 0.38rem;
+    border: 1px solid var(--border);
     border-radius: 1rem;
     background: color-mix(in srgb, var(--surface-card) 95%, transparent);
-    display: none;
+    backdrop-filter: blur(12px);
+    box-shadow: var(--shadow-soft);
 }
 
 .language-switcher__menu.is-open,
@@ -489,10 +423,10 @@ a.language-switcher__option {
     gap: 0.6rem;
     width: 100%;
     padding: 0.58rem 0.72rem;
-    border: 1px solid transparent !important;
+    border: 1px solid transparent;
     border-radius: 0.8rem;
     background: transparent;
-    color: var(--text-faint) !important;
+    color: var(--text-faint);
     text-align: left;
     cursor: pointer;
 }
@@ -502,37 +436,38 @@ a.language-switcher__option {
 .theme-switcher__option:hover,
 .theme-switcher__option:focus-visible {
     background: var(--accent-soft);
-    color: var(--text-main) !important;
+    color: var(--text-main);
 }
 
-.theme-switcher__button-icon,
-.theme-switcher__option-icon {
-    align-items: center;
-    justify-content: center;
+.language-switcher__option.is-active,
+.theme-switcher__option.is-active {
+    background: var(--surface-soft);
+    border-color: var(--border-strong);
+    color: var(--text-main);
 }
 
-.theme-switcher__button-icon svg,
-.theme-switcher__option-icon svg {
-    display: block;
+.theme-switcher__option.is-active .theme-switcher__option-icon,
+.theme-switcher__option.is-active .theme-switcher__option-label {
+    color: var(--link-strong);
 }
 
-.theme-switcher__option-icon,
-.theme-switcher__option-label {
-    display: block;
-}
-
+.language-switcher__option-icon,
 .theme-switcher__option-icon {
     display: inline-flex;
+    align-items: center;
+    justify-content: center;
     width: 1rem;
     height: 1rem;
 }
 
-.theme-switcher__button-icon svg {
-    width: 1.1rem;
-    height: 1.1rem;
+.language-switcher__option-icon {
+    color: var(--text-faint);
+    font-size: 0.68rem;
+    font-weight: 800;
 }
 
 .theme-switcher__option-icon svg {
+    display: block;
     width: 1rem;
     height: 1rem;
 }
@@ -544,30 +479,10 @@ a.language-switcher__option {
     font-weight: 600;
 }
 
-.language-switcher__option.is-active,
-.theme-switcher__option.is-active {
-    background: var(--surface-soft);
-    border-color: var(--border-strong) !important;
-    color: var(--text-main) !important;
-}
-
-.theme-switcher__option.is-active .theme-switcher__option-icon,
-.theme-switcher__option.is-active .theme-switcher__option-label {
-    color: var(--link-strong);
-}
-
 
 /*******************************************************************************
 SITE SEARCH
 *******************************************************************************/
-
-.site-search {
-    display: inline-flex;
-    flex: 0 0 auto;
-    align-items: center;
-    position: relative;
-    z-index: 20;
-}
 
 .site-search__panel {
     position: absolute;
@@ -599,26 +514,16 @@ SITE SEARCH
     border: 1px solid var(--border);
     border-radius: 999px;
     background: color-mix(in srgb, var(--surface-card) 92%, transparent);
-    backdrop-filter: blur(12px);
-    box-shadow: var(--shadow-soft);
 }
 
-.site-search__label {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 1rem;
-    height: 1rem;
-    color: var(--text-faint);
-    flex: 0 0 auto;
-}
-
+.site-search__label,
 .site-search__icon {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     width: 1rem;
     height: 1rem;
+    color: var(--text-faint);
 }
 
 .site-search__icon-svg {
@@ -626,6 +531,7 @@ SITE SEARCH
     height: 1rem;
 }
 
+/* Visually hidden label text (screen readers only). */
 .site-search__label-text {
     position: absolute;
     width: 1px;
@@ -640,13 +546,12 @@ SITE SEARCH
 
 .site-search__input {
     min-width: 0;
-    border: 0 !important;
+    border: 0;
     background: transparent;
     color: var(--text-main);
     font-size: 0.98rem;
     line-height: 1.2;
     padding: 0.5rem 0;
-    box-shadow: none !important;
 }
 
 .site-search__input::placeholder {
@@ -663,10 +568,10 @@ SITE SEARCH
     justify-content: center;
     min-height: 2.25rem;
     padding: 0.44rem 0.82rem;
-    border: 0 !important;
+    border: 0;
     border-radius: 999px;
     background: var(--surface-soft);
-    color: var(--text-main) !important;
+    color: var(--text-main);
     font-size: 0.88rem;
     font-weight: 700;
     line-height: 1;
@@ -702,15 +607,13 @@ SITE SEARCH
     gap: 0.28rem;
 }
 
-.site-search-result,
-.site-search-result:link,
-.site-search-result:visited {
+.site-search-result {
     display: grid;
     gap: 0.3rem;
     padding: 0.72rem 0.82rem;
     border-radius: 0.9rem;
-    color: var(--text-main) !important;
     background: transparent;
+    color: var(--text-main);
 }
 
 .site-search-result:hover,
@@ -760,7 +663,9 @@ SITE SEARCH
     line-height: 1.55;
 }
 
-.search-page__intro {
+/* The standalone /search/ page reuses .site-search-result for its output. */
+.search-page__intro,
+.search-page__status {
     color: var(--text-muted);
 }
 
@@ -768,11 +673,6 @@ SITE SEARCH
     display: grid;
     gap: 0.7rem;
     margin-top: 1.5rem;
-}
-
-.search-page__status {
-    color: var(--text-muted);
-    font-size: 1rem;
 }
 
 
@@ -806,16 +706,6 @@ HOME
     text-transform: uppercase;
 }
 
-.home-kicker {
-    display: inline-block;
-    margin-bottom: 0.85rem;
-    color: var(--text-faint);
-    font-size: 0.74rem;
-    font-weight: 700;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-}
-
 .home-hero {
     display: grid;
     grid-template-columns: minmax(0, 1.45fr) minmax(15rem, 0.95fr);
@@ -838,8 +728,7 @@ HOME
     width: 20rem;
 }
 
-.home-hero__profile img,
-.home-hero__profile svg {
+.home-hero__profile img {
     display: block;
     width: 20rem;
     height: 20rem;
@@ -852,36 +741,30 @@ HOME
 .home-links {
     display: grid;
     gap: 0.9rem;
-    width: min(100%, 48rem);
     margin: 1.35rem 0 2rem;
 }
 
+/* Cards shared by home links and content entries. */
 .home-link,
-.home-link:link,
-.home-link:visited,
-.content-card,
-.content-card:link,
-.content-card:visited {
-    border: 1px solid var(--border) !important;
+.content-card {
+    display: block;
+    border: 1px solid var(--border);
     border-radius: var(--radius-lg);
     background: var(--surface-card);
     box-shadow: var(--shadow-card);
-    color: inherit !important;
+    color: inherit;
+}
+
+.home-link {
+    padding: 1rem 1.15rem;
 }
 
 .home-link:hover,
 .home-link:focus-visible,
 .content-card:hover,
 .content-card:focus-visible {
-    border-color: var(--border-strong) !important;
+    border-color: var(--border-strong);
     transform: translateY(-1px);
-}
-
-.home-link,
-.home-link:link,
-.home-link:visited {
-    display: block;
-    padding: 1rem 1.15rem;
 }
 
 .home-link__title,
@@ -890,10 +773,10 @@ HOME
 }
 
 .home-link__title {
-    color: var(--text-main);
-    font-weight: 700;
-    font-size: 1.12rem;
     margin-bottom: 0.25rem;
+    color: var(--text-main);
+    font-size: 1.12rem;
+    font-weight: 700;
 }
 
 .home-link__description {
@@ -909,13 +792,10 @@ CONTENT ENTRY CARDS
 .content-grid {
     display: grid;
     gap: 0.85rem;
-    width: min(100%, 42rem);
     margin: 1.2rem 0 1.8rem;
 }
 
-.content-card,
-.content-card:link,
-.content-card:visited {
+.content-card {
     display: grid;
     grid-template-columns: 5.25rem minmax(0, 1fr);
     gap: 1rem;
@@ -960,8 +840,8 @@ CONTENT ENTRY CARDS
 
 .content-card__title {
     color: var(--text-main);
-    font-weight: 700;
     font-size: 1.14rem;
+    font-weight: 700;
     line-height: 1.32;
 }
 
@@ -974,21 +854,10 @@ CONTENT ENTRY CARDS
 
 
 /*******************************************************************************
-DOCS SERIES
+DOCS
 *******************************************************************************/
 
-/* html.frame() diagrams (cetz etc.) are drawn with hardcoded dark strokes for a
-   light page; give them a light canvas so they stay readable in dark themes. */
-figure > svg {
-    max-width: 100%;
-    height: auto;
-    padding: 0.5rem;
-    border-radius: var(--radius-md);
-    background: #ffffff;
-}
-
 .doc-toc {
-    width: min(100%, 42rem);
     margin: 1.15rem 0 1.65rem;
     padding: 0.8rem 1.1rem 0.9rem;
     border-radius: var(--radius-md);
@@ -1030,32 +899,26 @@ figure > svg {
 
 html[lang="zh"] .doc-toc li {
     font-size: 0.94rem;
-    line-height: 1.5;
 }
 
-.doc-toc a,
-.doc-toc a:link,
-.doc-toc a:visited {
-    color: var(--text-muted) !important;
-    text-decoration-color: transparent !important;
+.doc-toc a {
+    color: var(--text-muted);
 }
 
-.doc-toc li > div > a,
-.doc-toc li > div > a:link,
-.doc-toc li > div > a:visited {
-    color: var(--text-main) !important;
+.doc-toc li > div > a {
+    color: var(--text-main);
     font-weight: 600;
 }
 
 .doc-toc a:hover,
 .doc-toc a:focus-visible {
-    color: var(--link-strong) !important;
-    text-decoration-color: currentColor !important;
+    color: var(--link-strong);
 }
 
+/* Callouts: a colored left rule whose tint is set per kind via
+   --callout-accent. */
 .callout {
     --callout-accent: var(--text-faint);
-    width: min(100%, 42rem);
     margin: 1.35rem 0;
     padding: 0.75rem 1.1rem 0.8rem;
     border-left: 2.5px solid var(--callout-accent);
@@ -1091,25 +954,11 @@ html[lang="zh"] .callout__body li {
     line-height: 1.72;
 }
 
-.callout--note { --callout-accent: #6f7a86; }
-.callout--tip { --callout-accent: #2f8f70; }
-.callout--example { --callout-accent: #b06f12; }
-.callout--definition { --callout-accent: #6b5ac7; }
-.callout--warning { --callout-accent: #bf616a; }
-
-html.theme-dark .callout--note { --callout-accent: #b8c2cf; }
-html.theme-dark .callout--tip { --callout-accent: #8fbc8f; }
-html.theme-dark .callout--example { --callout-accent: #ebcb8b; }
-html.theme-dark .callout--definition { --callout-accent: #b48ead; }
-html.theme-dark .callout--warning { --callout-accent: #d88a92; }
-
-@media (prefers-color-scheme: dark) {
-    html:not(.theme-light) .callout--note { --callout-accent: #b8c2cf; }
-    html:not(.theme-light) .callout--tip { --callout-accent: #8fbc8f; }
-    html:not(.theme-light) .callout--example { --callout-accent: #ebcb8b; }
-    html:not(.theme-light) .callout--definition { --callout-accent: #b48ead; }
-    html:not(.theme-light) .callout--warning { --callout-accent: #d88a92; }
-}
+.callout--note { --callout-accent: light-dark(#6f7a86, #b8c2cf); }
+.callout--tip { --callout-accent: light-dark(#2f8f70, #8fbc8f); }
+.callout--example { --callout-accent: light-dark(#b06f12, #ebcb8b); }
+.callout--definition { --callout-accent: light-dark(#6b5ac7, #b48ead); }
+.callout--warning { --callout-accent: light-dark(#bf616a, #d88a92); }
 
 .series-nav {
     display: flex;
@@ -1123,16 +972,14 @@ html.theme-dark .callout--warning { --callout-accent: #d88a92; }
     border-bottom: 1px solid var(--border);
 }
 
-.series-nav__link,
-.series-nav__link:link,
-.series-nav__link:visited {
+.series-nav__link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.35rem 0.8rem;
     border-radius: 999px;
     background: var(--surface-soft);
-    color: var(--text-main) !important;
+    color: var(--text-main);
     font-size: 0.94rem;
     font-weight: 700;
 }
@@ -1140,32 +987,30 @@ html.theme-dark .callout--warning { --callout-accent: #d88a92; }
 .series-nav__link:hover,
 .series-nav__link:focus-visible {
     background: var(--accent-soft);
-    color: var(--link-strong) !important;
+    color: var(--link-strong);
 }
 
 .series-nav__link--home,
-.series-nav__link--home:link,
-.series-nav__link--home:visited {
+.series-nav__link--home:hover,
+.series-nav__link--home:focus-visible {
     background: var(--accent-soft);
-    color: var(--link) !important;
+    color: var(--link);
 }
 
 .series-begin {
     margin: 1.9rem 0 0;
 }
 
-.series-begin__link,
-.series-begin__link:link,
-.series-begin__link:visited {
+.series-begin__link {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     padding: 0.72rem 1.18rem;
-    border: 1px solid var(--border-strong) !important;
+    border: 1px solid var(--border-strong);
     border-radius: 999px;
     background: var(--surface-card);
     box-shadow: var(--shadow-card);
-    color: var(--text-main) !important;
+    color: var(--text-main);
     font-size: 0.98rem;
     font-weight: 700;
 }
@@ -1173,20 +1018,21 @@ html.theme-dark .callout--warning { --callout-accent: #d88a92; }
 .series-begin__link:hover,
 .series-begin__link:focus-visible {
     background: var(--accent-soft);
-    color: var(--link-strong) !important;
+    color: var(--link-strong);
 }
 
 
 /*******************************************************************************
 TABLES
+
+Three-line-table aesthetic: heavy rules above/below, one rule under the
+header, no vertical rules. All rules are drawn on cells so they always span
+exactly the table's content width. Every table is wrapped in a .table-wrap
+(see the show rule in config.typ) that fills the text column; the table
+itself shrinks to its content and centers inside it, and overly wide tables
+scroll.
 *******************************************************************************/
 
-/* Three-line-table aesthetic: heavy rules above/below, one rule under the
-   header, no vertical rules. All rules are drawn on cells so they always
-   span exactly the table's content width. Every table is wrapped in a
-   .table-wrap (see the show rule in config.typ) that matches the text
-   column; the table itself shrinks to its content and centers inside it,
-   and overly wide tables scroll. */
 article table {
     display: block;
     width: fit-content;
@@ -1199,7 +1045,6 @@ article table {
 }
 
 article .table-wrap {
-    width: min(100%, 42rem);
     margin: 1.35rem 0 1.6rem;
 }
 
@@ -1221,13 +1066,11 @@ article thead th {
     background: var(--surface-soft);
 }
 
-article table:not(:has(> thead)) > tbody > tr:first-child > td,
-article table:not(:has(> thead)) > tbody > tr:first-child > th {
+article table:not(:has(> thead)) > tbody > tr:first-child > :is(td, th) {
     border-top: 2px solid var(--text-main);
 }
 
-article tbody > tr:last-child > td,
-article tbody > tr:last-child > th {
+article tbody > tr:last-child > :is(td, th) {
     border-bottom: 2px solid var(--text-main);
 }
 
@@ -1240,7 +1083,6 @@ article .table-pair {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1rem;
-    width: min(100%, 42rem);
     margin: 1.35rem 0 1.6rem;
 }
 
@@ -1250,7 +1092,6 @@ article .table-pair > div {
 }
 
 article .table-pair .table-wrap {
-    width: 100%;
     margin: 0.35rem 0 0;
 }
 
@@ -1259,19 +1100,12 @@ article .table-pair table {
     margin: 0;
 }
 
-@media (max-width: 760px) {
-    article .table-pair {
-        grid-template-columns: 1fr;
-    }
-}
-
 
 /*******************************************************************************
-CODE
+CODE, QUOTES, MATH
 *******************************************************************************/
 
 article pre {
-    width: min(100%, 42rem);
     margin: 1.2rem 0 1.5rem;
     padding: 0.85rem 1rem;
     border-radius: var(--radius-md);
@@ -1281,10 +1115,7 @@ article pre {
     line-height: 1.6;
 }
 
-article p code,
-article li code,
-article td code,
-article th code {
+article :is(p, li, td, th) code {
     padding: 0.08em 0.35em;
     border-radius: 0.3rem;
     background: var(--surface-soft);
@@ -1304,38 +1135,49 @@ article blockquote {
     color: var(--text-muted);
 }
 
-/* Display math follows the text column instead of centering on the page. */
-article math[display="block"] {
-    text-align: left;
+/* Display math aligns with the text column instead of centering on the page. */
+math {
+    color: inherit;
+}
+
+math[display="block"] {
+    display: block;
+    max-width: 100%;
     margin: 1.1rem 0 1.1rem 1.5rem;
+    overflow-x: auto;
+    overflow-y: hidden;
+    text-align: left;
 }
 
 
 /*******************************************************************************
-FOOTER
+FIGURES AND NOTES
 *******************************************************************************/
 
-.site-footer {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.6rem 1rem;
-    align-items: center;
-    margin-top: 3rem;
-    padding-top: 1rem;
-    border-top: 1px solid var(--border);
-    color: var(--text-faint);
-    font-size: 0.98rem;
+article figure {
+    margin: 1.6rem 0;
+    text-align: center;
 }
 
-.site-footer__copy,
-.site-footer__meta {
-    color: var(--text-faint);
+/* html.frame() diagrams (cetz etc.) are drawn with hardcoded dark strokes for
+   a light page; give them a light canvas so they stay readable in dark
+   themes. */
+figure > svg {
+    max-width: 100%;
+    height: auto;
+    padding: 0.5rem;
+    border-radius: var(--radius-md);
+    background: #ffffff;
 }
 
-
-/*******************************************************************************
-FOOTNOTES AND MARGIN NOTES
-*******************************************************************************/
+.figure__caption {
+    margin: 0.55rem auto 0;
+    max-width: 36rem;
+    color: var(--text-faint);
+    font-size: 0.88rem;
+    line-height: 1.55;
+    text-align: center;
+}
 
 /* Footnotes: a superscript marker; the note body pops up on hover/focus. */
 .note-ref {
@@ -1373,11 +1215,9 @@ FOOTNOTES AND MARGIN NOTES
     display: block;
 }
 
-/* Standalone margin notes (tufted.margin-note) become in-flow asides. */
+/* Standalone margin notes (tufted.margin-note) render as in-flow asides. */
 .marginnote {
-    float: none;
     display: block;
-    width: auto;
     margin: 0.9rem 0;
     padding-left: 1rem;
     border-left: 2px solid var(--border);
@@ -1386,84 +1226,56 @@ FOOTNOTES AND MARGIN NOTES
     line-height: 1.6;
 }
 
-a.footnote-ref-link {
-    background-image: none;
-    text-shadow: none !important;
-}
-
 
 /*******************************************************************************
-MATH NOTATION
+FOOTER
 *******************************************************************************/
 
-math {
-    color: inherit;
-}
-
-math[display="block"] {
-    display: block;
-    max-width: 100%;
-    margin-block: 1em;
-    overflow-x: auto;
-    overflow-y: hidden;
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1rem;
+    align-items: center;
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 0.98rem;
 }
 
 
 /*******************************************************************************
-RESPONSIVE LAYOUT
+RESPONSIVE
 *******************************************************************************/
 
 @media (max-width: 900px) {
-    header nav {
-        flex-wrap: wrap;
-    }
-
-    .site-nav__primary {
+    .site-nav__primary,
+    .site-nav__controls {
         width: 100%;
         flex-wrap: wrap;
     }
 
     .site-nav__controls {
-        width: 100%;
-        flex-wrap: wrap;
         justify-content: flex-end;
         margin-left: 0;
     }
 }
 
 @media (max-width: 760px) {
-    .marginnote {
-        display: block;
-        float: none;
-        position: static;
-        padding-left: 1.2rem;
-        width: 100%;
-        margin-top: 1em;
-        margin-bottom: 1em;
-    }
-
-    .marginnote img,
-    .marginnote svg {
-        max-width: calc(760px / 3);
-        margin: 0 auto;
-        display: block;
-    }
-
     p {
-        hyphens: auto !important;
+        hyphens: auto;
     }
 
     .home-hero {
         grid-template-columns: 1fr;
     }
 
-    .theme-switcher__menu {
-        min-width: min(11rem, calc(100vw - 2rem));
+    article .table-pair {
+        grid-template-columns: 1fr;
     }
 
-    .site-search__form {
-        grid-template-columns: auto minmax(0, 1fr) auto;
-        padding-left: 0.58rem;
+    .theme-switcher__menu {
+        min-width: min(11rem, calc(100vw - 2rem));
     }
 
     .site-search-result__header {
@@ -1472,9 +1284,7 @@ RESPONSIVE LAYOUT
 }
 
 @media (max-width: 520px) {
-    .content-card,
-    .content-card:link,
-    .content-card:visited {
+    .content-card {
         grid-template-columns: 1fr;
     }
 }

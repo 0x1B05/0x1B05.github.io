@@ -497,11 +497,7 @@
   footer-locale: none,
   head-scripts: (),
   body-scripts: (),
-  css: (
-    "https://cdnjs.cloudflare.com/ajax/libs/tufte-css/1.8.0/tufte.min.css",
-    site-url("assets/tufted.css"),
-    site-url("assets/custom.css"),
-  ),
+  css: (site-url("assets/site.css"),),
   content,
 ) = {
   show: tufted.template-refs

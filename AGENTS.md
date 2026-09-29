@@ -15,11 +15,11 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
 
 ## Repository Layout
 
-- `config.typ` — the shared site shell. Exports `site-web`/`template` (the page template that emits `<html>`, header/nav, search box, language switcher, theme switcher, footer), URL helpers (`site-url`, `locale-url`, `normalize-route`), localized copy tables (`locale-copy`), and reusable components (callouts like `note`/`tip`/`warning`, `doc-toc`, `content-card`, series navigation helpers `series-context`/`series-navbar`/`series-begin`). Shared shell changes usually belong here or in `assets/tufted.css`.
+- `config.typ` — the shared site shell. Exports `site-web`/`template` (the page template that emits `<html>`, header/nav, search box, language switcher, theme switcher, footer), URL helpers (`site-url`, `locale-url`, `normalize-route`), localized copy tables (`locale-copy`), and reusable components (callouts like `note`/`tip`/`warning`, `doc-toc`, `content-card`, series navigation helpers `series-context`/`series-navbar`/`series-begin`). Shared shell changes usually belong here or in `assets/site.css`.
 - `content/` — all pages, mirrored per locale: `content/en/…` and `content/zh/…` are parallel trees, plus the language-gateway landing page `content/index.typ`. Every page is an `index.typ` inside a directory; page-local images live in an `imgs/` subdirectory next to it.
 - `assets/` — CSS and JS copied verbatim to `_site/assets/`:
-  - `tufted.css` — the main stylesheet (theme tokens, layout, component styles).
-  - `custom.css` — an intentionally (near-)empty override hook layered after `tufted.css`; put site-specific tweaks here rather than editing generated output.
+  - `site.css` — the only stylesheet (theme tokens via `light-dark()`, layout, component styles); there is no external CSS dependency.
+  - `fonts/et-book/` — self-hosted ET Book serif (WOFF + MIT LICENSE) declared in `site.css`.
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
   - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js`, `dropdown.js` — header controls and root-gateway redirect; `dropdown.js` drives the language-switcher menu; preferences are persisted in `localStorage` under keys like `tufted-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
@@ -182,11 +182,9 @@ The five kinds share one implementation (`callout-kind` in `config.typ`), so a n
    #let important(body, title: auto, locale: "en") = callout-kind("important", body, title: title, locale: locale)
    ```
 2. `config.typ` — add the default title to both `locale-copy` tables (the field name must be `callout_` + the kind name): `callout_important: "重要",` in the zh table and `callout_important: "Important",` in the en table.
-3. `assets/tufted.css` — add one accent line in each of the three theme paths (the tinted background is derived from the accent via `color-mix`, so nothing else is needed):
+3. `assets/site.css` — add one accent line next to the other kinds (light and dark values in a single `light-dark()`; the tinted background is derived from the accent via `color-mix`, so nothing else is needed):
    ```css
-   .callout--important { --callout-accent: #3a7ca5; }
-   html.theme-dark .callout--important { --callout-accent: #81a1c1; }
-   /* and the same line inside the prefers-color-scheme: dark block */
+   .callout--important { --callout-accent: light-dark(#3a7ca5, #81a1c1); }
    ```
 
 Then bind it to the locale in each locale root (`content/<locale>/index.typ`, next to the other `shared-*` aliases) so the whole locale tree can use it.
@@ -242,5 +240,5 @@ make clean
 ## Security Considerations
 
 - No secrets or credentials are stored in the repo; the only npm dependency is Pagefind, pinned via `package-lock.json` and installed with `npm ci` in CI.
-- Generated HTML embeds no third-party runtime JS; the only external reference is the Tufte CSS stylesheet loaded from cdnjs in the default `css` list of `site-web` (config.typ).
+- Generated HTML loads no third-party resources at all: CSS, fonts, and JS are self-hosted under `assets/` (ET Book is vendored in `assets/fonts/et-book/` under MIT).
 - Never edit `_site/` directly and never commit it (gitignored); treat `.deps/`, `node_modules/`, `.reference/`, and `plans/` as local-only.

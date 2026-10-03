@@ -1,6 +1,6 @@
 #import "../../index.typ": (
   definition, doc-toc, example, note, series-context, series-navbar,
-  table-title, template, tip, warning,
+  table-pair, template, tip, warning,
 )
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
@@ -267,50 +267,57 @@ Initially:
 ]
 
 
-  #table-title[Register Alias Table]
-  #three-line-table(inset: 3pt)[
-    | *Reg*   | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
-    | *Valid* | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1   | 1   |
-    | *Value* | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10  | 11  |
-    | *Tag*   | -- | -- | -- | -- | -- | -- | -- | -- | -- | --  | --  |
-  ]
+  #figure(
+    three-line-table(inset: 3pt)[
+      | *Reg*   | R1 | R2 | R3 | R4 | R5 | R6 | R7 | R8 | R9 | R10 | R11 |
+      | *Valid* | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1  | 1   | 1   |
+      | *Value* | 1  | 2  | 3  | 4  | 5  | 6  | 7  | 8  | 9  | 10  | 11  |
+      | *Tag*   | -- | -- | -- | -- | -- | -- | -- | -- | -- | --  | --  |
+    ],
+    caption: [Register Alias Table],
+    numbering: none,
+  )
 
 
 ADD and MUL Execution Units have separate Tag & Value buses(output).
 
-#text(
-  fill: rgb("#B65C00"),
-  weight: "bold",
-)[Reservation Stations]
-
-    #text(size: 9pt, weight: "bold")[RS for ADD Unit]
-    #three-line-table(
-      columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
-      inset: 3pt,
-    )[
-      | *RS* | *V1* | *Tag1* | *Val1* | *V2* | *Tag2* | *Val2* |
-      | ---  | --   | ---    | ---    | --   | ---    | --- |
-      | a    | 0    | --     | --     | 0    | --     | -- |
-      | b    | 0    | --     | --     | 0    | --     | -- |
-      | c    | 0    | --     | --     | 0    | --     | -- |
-      | d    | 0    | --     | --     | 0    | --     | -- |
-    ]
-  
-
-
-    #text(size: 9pt, weight: "bold")[RS for MUL Unit]
-    #three-line-table(
-      columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
-      inset: 3pt,
-    )[
-      | *RS* | *V1* | *Tag1* | *Val1* | *V2* | *Tag2* | *Val2* |
-      | ---  | --   | ---    | ---    | --   | ---    | --- |
-      | x    | 0    | --     | --     | 0    | --     | -- |
-      | y    | 0    | --     | --     | 0    | --     | -- |
-      | z    | 0    | --     | --     | 0    | --     | -- |
-      | t    | 0    | --     | --     | 0    | --     | -- |
-    ]
-  
+#figure(
+  table-pair(
+    figure(
+      three-line-table(
+        columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
+        inset: 3pt,
+      )[
+        | *RS* | *V1* | *Tag1* | *Val1* | *V2* | *Tag2* | *Val2* |
+        | ---  | --   | ---    | ---    | --   | ---    | --- |
+        | a    | 0    | --     | --     | 0    | --     | -- |
+        | b    | 0    | --     | --     | 0    | --     | -- |
+        | c    | 0    | --     | --     | 0    | --     | -- |
+        | d    | 0    | --     | --     | 0    | --     | -- |
+      ],
+      caption: [RS for ADD Unit],
+      numbering: none,
+    ),
+    figure(
+      three-line-table(
+        columns: (auto, .7fr, .8fr, .8fr, .7fr, .8fr, .8fr),
+        inset: 3pt,
+      )[
+        | *RS* | *V1* | *Tag1* | *Val1* | *V2* | *Tag2* | *Val2* |
+        | ---  | --   | ---    | ---    | --   | ---    | --- |
+        | x    | 0    | --     | --     | 0    | --     | -- |
+        | y    | 0    | --     | --     | 0    | --     | -- |
+        | z    | 0    | --     | --     | 0    | --     | -- |
+        | t    | 0    | --     | --     | 0    | --     | -- |
+      ],
+      caption: [RS for MUL Unit],
+      numbering: none,
+    ),
+  ),
+  caption: [Reservation Stations],
+  kind: table,
+  numbering: none,
+)
 
 ==== Cycle 2
 

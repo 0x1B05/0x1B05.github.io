@@ -1,6 +1,6 @@
 #import "../index.typ": (
   content-card, definition, example, locale-url, margin-note, note, sidenote,
-  table-title, template, tip, warning,
+  table-pair, template, tip, warning,
 )
 #show: template.with(locale: "en", route: "blog/", title: "Blog")
 

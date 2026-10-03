@@ -435,14 +435,17 @@
 }
 
 // Figure captions render like a paper (styled via .figure__caption in
-// site.css): above tables, below images and diagrams.
+// site.css): above tables, below images and diagrams. Figures with
+// numbering: none show the caption body alone, without supplement/number.
 #let template-figures(content) = {
   show figure.caption: it => (
     it.supplement + sym.space.nobreak + it.counter.display() + it.separator + it.body
   )
   show figure: it => if target() == "html" {
     let caption = if it.caption != none {
-      html.elem("figcaption", attrs: (class: "figure__caption"))[#it.caption]
+      html.elem("figcaption", attrs: (class: "figure__caption"))[
+        #if it.numbering == none { it.caption.body } else { it.caption }
+      ]
     }
     if it.kind == table {
       html.figure[#caption #it.body]
@@ -453,9 +456,9 @@
   content
 }
 
-// Unnumbered label above a table (for worked-example table names that should
-// not get a "Table N" caption), styled like a caption via .table-title.
-#let table-title(body) = html.div(class: "table-title")[#body]
+// Two side-by-side tables (styled via .table-pair in site.css), each usually
+// wrapped in its own unnumbered figure; stacks vertically on narrow screens.
+#let table-pair(left, right) = html.div(class: "table-pair")[#left #right]
 
 // --- Series navigation ---
 

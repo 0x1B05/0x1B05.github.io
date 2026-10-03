@@ -1,6 +1,6 @@
 #import "../../index.typ": (
   definition, doc-toc, example, note, series-context, series-navbar,
-  table-title, template, tip, warning,
+  template, tip, warning,
 )
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
@@ -221,71 +221,83 @@ A register value can be in the register file, reorder buffer, (or bypass/forward
 Initially, all registers are valid in the register file, and the ROB is empty.
 
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (auto, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* |
-      | :--------- | ------ | :------ |
-      | R0 | 1 | -- |
-      | R1 | 1 | -- |
-      | R2 | 1 | -- |
-      | .. | 1 | -- |
-      | R31| 1 | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* |
+        | :--------- | ------ | :------ |
+        | R0 | 1 | -- |
+        | R1 | 1 | -- |
+        | R2 | 1 | -- |
+        | .. | 1 | -- |
+        | R31| 1 | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 0      | --            | --               | 0 |
-      | E1        | 0      | --            | --               | 0 |
-      | ..        | 0      | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 0      | --            | --               | 0 |
+        | E1        | 0      | --            | --               | 0 |
+        | ..        | 0      | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (auto, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* |
-      | :--------- | ------ | :------ |
-      | R0 | 1 | -- |
-      | R1 | 1 | 1  |
-      | R2 | 1 | 2  |
-      | R3 | 0 | -- |
-      | .. | 1 | -- |
-      | R31| 1 | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* |
+        | :--------- | ------ | :------ |
+        | R0 | 1 | -- |
+        | R1 | 1 | 1  |
+        | R2 | 1 | 2  |
+        | R3 | 0 | -- |
+        | .. | 1 | -- |
+        | R31| 1 | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | --               | 0 |
-      | E1        | 0      | --            | --               | 0 |
-      | ..        | ..     | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | --               | 0 |
+        | E1        | 0      | --            | --               | 0 |
+        | ..        | ..     | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 Decode I1: MUL R3, R4 -> R11
@@ -295,148 +307,169 @@ First check
 - R4 is available? Yes, suppose R4=4
 
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (auto, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* |
-      | :--------- | ------ |   :------ |
-      | R0 | 1 | -- |
-      | R1 | 1 | 1  |
-      | R2 | 1 | 2  |
-      | R3 | 0 | -- |
-      | R4 | 1 | 4  |
-      | .. | 1 | -- |
-      | R11| 0 | -- |
-      | .. | 1 | -- |
-      | R31| 1 | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* |
+        | :--------- | ------ |   :------ |
+        | R0 | 1 | -- |
+        | R1 | 1 | 1  |
+        | R2 | 1 | 2  |
+        | R3 | 0 | -- |
+        | R4 | 1 | 4  |
+        | .. | 1 | -- |
+        | R11| 0 | -- |
+        | .. | 1 | -- |
+        | R31| 1 | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | 1568             | 1 |
-      | E1        | 1      | R11           | --               | 0 |
-      | ..        | ..     | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | 1568             | 1 |
+        | E1        | 1      | R11           | --               | 0 |
+        | ..        | ..     | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 Suppose there's a gap between I0 and I1. When I1 wants to get R3, where could R3 be?
 - Not in the RF, cause valid bit is zero.
 - Suppose R3 have written R3 in ROB.
   
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | 1568             | 1 |
-      | E1        | 1      | R11           | --               | 0 |
-      | ..        | ..     | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | 1568             | 1 |
+        | E1        | 1      | R11           | --               | 0 |
+        | ..        | ..     | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
   - We need search the content of the ROB under *Dest reg ID* and compare if there exists an content equals to R3. If exists, we need the latest one and get the value from that one.
 
 Decode I2: ADD R5,R6->R3
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (auto, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* |
-      | :--------- | ------ |  :------ |
-      | R0 | 1 | -- |
-      | R1 | 1 | 1  |
-      | R2 | 1 | 2  |
-      | R3 | 0 | -- |
-      | R4 | 1 | 4  |
-      | R5 | 1 | 5  |
-      | R6 | 1 | 6  |
-      | .. | 1 | -- |
-      | R11| 0 | -- |
-      | .. | 1 | -- |
-      | R31| 1 | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* |
+        | :--------- | ------ |  :------ |
+        | R0 | 1 | -- |
+        | R1 | 1 | 1  |
+        | R2 | 1 | 2  |
+        | R3 | 0 | -- |
+        | R4 | 1 | 4  |
+        | R5 | 1 | 5  |
+        | R6 | 1 | 6  |
+        | .. | 1 | -- |
+        | R11| 0 | -- |
+        | .. | 1 | -- |
+        | R31| 1 | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | 1568             | 1 |
-      | E1        | 1      | R11           | --               | 0 |
-      | E2        | 1      | R3           | --               | 0 |
-      | ..        | ..     | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | 1568             | 1 |
+        | E1        | 1      | R11           | --               | 0 |
+        | E2        | 1      | R3           | --               | 0 |
+        | ..        | ..     | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 The only reason that these two instructions are writing to R3 is because there are not enought RF. The R3s in E0 and E2 are different. This is how a rob enables a renaming of registers.
 
 Decode I3: ADD R3, R8 -> R12
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (auto, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* |  *Value* |
-      | :--------- | ------ |    :------ |
-      | R0 | 1 | -- |
-      | R1 | 1 | 1  |
-      | R2 | 1 | 2  |
-      | R3 | 0 | -- |
-      | R4 | 1 | 4  |
-      | R5 | 1 | 5  |
-      | R6 | 1 | 6  |
-      | R7 | 1 | -- |
-      | R8 | 1 | 8  |
-      | .. | 1 | -- |
-      | R11| 0 | -- |
-      | R12| 0 | -- |
-      | .. | 1 | -- |
-      | R31| 1 | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* |  *Value* |
+        | :--------- | ------ |    :------ |
+        | R0 | 1 | -- |
+        | R1 | 1 | 1  |
+        | R2 | 1 | 2  |
+        | R3 | 0 | -- |
+        | R4 | 1 | 4  |
+        | R5 | 1 | 5  |
+        | R6 | 1 | 6  |
+        | R7 | 1 | -- |
+        | R8 | 1 | 8  |
+        | .. | 1 | -- |
+        | R11| 0 | -- |
+        | R12| 0 | -- |
+        | .. | 1 | -- |
+        | R31| 1 | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
-      | :------ | :-------:| :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | 1568             | 1 |
-      | E1        | 1      | R11           | --               | 0 |
-      | E2        | 1      | R3            | --               | 0 |
-      | E3        | 1      | R12           | --               | 0 |
-      | ..        | ..     | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest reg ID* | *Dest reg value* | *Written?* |
+        | :------ | :-------:| :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | 1568             | 1 |
+        | E1        | 1      | R11           | --               | 0 |
+        | E2        | 1      | R3            | --               | 0 |
+        | E3        | 1      | R12           | --               | 0 |
+        | ..        | ..     | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 We want to get the value of R3.
@@ -459,118 +492,136 @@ Content-addressable search is very hardware-intensive. Today, ROB size could be 
 
 Decode I0:MUL R1, R2 -> R3(suppose R1=1, R2=2)
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (1.3fr, 1fr, .95fr, 2fr),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
-      | :--------- | ------ | :------- | :------- |
-      | R0 | 1 | -- | -- |
-      | R1 | 1 | 1  | -- |
-      | R2 | 1 | 2  | -- |
-      | R3 | 0 | -- | E0 |
-      | .. | 1 | -- | -- |
-      | R31| 1 | -- | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (1.3fr, 1fr, .95fr, 2fr),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
+        | :--------- | ------ | :------- | :------- |
+        | R0 | 1 | -- | -- |
+        | R1 | 1 | 1  | -- |
+        | R2 | 1 | 2  | -- |
+        | R3 | 0 | -- | E0 |
+        | .. | 1 | -- | -- |
+        | R31| 1 | -- | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | --               | 0 |
-      | E1        | 1      | R11           | --               | 0 |
-      | ..        | 0      | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | --               | 0 |
+        | E1        | 1      | R11           | --               | 0 |
+        | ..        | 0      | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 No content-addressable search here.
 
 Decode I1: MUL R3, R4 -> R11
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (1.3fr, 1fr, .95fr, 2fr),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
-      | :--------- | ------ | :------- | :------- |
-      | R0 | 1 | -- | -- |
-      | R1 | 1 | 1  | -- |
-      | R2 | 1 | 2  | -- |
-      | R3 | 0 | -- | E0 |
-      | R4 | 1 | 4  | -- |
-      | .. | 1 | -- | -- |
-      | R11| 0 | -- | E1 |
-      | .. | 1 | -- | -- |
-      | R31| 1 | -- | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (1.3fr, 1fr, .95fr, 2fr),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
+        | :--------- | ------ | :------- | :------- |
+        | R0 | 1 | -- | -- |
+        | R1 | 1 | 1  | -- |
+        | R2 | 1 | 2  | -- |
+        | R3 | 0 | -- | E0 |
+        | R4 | 1 | 4  | -- |
+        | .. | 1 | -- | -- |
+        | R11| 0 | -- | E1 |
+        | .. | 1 | -- | -- |
+        | R31| 1 | -- | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | --               | 0 |
-      | E1        | 1      | R11           | --               | 0 |
-      | ..        | 0      | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | --               | 0 |
+        | E1        | 1      | R11           | --               | 0 |
+        | ..        | 0      | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 Decode I2: ADD R5,R6->R3
 
 
-    #table-title[Register File (RF)]
-    #three-line-table(
-      columns: (1.3fr, 1fr, .95fr, 2fr),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
-      | :--------- | ------ | :------- | :------- |
-      | R0 | 1 | -- | -- |
-      | R1 | 1 | 1  | -- |
-      | R2 | 1 | 2  | -- |
-      | R3 | 0 | -- | *E2* |
-      | R4 | 1 | 4  | -- |
-      | R5 | 1 | 5  | -- |
-      | R6 | 1 | 6  | -- |
-      | .. | 1 | -- | -- |
-      | R11| 0 | -- | E1 |
-      | .. | 1 | -- | -- |
-      | R31| 1 | -- | -- |
-    ]
+    #figure(
+      three-line-table(
+        columns: (1.3fr, 1fr, .95fr, 2fr),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Register* | *Valid?* | *Value* | *Tag (ROB ID)* |
+        | :--------- | ------ | :------- | :------- |
+        | R0 | 1 | -- | -- |
+        | R1 | 1 | 1  | -- |
+        | R2 | 1 | 2  | -- |
+        | R3 | 0 | -- | *E2* |
+        | R4 | 1 | 4  | -- |
+        | R5 | 1 | 5  | -- |
+        | R6 | 1 | 6  | -- |
+        | .. | 1 | -- | -- |
+        | R11| 0 | -- | E1 |
+        | .. | 1 | -- | -- |
+        | R31| 1 | -- | -- |
+      ],
+      caption: [Register File (RF)],
+      numbering: none,
+    )
   
 
 
-    #table-title[Reorder Buffer (ROB)]
-    #three-line-table(
-      columns: (auto, auto, 1fr, 1fr, auto),
-      inset: 3pt,
-      align: center,
-    )[
-      | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
-      | :------ | ------ | :------------ | :--------------- | :--------- |
-      | E0 (head) | 1      | R3            | --               | 0 |
-      | E1        | 1      | R11           | --               | 0 |
-      | ..        | 0      | --            | --               | 0 |
-      | E15 (tail) | 0     | --            | --               | 0 |
-    ]
+    #figure(
+      three-line-table(
+        columns: (auto, auto, 1fr, 1fr, auto),
+        inset: 3pt,
+        align: center,
+      )[
+        | *Entry* | *Valid?* | *Dest ID* | *Dest val* | *Written?* |
+        | :------ | ------ | :------------ | :--------------- | :--------- |
+        | E0 (head) | 1      | R3            | --               | 0 |
+        | E1        | 1      | R11           | --               | 0 |
+        | ..        | 0      | --            | --               | 0 |
+        | E15 (tail) | 0     | --            | --               | 0 |
+      ],
+      caption: [Reorder Buffer (ROB)],
+      numbering: none,
+    )
   
 
 ==== Important: Register Renaming with a Reorde Buffer

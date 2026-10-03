@@ -1,6 +1,6 @@
 #import "../../index.typ": (
   definition, doc-toc, example, note, series-context, series-navbar,
-  table-title, template, tip, warning,
+  template, tip, warning,
 )
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
@@ -102,18 +102,21 @@ This search logic is a content-addressable memory. Its content is the memory add
 == Store-Load Forwarding Complexity
 
 
-  #table-title[Store Queue]
-  #three-line-table(
-    inset: 3pt,
-    align: center,
-  )[
-    | *Entry*   | *Valid* | *Addr*  | *AValid* | *Data* | *DValid* |
-    | :------   | ------  | :------ | ------   | :----- | ------  |
-    | E0(head)  | 0       | --      | 0        | --     | 0       |
-    | E1        | 0       | --      | 0        | --     | 0       |
-    | ..        | 0       | --      | 0        | --     | 0       |
-    | E15(tail) | 0       | --      | 0        | --     | 0       |
-  ]
+  #figure(
+    three-line-table(
+      inset: 3pt,
+      align: center,
+    )[
+      | *Entry*   | *Valid* | *Addr*  | *AValid* | *Data* | *DValid* |
+      | :------   | ------  | :------ | ------   | :----- | ------  |
+      | E0(head)  | 0       | --      | 0        | --     | 0       |
+      | E1        | 0       | --      | 0        | --     | 0       |
+      | ..        | 0       | --      | 0        | --     | 0       |
+      | E15(tail) | 0       | --      | 0        | --     | 0       |
+    ],
+    caption: [Store Queue],
+    numbering: none,
+  )
 
 
 - Content-addressable search based on *load address*.

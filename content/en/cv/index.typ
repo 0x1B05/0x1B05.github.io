@@ -11,24 +11,24 @@
   One Student One Chip group
 ]
 
-I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group. My background is mostly in CPUs and digital systems. These days I spend most of my time on Linux bring-up, simulators, and review or validation work around XiangShan Kunminghu `v2`.
+I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group.#sidenote[An open training program in which each student designs a RISC-V processor from scratch and brings up Linux on it.] My background is mostly in CPUs and digital systems. These days I spend most of my time on Linux bring-up, simulators, and review or validation work around XiangShan Kunminghu `v2`.#sidenote[XiangShan is an open-source high-performance RISC-V processor project; Kunminghu is one of its microarchitecture generations.]
 
 == Profile
 
 - M.S. student in Electronic Engineering at ShanghaiTech University.
 - Member of the One Student One Chip group.
 - Completed the B-track of the One Student One Chip training.
-- Working on the link between architecture, system software, and performance analysis.
+- Working on the link between architecture, system software, and performance analysis (see @technical-interests).
 
-== Current Work
+== Current Work <current-work>
 
 Recently I have been spending more time reviewing and validating XiangShan Kunminghu `v2`, while still working through bring-up and simulator problems.
 
-- I have recently been reviewing and validating XiangShan Kunminghu `v2`.
+- I have recently been reviewing and validating XiangShan Kunminghu `v2` @xiangshan-micro22.
 - I am also still working on booting Linux on both `NEMU` and `NPC`.
 - In this context, `NEMU` is the educational full-system emulator used throughout the YSYX training workflow.
-- `NPC` is my own `RISC-V64` core project, so bring-up and debugging land directly on the hardware/software boundary.
-- I continue to learn `gem5` so workload observation and microarchitectural analysis become less ad hoc.
+- `NPC` is my own `RISC-V64` @riscv-isa-2011 core project, so bring-up and debugging land directly on the hardware/software boundary.
+- I continue to learn `gem5` @gem5-2011 so workload observation and microarchitectural analysis become less ad hoc.
 
 == Background and Training
 
@@ -37,7 +37,7 @@ Recently I have been spending more time reviewing and validating XiangShan Kunmi
 - I have used `gem5` before, but I am still building a stable workflow for analysis rather than treating it as a mature skill.
 - Recent work around XiangShan Kunminghu `v2` is also giving me a clearer sense of how architecture reading, code review, and validation fit together.
 
-== Technical Interests
+== Technical Interests <technical-interests>
 
 - CPU and microarchitectural performance analysis
 - workload characterization and measurement
@@ -46,5 +46,9 @@ Recently I have been spending more time reviewing and validating XiangShan Kunmi
 
 == Next
 
-- Near term: more Linux bring-up, simulation, debugging, and review work around CPU-like systems.
+- Near term: more of the bring-up, simulation, debugging, and review work around CPU-like systems described in @current-work.
 - Longer term: more work on AI workloads and accelerator performance.
+
+== References
+
+#bibliography("refs.bib", title: none)

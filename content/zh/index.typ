@@ -1,6 +1,6 @@
 #import "../../config.typ": (
   content-card, doc-toc, locale-url, margin-note, profile-image, series-begin,
-  series-context, series-navbar, sidenote, table-title, template,
+  series-context, series-navbar, sidenote, table-pair, template,
   note as shared-note, tip as shared-tip, example as shared-example,
   definition as shared-definition, warning as shared-warning,
 )

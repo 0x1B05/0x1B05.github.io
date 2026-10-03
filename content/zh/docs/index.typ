@@ -1,6 +1,6 @@
 #import "../index.typ": (
   content-card, doc-toc, definition, example, locale-url, margin-note, note,
-  series-begin, series-context, series-navbar, sidenote, table-title, template,
+  series-begin, series-context, series-navbar, sidenote, table-pair, template,
   tip, warning,
 )
 #import "./registry.typ": series-registry, note-registry

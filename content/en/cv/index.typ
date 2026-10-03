@@ -13,6 +13,10 @@
 
 I am an M.S. student in Electronic Engineering at ShanghaiTech University and a member of the One Student One Chip group.#sidenote[An open training program in which each student designs a RISC-V processor from scratch and brings up Linux on it.] My background is mostly in CPUs and digital systems. These days I spend most of my time on Linux bring-up, simulators, and review or validation work around XiangShan Kunminghu `v2`.#sidenote[XiangShan is an open-source high-performance RISC-V processor project; Kunminghu is one of its microarchitecture generations.]
 
+#quote(block: true, attribution: [Hennessy & Patterson, _Computer Architecture_])[
+  Make the common case fast.
+]
+
 == Profile
 
 - M.S. student in Electronic Engineering at ShanghaiTech University.

@@ -460,6 +460,20 @@
 // wrapped in its own unnumbered figure; stacks vertically on narrow screens.
 #let table-pair(left, right) = html.div(class: "table-pair")[#left #right]
 
+// Block quotes keep the attribution inside the blockquote (styled via
+// .quote__attribution in site.css) instead of a detached following paragraph.
+#let template-quotes(content) = {
+  show quote.where(block: true): it => if target() == "html" {
+    html.elem("blockquote")[
+      #it.body
+      #if it.attribution != none {
+        html.elem("footer", attrs: (class: "quote__attribution"))[— #it.attribution]
+      }
+    ]
+  }
+  content
+}
+
 // --- Series navigation ---
 
 #let series-context(series, route) = {
@@ -536,6 +550,7 @@
   show: template-refs
   show: template-sidenotes
   show: template-figures
+  show: template-quotes
   // Center tables in the text column via a wrapper (see .table-wrap). Inside
   // html.frame the target is paged, so diagram tables stay untouched.
   show table: it => context {

@@ -174,6 +174,7 @@ Other building blocks:
 - `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.
 - `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
+- `#quote(block: true, attribution: […])[…]` — block quote; a template show rule keeps the attribution inside the quote as a small footer line instead of a detached paragraph.
 - Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.
 
 ### Adding a new callout kind

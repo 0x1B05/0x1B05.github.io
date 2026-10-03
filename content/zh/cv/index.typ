@@ -11,6 +11,10 @@
 
 我是上海科技大学电子信息硕士生，目前在一生一芯课题组#sidenote[一个开放的芯片设计教学项目：每位学员从零设计一颗 RISC-V 处理器，并在上面完成 Linux 启动。]。我的基础主要在 CPU 和数字系统这一块，最近的时间大多花在 Linux bring-up、模拟器、香山昆明湖 `v2`#sidenote[香山是开源的高性能 RISC-V 处理器项目，昆明湖是其一代微架构。] 的 review 和验证上。
 
+#quote(block: true, attribution: [Hennessy 与 Patterson，《计算机体系结构：量化研究方法》])[
+  加速大概率事件。
+]
+
 == 基本情况
 
 - 上海科技大学电子信息硕士生。

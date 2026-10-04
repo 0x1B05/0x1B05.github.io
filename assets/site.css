@@ -871,6 +871,10 @@ DOCS
     background: var(--surface-soft);
 }
 
+.docs-landing__empty {
+    color: var(--text-muted);
+}
+
 .doc-toc__title {
     margin-bottom: 0.35rem;
     color: var(--text-faint);

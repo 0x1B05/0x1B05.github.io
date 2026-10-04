@@ -54,7 +54,7 @@ Every page is an `index.typ` in its own directory, with images in an `imgs/` sub
 Content goes here.
 ```
 
-The relative import depth varies (`../index.typ`, `../../index.typ`, …) because each locale root re-exports the shell; importing from the nearest ancestor `index.typ` is what makes the dependency visible to the build.
+The relative import depth varies (`../index.typ`, `../../index.typ`, …) because each locale root wildcard-re-exports the shell (`#import "../../config.typ": *`) and each section landing page wildcard-re-exports the locale root, so importing from the nearest ancestor `index.typ` gives every page the full component set with a short, uniform path. (`--deps` records the transitive closure of files actually read, so the build sees `config.typ` regardless of the chain's shape; the chain exists purely for import ergonomics, not for build visibility.)
 
 ### Adding a blog post
 
@@ -123,7 +123,7 @@ A **series** is a directory `content/<locale>/docs/<series-slug>/` containing:
 
 = <series title>
 
-#doc-toc("en")
+#doc-toc()
 
 <introduction>
 
@@ -153,18 +153,18 @@ A **series** is a directory `content/<locale>/docs/<series-slug>/` containing:
 
 ### Components and boxes
 
-Callouts (`note`, `tip`, `example`, `definition`, `warning`) render as titled boxes; the default title comes from `locale-copy` in `config.typ` and can be overridden with `title:`:
+Callouts (`note`, `tip`, `example`, `definition`, `warning`) render as titled boxes; the default title comes from `locale-copy` in `config.typ`, follows the page language automatically, and can be overridden with `title:`:
 
 ```typst
 #note[Something worth remembering.]
 #warning(title: "Do not do this")[The explanation.]
 ```
 
-Locale-bound callouts, `doc-toc`, and the series helpers are re-exported from each locale root (`content/<locale>/index.typ`) and again from each section landing page, so every page imports them from the nearest ancestor `index.typ` (blog posts use `../index.typ`, docs chapters `../../index.typ`, and so on). Importing from `config.typ` directly is only needed when building new kinds of pages; in that case pass `locale:` to callouts yourself.
+All components and the callout titles follow the page language automatically: `site-web` sets `text(lang: …)`, and locale-aware components (`callout-kind`, `doc-toc`) read it back through a `context` block at layout time, so no `locale:` argument is threaded through pages. Every page imports components from the nearest ancestor `index.typ` (blog posts use `../index.typ`, docs chapters `../../index.typ`, and so on); both chain levels are wildcard re-exports, so a new shared component only needs to be defined once in `config.typ`. Importing from `config.typ` directly is only needed when building new kinds of pages. (One edge case: a local `set text(lang: "en")` scope, like the bibliography block in the zh CV, flips the automatic locale inside that scope.)
 
 Other building blocks:
 
-- `#doc-toc("en" | "zh")` — table of contents for the current page, used near the top of docs chapters and series landing pages.
+- `#doc-toc()` — table of contents for the current page, used near the top of docs chapters and series landing pages (the "Contents"/"目录" title follows the page language).
 - `#margin-note[…]` — small in-flow aside (also used for "further reading" link blocks). Numbered notes written as `#sidenote[…]` (`#footnote[…]` also works) render as superscript markers that reveal their body in a hover/focus popup, and figure captions render like a paper — above tables, below images and diagrams — the site does not use page-margin notes; the layout is a single centered column.
 - `#bibliography("refs.bib", title: none)` — paper citations; keep the .bib file next to the page, cite with `@key`, and give the section its own `==` heading (`title: none` suppresses the built-in one, which renders one level too large). On zh pages, wrap it in `#{ set text(lang: "en"); bibliography(…) }` so English entries keep English IEEE connectors instead of zh-localized ones.
 - `#figure(image("imgs/<file>.svg"), caption: […])` — captioned figure. `#figure(table(…), caption: […])` gets a numbered "Table N" caption above the table; image/diagram captions stay below.
@@ -179,11 +179,11 @@ Other building blocks:
 
 ### Adding a new callout kind
 
-The five kinds share one implementation (`callout-kind` in `config.typ`), so a new kind (say `important`) takes three small edits:
+The five kinds share one implementation (`callout-kind` in `config.typ`), so a new kind (say `important`) takes two small edits:
 
 1. `config.typ` — add a one-line wrapper next to the existing ones:
    ```typst
-   #let important(body, title: auto, locale: "en") = callout-kind("important", body, title: title, locale: locale)
+   #let important(body, title: auto, locale: none) = callout-kind("important", body, title: title, locale: locale)
    ```
 2. `config.typ` — add the default title to both `locale-copy` tables (the field name must be `callout_` + the kind name): `callout_important: "重要",` in the zh table and `callout_important: "Important",` in the en table.
 3. `assets/site.css` — add one accent line next to the other kinds (light and dark values in a single `light-dark()`; the tinted background is derived from the accent via `color-mix`, so nothing else is needed):
@@ -191,7 +191,7 @@ The five kinds share one implementation (`callout-kind` in `config.typ`), so a n
    .callout--important { --callout-accent: light-dark(#3a7ca5, #81a1c1); }
    ```
 
-Then bind it to the locale in each locale root (`content/<locale>/index.typ`, next to the other `shared-*` aliases) so the whole locale tree can use it.
+The default title follows the page language automatically (via `context text.lang`), so no per-locale binding step is needed.
 
 ## Build and Test Commands
 

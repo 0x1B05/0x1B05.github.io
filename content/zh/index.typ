@@ -1,17 +1,5 @@
-#import "../../config.typ": (
-  content-card, doc-toc, locale-url, margin-note, profile-image, series-begin,
-  series-context, series-navbar, sidenote, table-pair, template,
-  note as shared-note, tip as shared-tip, example as shared-example,
-  definition as shared-definition, warning as shared-warning,
-)
+#import "../../config.typ": *
 #show: template.with(locale: "zh", route: "")
-
-// 绑定中文标题的 callout,重新导出给整个中文内容树使用。
-#let note(body, title: auto) = shared-note(body, title: title, locale: "zh")
-#let tip(body, title: auto) = shared-tip(body, title: title, locale: "zh")
-#let example(body, title: auto) = shared-example(body, title: title, locale: "zh")
-#let definition(body, title: auto) = shared-definition(body, title: title, locale: "zh")
-#let warning(body, title: auto) = shared-warning(body, title: title, locale: "zh")
 
 #let home-link(href, title, description) = html.a(
   href: href,

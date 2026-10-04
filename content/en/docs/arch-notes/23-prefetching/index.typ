@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/23-prefetching/",
   title: "Prefetching",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/23-prefetching/")
-
-= Prefetching
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == Prefetching Basics
 
@@ -421,4 +409,3 @@ A complete design should specify:
 
 Prefetching succeeds only when it moves latency off the critical path without moving a larger amount of interference onto someone else's critical path.
 
-#series-navbar("en", nav)

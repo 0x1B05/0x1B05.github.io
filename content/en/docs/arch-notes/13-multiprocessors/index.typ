@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/13-multiprocessors/",
   title: "Multiprocessors, Memory Ordering, and Cache Coherence",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/13-multiprocessors/")
-
-= Multiprocessors, Memory Ordering, and Cache Coherence
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 This chapter collects the parallelism, heterogeneity, bottleneck-acceleration,
 memory-ordering, and cache-coherence ideas needed to reason about a modern
@@ -1042,4 +1030,3 @@ LazyPIM and CoNDA show that moving computation near memory is safe only when
 access insight, explicit synchronization boundaries, and commit/retry preserve
 the result of a conventional coherent execution.
 
-#series-navbar("en", nav)

@@ -1,25 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/05-dataflow-superscalar/",
   title: "Dataflow and Superscalar Execution",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/05-dataflow-superscalar/")
-
-= Dataflow and Superscalar Execution
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Enabling OoO Execution, Revisited
 
@@ -200,4 +187,3 @@ Disadvantages:
 - Dependence checking can lengthen the critical path and clock cycle time.
 - More hardware resources are needed.
 
-#series-navbar("en", nav)

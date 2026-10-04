@@ -1,7 +1,4 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  table-pair, template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
@@ -13,21 +10,11 @@
 #import "../_diagrams/ooo-simulation.typ": (
   ooo-cycle-snapshot, ooo-cycle8-broadcast, ooo-dataflow-graph,
 )
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/03-out-of-order-execution/",
   title: "Out-of-Order Execution",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/03-out-of-order-execution/")
-
-= Out-of-Order Execution
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == The Problem with In-Order Dispatch
 
@@ -491,4 +478,3 @@ Boggs et al., “The Microarchitecture of the Pentium 4 Processor,” ntel Techn
   - Wakeup and select/schedule the instruction
 
 
-#series-navbar("en", nav)

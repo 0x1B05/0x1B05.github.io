@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/08-vliw/",
   title: "VLIW Architectures",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/08-vliw/")
-
-= VLIW Architectures
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == VLIW Concept
 
@@ -177,4 +165,3 @@ Static VLIW encodings expose machine width, slot types, and assumed latency. A b
 
 Transmeta used software code morphing to translate x86 into a proprietary VLIW ISA. NVIDIA Denver similarly combined an ARM-compatible interface with dynamic optimization. The approach restores implementation freedom, but translation time, code-cache capacity, exception mapping, self-modifying code, and memory ordering become part of the design.
 
-#series-navbar("en", nav)

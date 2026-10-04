@@ -1,26 +1,13 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/interconnects.typ": direct-network, mecs-topology
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/14-interconnects/",
   title: "Interconnection Networks",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/14-interconnects/")
-
-= Interconnection Networks
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Communication as a First-Class Resource
 
@@ -1146,4 +1133,3 @@ queues for deflection; Aergia/STC and HAT act on packet criticality and source
 injection; and topology-aware QoS with MECS-style shared regions provides
 guarantees without placing expensive QoS hardware at every router.
 
-#series-navbar("en", nav)

@@ -1,26 +1,13 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/cache.typ": cache-parallel-serial-access
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/17-multi-level-cache/",
   title: "Multi-Level Cache Design and Management",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/17-multi-level-cache/")
-
-= Multi-Level Cache Design and Management
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Design Depends on the Cache Level
 
@@ -89,4 +76,3 @@ A multi-level policy must decide:
 Program-visible non-temporal hints and explicit asynchronous copies can bypass ordinary cache or register paths. Such mechanisms show that whether a cache is completely transparent depends on the ISA and programming model, not only the microarchitecture.
 
 
-#series-navbar("en", nav)

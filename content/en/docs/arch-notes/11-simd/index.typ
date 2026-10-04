@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/11-simd/",
   title: "SIMD Architectures",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/11-simd/")
-
-= SIMD Architectures
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == SIMD and Other Execution Models
 
@@ -214,4 +202,3 @@ Peak lane count alone does not determine performance. Check:
 
 A regular loop with long vectors and unit-stride accesses can approach peak throughput; the same hardware can be mostly idle on short, irregular, or dependence-heavy code.
 
-#series-navbar("en", nav)

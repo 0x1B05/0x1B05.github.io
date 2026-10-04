@@ -713,3 +713,19 @@
     ..options,
   )(body)
 }
+
+// A docs series chapter page: applies the page template, then renders the
+// chapter title, series navbar, and on-page TOC around the body (navbar again
+// at the bottom). The route must match the chapter's `route` in series.typ.
+// Defined after `template` because Typst closures capture the module scope at
+// their definition point.
+#let series-chapter(series, route: none, title: none, locale: "en", body) = {
+  assert(route != none and title != none, message: "series-chapter needs route: and title:")
+  show: template.with(locale: locale, route: route, title: title)
+  let nav = series-context(series, route)
+  heading(level: 1, title)
+  series-navbar(locale, nav)
+  doc-toc()
+  body
+  series-navbar(locale, nav)
+}

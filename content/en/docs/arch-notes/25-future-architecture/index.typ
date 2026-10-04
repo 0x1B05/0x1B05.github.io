@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/25-future-architecture/",
   title: "Epilogue: Future Computer Architecture",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/25-future-architecture/")
-
-= Epilogue: Future Computer Architecture
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == Architectural Foundations
 
@@ -449,4 +437,3 @@ The durable method is:
 
 The specific technologies will change; this method of workload-driven, data-aware, and tradeoff-conscious design remains useful.
 
-#series-navbar("en", nav)

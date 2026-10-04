@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/09-systolic-array/",
   title: "Systolic Array Architectures",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/09-systolic-array/")
-
-= Systolic Array Architectures
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == Systolic Array Motivation
 
@@ -148,4 +136,3 @@ Limitations:
 
 Systolic arrays are therefore strongest when the application exposes regular producer-consumer structure and substantial reuse. They complement rather than replace vector, GPU, and general-purpose execution.
 
-#series-navbar("en", nav)

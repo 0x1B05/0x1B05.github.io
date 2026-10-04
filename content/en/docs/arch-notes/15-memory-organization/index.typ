@@ -1,7 +1,4 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
@@ -9,21 +6,11 @@
   dram-bank-operation, dram-system-hierarchy, memory-array-organization,
   rank-cache-block-transfer, sram-dram-addressing,
 )
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/15-memory-organization/",
   title: "Memory Organization and Technology",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/15-memory-organization/")
-
-= Memory Organization and Technology
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Memory Is Critically Important
 
@@ -323,4 +310,3 @@ Memory behavior also shapes every execution model: pipelines stall on dependent 
 Processing-in-memory and near-memory acceleration perform selected operations where data is stored. They can improve bandwidth and energy efficiency, but raise questions about programmability, coherence, consistency, protection, reliability, and which computations are worth moving.
 
 
-#series-navbar("en", nav)

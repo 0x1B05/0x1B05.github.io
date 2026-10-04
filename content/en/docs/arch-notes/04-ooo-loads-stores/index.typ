@@ -1,25 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/04-ooo-loads-stores/",
   title: "Out-of-Order Loads and Stores",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/04-ooo-loads-stores/")
-
-= Out-of-Order Loads and Stores
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Registers versus Memory
 
@@ -125,4 +112,3 @@ This search logic is a content-addressable memory. Its content is the memory add
 - Load data can come from one or more stores in the SQ and from memory/cache.
 
 
-#series-navbar("en", nav)

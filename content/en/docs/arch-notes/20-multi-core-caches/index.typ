@@ -1,26 +1,13 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/cache.typ": private-shared-cache-topology
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/20-multi-core-caches/",
   title: "Multi-Core Caches",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/20-multi-core-caches/")
-
-= Multi-Core Caches
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 Cache efficiency becomes even more important in a multi-core/multi-threaded system
 - Memory bandwidth is at premium
@@ -106,4 +93,3 @@ Practical policies combine both ideas:
 A controllable shared resource can retain most utilization benefits while enforcing minimum service or bounded slowdown.
 
 
-#series-navbar("en", nav)

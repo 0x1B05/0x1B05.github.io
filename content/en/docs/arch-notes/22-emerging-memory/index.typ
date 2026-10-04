@@ -1,25 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/22-emerging-memory/",
   title: "Memory Robustness, Flash, and Emerging Memory",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/22-emerging-memory/")
-
-= Memory Robustness, Flash, and Emerging Memory
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 This chapter supplements the preceding memory hierarchy and cache material. It
 focuses on the device and controller effects that are
@@ -1212,4 +1199,3 @@ The cross-layer lesson is that nonvolatility removes refresh, not
 responsibility. Placement, endurance, ECC, ordering, and access control must
 all be part of the memory-system design.
 
-#series-navbar("en", nav)

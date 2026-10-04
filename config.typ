@@ -1,5 +1,6 @@
 #let site-name = "0x1B05"
-#let footer-year = "2026"
+// Copyright year in the footer, taken from the build date.
+#let footer-year = str(datetime.today().year())
 
 // --- URL helpers ---
 

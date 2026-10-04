@@ -37,7 +37,7 @@
         home: dataset.searchSectionHome || "Home",
         docs: dataset.searchSectionDocs || "Docs",
         blog: dataset.searchSectionBlog || "Blog",
-        cv: dataset.searchSectionCv || "CV",
+        about: dataset.searchSectionAbout || "About",
       },
     };
   }

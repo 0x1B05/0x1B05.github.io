@@ -31,7 +31,7 @@
   zh: (
     nav_docs: "文档",
     nav_blog: "博客",
-    nav_cv: "简历",
+    nav_about: "关于",
     docs_toc: "目录",
     callout_note: "备注",
     callout_tip: "提示",
@@ -58,20 +58,20 @@
     search_section_home: "首页",
     search_section_docs: "文档",
     search_section_blog: "博客",
-    search_section_cv: "简历",
+    search_section_about: "关于",
     docs_series: "系列",
     docs_notes: "短文",
     docs_empty: "这里还没有内容。",
     home_docs_desc: "成体系的笔记和系列文章。",
     home_blog_desc: "短一些的文章和笔记。",
-    home_cv_desc: "背景和最近在做的事。",
+    home_about_desc: "背景和最近在做的事。",
     footer_label: "个人博客",
     footer_tagline: "一个用于发布个人文章、笔记与文档的网站。",
   ),
   en: (
     nav_docs: "Docs",
     nav_blog: "Blog",
-    nav_cv: "CV",
+    nav_about: "About",
     docs_toc: "Contents",
     callout_note: "Note",
     callout_tip: "Tip",
@@ -98,13 +98,13 @@
     search_section_home: "Home",
     search_section_docs: "Docs",
     search_section_blog: "Blog",
-    search_section_cv: "CV",
+    search_section_about: "About",
     docs_series: "Series",
     docs_notes: "Short Notes",
     docs_empty: "Nothing here yet.",
     home_docs_desc: "Structured notes and series.",
     home_blog_desc: "Shorter posts and notes.",
-    home_cv_desc: "Background and recent work.",
+    home_about_desc: "Background and recent work.",
     footer_label: "Personal site",
     footer_tagline: "Personal essays, notes, and documentation.",
   ),
@@ -269,7 +269,7 @@
       "data-search-section-home": copy.search_section_home,
       "data-search-section-docs": copy.search_section_docs,
       "data-search-section-blog": copy.search_section_blog,
-      "data-search-section-cv": copy.search_section_cv,
+      "data-search-section-about": copy.search_section_about,
       "data-dropdown": "",
     ),
   )[
@@ -400,7 +400,7 @@
   html.div(class: "home-links")[
     #home-link(locale-url(locale, route: "docs/"), copy.nav_docs, copy.home_docs_desc)
     #home-link(locale-url(locale, route: "blog/"), copy.nav_blog, copy.home_blog_desc)
-    #home-link(locale-url(locale, route: "cv/"), copy.nav_cv, copy.home_cv_desc)
+    #home-link(locale-url(locale, route: "about/"), copy.nav_about, copy.home_about_desc)
   ]
 }
 
@@ -709,7 +709,7 @@
       (locale-url(locale), brand-logo(), "brand"),
       (locale-url(locale, route: "docs/"), copy.nav_docs, "default"),
       (locale-url(locale, route: "blog/"), copy.nav_blog, "default"),
-      (locale-url(locale, route: "cv/"), copy.nav_cv, "default"),
+      (locale-url(locale, route: "about/"), copy.nav_about, "default"),
     )
   } else {
     header-links

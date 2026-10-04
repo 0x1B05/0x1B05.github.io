@@ -1,5 +1,5 @@
 #import "../index.typ": margin-note, sidenote, template
-#show: template.with(locale: "zh", route: "cv/", title: "简历")
+#show: template.with(locale: "zh", route: "about/", title: "关于我")
 
 = 0x1B05
 

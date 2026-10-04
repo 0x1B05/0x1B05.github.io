@@ -22,13 +22,13 @@
     #home-link(
       locale-url("en"),
       "Open the English site",
-      "Browse the home page, docs, blog, and profile pages under /en/.",
+      "Browse the home page, docs, blog, and about page under /en/.",
       eyebrow: "English",
     )
     #home-link(
       locale-url("zh"),
       "进入中文站点",
-      "查看首页、文档、博客与简介页面，路径位于 /zh/。",
+      "查看首页、文档、博客与关于页面，路径位于 /zh/。",
       eyebrow: "中文",
     )
   ]

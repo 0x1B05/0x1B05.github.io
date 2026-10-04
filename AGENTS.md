@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This repository is the personal website `0x1B05.github.io` — a bilingual (English / Chinese) static site with notes, docs, blog posts, and a CV, published at `https://0x1B05.github.io/`.
+This repository is the personal website `0x1B05.github.io` — a bilingual (English / Chinese) static site with notes, docs, blog posts, and an about page, published at `https://0x1B05.github.io/`.
 
 The site is written in **Typst** and compiled to static HTML with `typst compile --features html --format html`. There is no traditional application runtime: the "source code" is Typst markup plus a small set of hand-written CSS/JS assets, and the build output (`_site/`) is deployed directly to GitHub Pages. Because this is a GitHub *user-site* repository, the site lives at the domain root — all internal URLs are written absolute against `/`, never against a project subpath.
 
@@ -149,7 +149,7 @@ Callouts (`note`, `tip`, `example`, `definition`, `warning`) render as titled bo
 #warning(title: "Do not do this")[The explanation.]
 ```
 
-All components and the callout titles follow the page language automatically: `site-web` sets `text(lang: …)`, and locale-aware components (`callout-kind`, `doc-toc`) read it back through a `context` block at layout time, so no `locale:` argument is threaded through pages. Every page imports components from the nearest ancestor `index.typ` (blog posts use `../index.typ`, docs chapters `../../index.typ`, and so on); both chain levels are wildcard re-exports, so a new shared component only needs to be defined once in `config.typ`. Importing from `config.typ` directly is only needed when building new kinds of pages. (One edge case: a local `set text(lang: "en")` scope, like the bibliography block in the zh CV, flips the automatic locale inside that scope.)
+All components and the callout titles follow the page language automatically: `site-web` sets `text(lang: …)`, and locale-aware components (`callout-kind`, `doc-toc`) read it back through a `context` block at layout time, so no `locale:` argument is threaded through pages. Every page imports components from the nearest ancestor `index.typ` (blog posts use `../index.typ`, docs chapters `../../index.typ`, and so on); both chain levels are wildcard re-exports, so a new shared component only needs to be defined once in `config.typ`. Importing from `config.typ` directly is only needed when building new kinds of pages. (One edge case: a local `set text(lang: "en")` scope, like the bibliography block in the zh about page, flips the automatic locale inside that scope.)
 
 Other building blocks:
 

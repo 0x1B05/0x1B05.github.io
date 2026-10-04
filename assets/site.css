@@ -1189,8 +1189,9 @@ figure > img {
 }
 
 /* html.frame() diagrams (cetz etc.) are drawn with hardcoded dark strokes for
-   a light page; give them a light canvas so they stay readable in dark
-   themes. */
+   a light page, so they sit on a white canvas. In dark mode the whole canvas
+   is inverted instead; the hue-rotate keeps annotation colors (red/blue/green)
+   recognizable. The same inversion covers baked-white diagram PNGs. */
 figure > svg {
     max-width: 100%;
     height: auto;
@@ -1198,6 +1199,18 @@ figure > svg {
     padding: 0.5rem;
     border-radius: var(--radius-md);
     background: #ffffff;
+}
+
+html.theme-dark figure > svg,
+html.theme-dark figure > img {
+    filter: invert(0.92) hue-rotate(180deg);
+}
+
+@media (prefers-color-scheme: dark) {
+    html:not(.theme-light) figure > svg,
+    html:not(.theme-light) figure > img {
+        filter: invert(0.92) hue-rotate(180deg);
+    }
 }
 
 .figure__caption {

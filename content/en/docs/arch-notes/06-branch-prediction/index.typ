@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/06-branch-prediction/",
   title: "Branch Prediction",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/06-branch-prediction/")
-
-= Branch Prediction
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == Control Dependence
 
@@ -156,4 +144,3 @@ Disadvantages:
 
 The simplest dynamic predictor is last-time prediction: remember the direction taken the last time a branch executed and predict the same direction next time.
 
-#series-navbar("en", nav)

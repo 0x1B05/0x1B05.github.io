@@ -1,7 +1,4 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
@@ -12,21 +9,11 @@
 #import "../_diagrams/virtual-memory-flows.typ": (
   page-fault-dma-flow, page-fault-flow, page-hit-flow,
 )
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/24-virtual-memory/",
   title: "Virtual Memory",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/24-virtual-memory/")
-
-= Virtual Memory
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Why Virtual Memory?
 
@@ -611,4 +598,3 @@ Cons:
 - Page Walk Caches are low-latency caches that *provide faster access to the page table levels*
   - compared to accessing the regular cache/memory hierarchy for every page table walk
 
-#series-navbar("en", nav)

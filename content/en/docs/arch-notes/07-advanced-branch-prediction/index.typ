@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/07-advanced-branch-prediction/",
   title: "Advanced Branch Prediction",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/07-advanced-branch-prediction/")
-
-= Advanced Branch Prediction
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == Dynamic Branch Prediction
 
@@ -409,4 +397,3 @@ A complete control-flow design must answer all of the following:
 
 Branch prediction is therefore not a single table. It is a coordinated next-PC subsystem whose accuracy, latency, bandwidth, and recovery behavior jointly determine front-end performance.
 
-#series-navbar("en", nav)

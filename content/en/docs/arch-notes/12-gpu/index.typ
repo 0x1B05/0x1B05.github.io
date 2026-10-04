@@ -1,24 +1,12 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/12-gpu/",
   title: "Graphics Processing Units",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/12-gpu/")
-
-= Graphics Processing Units
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
 
 == GPUs are SIMD Engines Underneath
 
@@ -211,4 +199,3 @@ Wafer-scale engines combine MIMD organization across tiles with SIMD processors 
 
 SIMD exposes data parallelism as vector instructions. SIMT exposes scalar threads and forms SIMD groups dynamically. GPUs use SIMT programming on SIMD hardware, combining flexible per-thread execution with efficient warp-level data parallelism.
 
-#series-navbar("en", nav)

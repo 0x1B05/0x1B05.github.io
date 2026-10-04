@@ -1,28 +1,15 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/cache.typ": (
   cache-hit-data-path, cache-placement-organizations,
 )
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/16-memory-hierarchy-caches/",
   title: "Memory Hierarchy and Caches",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/16-memory-hierarchy-caches/")
-
-= Memory Hierarchy and Caches
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == The Fundamental Problem
 
@@ -323,4 +310,3 @@ Stores smaller than a block update bytes under a write mask. If a partial store 
 Write buffers decouple processor stores from lower-level latency. They can merge writes to the same block, but loads must search or forward from buffered writes so they do not observe stale data.
 
 
-#series-navbar("en", nav)

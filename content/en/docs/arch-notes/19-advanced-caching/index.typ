@@ -1,26 +1,13 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/cache.typ": cache-mlp-replacement
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/19-advanced-caching/",
   title: "Advanced Caching",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/19-advanced-caching/")
-
-= Advanced Caching
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 == Miss Latency/Cost
 
@@ -69,4 +56,3 @@ The trace is shown in steady state for a four-block fully associative cache; war
 - How do we design a hybrid cache replacement policy (latency-aware and cost-aware)?
 
 
-#series-navbar("en", nav)

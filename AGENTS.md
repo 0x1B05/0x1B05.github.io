@@ -92,25 +92,14 @@ A **series** is a directory `content/<locale>/docs/<series-slug>/` containing:
 2. Chapter pages `NN-<slug>/index.typ` (numbered prefixes keep reading order):
 
 ```typst
-#import "../../index.typ": template, series-context, series-navbar, doc-toc
+#import "../../index.typ": *
 #import "../series.typ": my-series
-#show: template.with(locale: "en", route: "docs/my-series/01-first/", title: "<chapter title>")
-
-#let series = my-series
-#let nav = series-context(series, "docs/my-series/01-first/")
-
-= <chapter title>
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
+#show: series-chapter.with(my-series, route: "docs/my-series/01-first/", title: "<chapter title>")
 
 …content…
-
-#series-navbar("en", nav)
 ```
 
-`series-context` computes previous/next links from the `chapters` list, so the route given here must match the chapter's `route` in `series.typ` exactly.
+`series-chapter` applies the page template and renders the chapter title, the previous/home/next navbar, and the on-page TOC around the body (navbar again at the bottom), so the route and title are each written exactly once. `series-context` computes the navbar links from the `chapters` list, so the route given here must match the chapter's `route` in `series.typ` exactly. Chapters that need extra imports (diagram helpers, packages) simply add their own `#import` lines.
 
 3. A series landing page `index.typ` in the series directory, which renders the chapter list from the same metadata:
 
@@ -174,7 +163,8 @@ Other building blocks:
 - `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.
 - `#home-link(href, title, description, eyebrow: …)` — home-page link card; with `eyebrow:` it doubles as a language-gateway entry. `#home-links(locale)` renders the three standard home cards from `locale-copy` (card labels stay in sync with the header navigation).
 - `#docs-landing(locale, series-registry, note-registry)` — the whole docs landing body (series + notes card grids); empty sections are omitted, and when both registries are empty a muted `docs_empty` fallback line renders instead.
-- `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
+- `#series-chapter(series, route: …, title: …)` — the whole chapter page wrapper (used via `#show: series-chapter.with(…)`); emits the title, navbar, and TOC around the body so chapters don't repeat the boilerplate.
+- `#series-navbar(locale, nav)` — previous/home/next navigation; emitted by `series-chapter`, so chapters no longer call it directly.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
 - `#quote(block: true, attribution: […])[…]` — block quote; a template show rule keeps the attribution inside the quote as a small footer line instead of a detached paragraph.
 - Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.

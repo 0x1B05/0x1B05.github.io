@@ -1,28 +1,15 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/matrix-multiplication.typ": (
   naive-matrix-multiplication, tiled-matrix-multiplication,
 )
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/18-cache-performance/",
   title: "Cache Performance",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/18-cache-performance/")
-
-= Cache Performance
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 - Cache size
 - Block size
@@ -311,4 +298,3 @@ Who should do this?
 - *Who can determine what is frequently accessed?*
 
 
-#series-navbar("en", nav)

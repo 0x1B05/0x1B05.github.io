@@ -1,26 +1,13 @@
-#import "../../index.typ": (
-  definition, doc-toc, example, note, series-context, series-navbar,
-  template, tip, warning,
-)
+#import "../../index.typ": *
 #import "../series.typ": arch-notes-series
 #import "../_defs.typ": *
 #import "@preview/tablem:0.3.0": three-line-table
 #import "../_diagrams/rob.typ": ooo-two-humps, rob-bypass-paths, rob-data-path
-#show: template.with(
-  locale: "en",
+#show: series-chapter.with(
+  arch-notes-series,
   route: "docs/arch-notes/02-precise-exception/",
   title: "Precise Exceptions",
 )
-
-#let series = arch-notes-series
-#let nav = series-context(series, "docs/arch-notes/02-precise-exception/")
-
-= Precise Exceptions
-
-#series-navbar("en", nav)
-
-#doc-toc("en")
-
 
 Exception-causing  instruction: `DIV R4 <- R1, R2`(e.g., DIV by zero)
 
@@ -812,4 +799,3 @@ A *store/write buffer* is similar to a ROB, but is used only for store instructi
 Store-load handling will be covered later.
 
 
-#series-navbar("en", nav)

@@ -9,7 +9,7 @@
 
 = AI Inference
 
-#doc-toc("en")
+#doc-toc()
 
 == FlashAttention
 

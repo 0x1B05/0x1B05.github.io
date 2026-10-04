@@ -358,11 +358,14 @@
   ]
 ]
 
-#let doc-toc(locale) = {
-  let copy = locale-copy(locale)
-
+#let doc-toc(locale: none) = {
   html.elem("nav", attrs: (class: "doc-toc"))[
-    #html.div(class: "doc-toc__title")[#copy.docs_toc]
+    #html.div(class: "doc-toc__title")[
+      #context {
+        let l = if locale != none { locale } else { text.lang }
+        locale-copy(l).docs_toc
+      }
+    ]
     #outline(
       title: none,
       target: heading.where(level: 2).or(heading.where(level: 3)),
@@ -380,20 +383,28 @@
   #html.div(class: "callout__body")[#body]
 ]
 
-#let callout-kind(kind, body, title: auto, locale: "en") = {
-  let resolved-title = if title == auto { locale-copy(locale).at("callout_" + kind) } else { title }
+// The default title follows the page locale: the whole lookup lives in one
+// `context` block so it is realized at layout time, where text.lang (set by
+// site-web) is available. Pass `locale:` only to override it explicitly.
+#let callout-kind(kind, body, title: auto, locale: none) = {
+  let resolved-title = if title != auto { title } else {
+    context {
+      let l = if locale != none { locale } else { text.lang }
+      locale-copy(l).at("callout_" + kind)
+    }
+  }
   callout(kind, resolved-title, body)
 }
 
-#let note(body, title: auto, locale: "en") = callout-kind("note", body, title: title, locale: locale)
+#let note(body, title: auto, locale: none) = callout-kind("note", body, title: title, locale: locale)
 
-#let tip(body, title: auto, locale: "en") = callout-kind("tip", body, title: title, locale: locale)
+#let tip(body, title: auto, locale: none) = callout-kind("tip", body, title: title, locale: locale)
 
-#let example(body, title: auto, locale: "en") = callout-kind("example", body, title: title, locale: locale)
+#let example(body, title: auto, locale: none) = callout-kind("example", body, title: title, locale: locale)
 
-#let definition(body, title: auto, locale: "en") = callout-kind("definition", body, title: title, locale: locale)
+#let definition(body, title: auto, locale: none) = callout-kind("definition", body, title: title, locale: locale)
 
-#let warning(body, title: auto, locale: "en") = callout-kind("warning", body, title: title, locale: locale)
+#let warning(body, title: auto, locale: none) = callout-kind("warning", body, title: title, locale: locale)
 
 // --- Notes and figures ---
 

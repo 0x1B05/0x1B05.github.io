@@ -21,7 +21,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
   - `site.css` — the only stylesheet (theme tokens via `light-dark()`, layout, component styles); there is no external CSS dependency.
   - `fonts/et-book/` — self-hosted ET Book serif (WOFF + MIT LICENSE) declared in `site.css`.
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
-  - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js`, `dropdown.js` — header controls and root-gateway redirect; `dropdown.js` drives the language-switcher menu; preferences are persisted in `localStorage` under keys like `site-theme`.
+  - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js`, `dropdown.js` — header controls and root-gateway redirect; `dropdown.js` drives every dropdown menu (language, theme, search) via `data-dropdown` attributes; preferences are persisted in `localStorage` under keys like `site-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
   - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`. Card thumbnails go in `assets/content-thumbnails/` (create it when you add the first card).
 - `Makefile` — the entire build pipeline (see below).

@@ -200,14 +200,14 @@
     class: "theme-switcher__option theme-switcher__option--" + kind,
     role: "menuitem",
   )[
-    #html.elem("span", attrs: (class: "theme-switcher__option-icon", "aria-hidden": "true"))[#theme-icon(icon, class: "theme-switcher__option-svg")]#html.span(class: "theme-switcher__option-label")[#label]
+    #html.elem("span", attrs: (class: "theme-switcher__option-icon", "aria-hidden": "true"))[#theme-icon(icon)]#html.span(class: "theme-switcher__option-label")[#label]
   ]
 }
 
 #let theme-switcher(locale) = {
   let copy = locale-copy(locale)
 
-  html.div(class: "theme-switcher")[
+  html.elem("div", attrs: (class: "theme-switcher", "data-dropdown": ""))[
     #html.elem(
       "button",
       attrs: (
@@ -217,11 +217,12 @@
         "aria-expanded": "false",
         "aria-haspopup": "menu",
         "aria-controls": "theme-switcher-menu",
+        "data-dropdown-button": "",
       ),
     )[
       #html.elem("span", attrs: (class: "theme-switcher__button-icon theme-switcher__button-icon--sun", "aria-hidden": "true"))[#theme-icon("sun")]#html.elem("span", attrs: (class: "theme-switcher__button-icon theme-switcher__button-icon--moon", "aria-hidden": "true"))[#theme-icon("moon")]
     ]
-    #html.elem("div", attrs: (id: "theme-switcher-menu", class: "theme-switcher__menu", role: "menu"))[
+    #html.elem("div", attrs: (id: "theme-switcher-menu", class: "theme-switcher__menu", role: "menu", "data-dropdown-menu": ""))[
       #theme-switcher-option("light", copy.theme_light)
       #theme-switcher-option("dark", copy.theme_dark)
       #theme-switcher-option("system", copy.theme_system)
@@ -581,17 +582,19 @@
         make-header(header-links, locale: locale, route: route)
         html.article(
           html.section({
-            html.script(src: site-url("assets/theme-switcher.js"))
-            html.script(src: site-url("assets/language-switcher.js"))
-            html.script(src: site-url("assets/dropdown.js"))
-            html.script(src: site-url("assets/search.js"))
-            for (script-link) in body-scripts {
-              html.script(src: script-link)
-            }
             content
             site-footer(resolved-footer-locale)
           }),
         )
+        // Deferred by placement: these attach via DOMContentLoaded, so loading
+        // them after the content keeps the first paint unblocked.
+        html.script(src: site-url("assets/dropdown.js"))
+        html.script(src: site-url("assets/theme-switcher.js"))
+        html.script(src: site-url("assets/language-switcher.js"))
+        html.script(src: site-url("assets/search.js"))
+        for (script-link) in body-scripts {
+          html.script(src: script-link)
+        }
       })
     },
   )

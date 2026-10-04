@@ -2,10 +2,7 @@
   const storageKey = "site-theme";
   const root = document.documentElement;
   const themeClassNames = ["theme-light", "theme-dark"];
-  const buttonStateClassNames = [
-    "theme-switcher__button--light",
-    "theme-switcher__button--dark",
-    "theme-switcher__button--system",
+  const resolvedClassNames = [
     "theme-switcher__button--resolved-light",
     "theme-switcher__button--resolved-dark",
   ];
@@ -52,29 +49,16 @@
 
   let selectedTheme = readStoredTheme();
 
-  function setMenuOpenState(isOpen) {
-    if (!button || !menu) {
-      return;
-    }
-
-    button.setAttribute("aria-expanded", String(isOpen));
-    menu.classList.toggle("is-open", isOpen);
-  }
-
+  /* Menu toggling, outside-click and Escape handling come from dropdown.js
+   * (the switcher markup carries data-dropdown attributes); here we only close
+   * the panel after a theme is picked. */
   function closeMenu() {
-    setMenuOpenState(false);
-  }
-
-  function openMenu() {
-    setMenuOpenState(true);
-  }
-
-  function toggleMenu() {
-    if (!button || !menu) {
-      return;
+    if (menu) {
+      menu.classList.remove("is-open");
     }
-
-    setMenuOpenState(button.getAttribute("aria-expanded") !== "true");
+    if (button) {
+      button.setAttribute("aria-expanded", "false");
+    }
   }
 
   function syncRootTheme(activeTheme) {
@@ -90,8 +74,7 @@
       return;
     }
 
-    button.classList.remove(...buttonStateClassNames);
-    button.classList.add("theme-switcher__button--" + activeTheme);
+    button.classList.remove(...resolvedClassNames);
     button.classList.add(
       "theme-switcher__button--resolved-" + resolvedTheme(activeTheme),
     );
@@ -126,16 +109,6 @@
   applyTheme(selectedTheme);
 
   document.addEventListener("DOMContentLoaded", function () {
-    if (button) {
-      button.addEventListener("click", function (event) {
-        if (event && typeof event.preventDefault === "function") {
-          event.preventDefault();
-        }
-
-        toggleMenu();
-      });
-    }
-
     Object.entries(options).forEach(([theme, node]) => {
       if (!node) {
         return;
@@ -148,20 +121,6 @@
 
         setTheme(theme);
       });
-    });
-
-    document.addEventListener("click", function (event) {
-      const target = event ? event.target : null;
-
-      if (!target) {
-        return;
-      }
-
-      if ((button && button.contains(target)) || (menu && menu.contains(target))) {
-        return;
-      }
-
-      closeMenu();
     });
 
     applyTheme(selectedTheme);

@@ -13,7 +13,8 @@
     (site-home-url(), brand-logo(), "brand"),
   ),
   footer-locale: "en",
-  body-scripts: (site-url("assets/language-redirect.js"),),
+  // Redirect before first paint; the gateway page should never flash.
+  head-scripts: (site-url("assets/language-redirect.js"),),
 )
 
 = Choose Your Language

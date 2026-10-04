@@ -48,7 +48,7 @@
   )
   #home-link(
     locale-url("zh", route: "cv/"),
-    "简介",
+    "简历",
     "背景和最近在做的事。",
   )
 ]

@@ -54,7 +54,6 @@ element's color-scheme, which the theme switcher pins on <html>
     --text-faint: light-dark(#7b8794, #b8c2cf);
     --link: light-dark(#5e81ac, #88c0d0);
     --link-strong: light-dark(#4c6f9a, #8fbcbb);
-    --accent: #88c0d0;
     --accent-soft: light-dark(rgba(136, 192, 208, 0.18), rgba(136, 192, 208, 0.2));
     --border: light-dark(rgba(94, 129, 172, 0.18), rgba(216, 222, 233, 0.14));
     --border-strong: light-dark(rgba(94, 129, 172, 0.34), rgba(136, 192, 208, 0.38));
@@ -829,8 +828,7 @@ CONTENT ENTRY CARDS
     background: var(--surface-soft);
 }
 
-.content-card__thumb img,
-.content-card__thumb svg {
+.content-card__thumb img {
     display: block;
     width: 100%;
     height: auto;
@@ -865,16 +863,6 @@ CONTENT ENTRY CARDS
 /*******************************************************************************
 DOCS
 *******************************************************************************/
-
-/* html.frame() diagrams (cetz etc.) are drawn with hardcoded dark strokes for a
-   light page; give them a light canvas so they stay readable in dark themes. */
-figure > svg {
-    max-width: 100%;
-    height: auto;
-    padding: 0.5rem;
-    border-radius: var(--radius-md);
-    background: #ffffff;
-}
 
 .doc-toc {
     margin: 1.15rem 0 1.65rem;

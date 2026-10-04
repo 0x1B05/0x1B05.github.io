@@ -1,6 +1,4 @@
-#import "../index.typ": (
-  definition, example, margin-note, note, sidenote, template, tip, warning,
-)
+#import "../index.typ": margin-note, sidenote, template
 #show: template.with(locale: "en", route: "cv/", title: "CV")
 
 = 0x1B05

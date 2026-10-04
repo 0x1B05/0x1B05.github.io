@@ -59,6 +59,12 @@
     search_section_docs: "文档",
     search_section_blog: "博客",
     search_section_cv: "简历",
+    docs_series: "系列",
+    docs_notes: "短文",
+    docs_empty: "这里还没有内容。",
+    home_docs_desc: "成体系的笔记和系列文章。",
+    home_blog_desc: "短一些的文章和笔记。",
+    home_cv_desc: "背景和最近在做的事。",
     footer_label: "个人博客",
     footer_tagline: "一个用于发布个人文章、笔记与文档的网站。",
   ),
@@ -93,6 +99,12 @@
     search_section_docs: "Docs",
     search_section_blog: "Blog",
     search_section_cv: "CV",
+    docs_series: "Series",
+    docs_notes: "Short Notes",
+    docs_empty: "Nothing here yet.",
+    home_docs_desc: "Structured notes and series.",
+    home_blog_desc: "Shorter posts and notes.",
+    home_cv_desc: "Background and recent work.",
     footer_label: "Personal site",
     footer_tagline: "Personal essays, notes, and documentation.",
   ),
@@ -357,6 +369,66 @@
     #html.span(class: "content-card__description")[#description]
   ]
 ]
+
+// Home-page link card. With `eyebrow:` it doubles as the locale-gateway entry
+// (class locale-entry), so the gateway page and the home pages share one card.
+#let home-link(href, title, description, eyebrow: none) = html.a(
+  href: href,
+  class: if eyebrow == none { "home-link" } else { "home-link locale-entry" },
+)[
+  #if eyebrow != none [
+    #html.span(class: "locale-entry__eyebrow")[#eyebrow]
+  ]
+  #html.span(class: "home-link__title")[#title]
+  #html.span(class: "home-link__description")[#description]
+]
+
+// The three home-page cards, labeled from locale-copy so they cannot drift
+// from the header navigation.
+#let home-links(locale) = {
+  let copy = locale-copy(locale)
+  html.div(class: "home-links")[
+    #home-link(locale-url(locale, route: "docs/"), copy.nav_docs, copy.home_docs_desc)
+    #home-link(locale-url(locale, route: "blog/"), copy.nav_blog, copy.home_blog_desc)
+    #home-link(locale-url(locale, route: "cv/"), copy.nav_cv, copy.home_cv_desc)
+  ]
+}
+
+// Docs landing body: renders the series and note registries as card grids.
+// Empty sections are omitted; when both are empty a muted fallback line shows.
+#let docs-landing(locale, series-registry, note-registry) = {
+  let copy = locale-copy(locale)
+  let docs-card(entry, label: none) = content-card(
+    locale-url(locale, route: entry.route),
+    entry.thumbnail,
+    entry.title,
+    entry.summary,
+    label: label,
+  )
+
+  if series-registry.len() == 0 and note-registry.len() == 0 {
+    html.p(class: "docs-landing__empty")[#copy.docs_empty]
+  } else {
+    if series-registry.len() > 0 [
+      == #copy.docs_series
+
+      #html.div(class: "content-grid")[
+        #for entry in series-registry [
+          #docs-card(entry, label: copy.docs_series)
+        ]
+      ]
+    ]
+    if note-registry.len() > 0 [
+      == #copy.docs_notes
+
+      #html.div(class: "content-grid")[
+        #for entry in note-registry [
+          #docs-card(entry, label: entry.label)
+        ]
+      ]
+    ]
+  }
+}
 
 #let doc-toc(locale: none) = {
   html.elem("nav", attrs: (class: "doc-toc"))[

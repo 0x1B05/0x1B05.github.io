@@ -172,6 +172,8 @@ Other building blocks:
 - `#table-pair(left, right)` — two tables side by side (stacked on narrow screens). Each side is usually its own unnumbered table figure; for a shared group title, wrap the pair itself in `#figure(table-pair(…), caption: […], kind: table, numbering: none)`.
 - `#figure(html.frame(<cetz/finite call>), caption: […])` — cetz/finite diagrams; the HTML export drops them unless wrapped in `html.frame`. Shared diagram sources live in a series-local `_diagrams/` directory (see `docs/arch-notes/`). Also note that `#grid` and `#align` contents are dropped by the HTML export and must be unwrapped.
 - `#content-card(href, thumbnail, title, description, label: …)` — landing-page card; the thumbnail is referenced by bare filename and loaded from `assets/content-thumbnails/`.
+- `#home-link(href, title, description, eyebrow: …)` — home-page link card; with `eyebrow:` it doubles as a language-gateway entry. `#home-links(locale)` renders the three standard home cards from `locale-copy` (card labels stay in sync with the header navigation).
+- `#docs-landing(locale, series-registry, note-registry)` — the whole docs landing body (series + notes card grids); empty sections are omitted, and when both registries are empty a muted `docs_empty` fallback line renders instead.
 - `#series-navbar(locale, nav)` — previous/home/next navigation, conventionally placed right after the title and again at the bottom of chapter pages.
 - `#series-begin(locale, route)` — "start reading" link, used at the bottom of series landing pages.
 - `#quote(block: true, attribution: […])[…]` — block quote; a template show rule keeps the attribution inside the quote as a small footer line instead of a detached paragraph.

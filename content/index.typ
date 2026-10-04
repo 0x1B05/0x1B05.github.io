@@ -1,10 +1,4 @@
-#import "../config.typ": site-web, site-home-url, site-url, brand-logo, locale-url
-
-#let locale-entry(href, eyebrow, title, description) = html.a(href: href, class: "home-link locale-entry")[
-  #html.span(class: "locale-entry__eyebrow")[#eyebrow]
-  #html.span(class: "home-link__title")[#title]
-  #html.span(class: "home-link__description")[#description]
-]
+#import "../config.typ": site-web, site-home-url, site-url, brand-logo, locale-url, home-link
 
 #show: site-web.with(
   title: "Choose a language",
@@ -25,17 +19,17 @@
   ]
 
   #html.div(class: "locale-gateway__links")[
-    #locale-entry(
+    #home-link(
       locale-url("en"),
-      "English",
       "Open the English site",
       "Browse the home page, docs, blog, and profile pages under /en/.",
+      eyebrow: "English",
     )
-    #locale-entry(
+    #home-link(
       locale-url("zh"),
-      "中文",
       "进入中文站点",
       "查看首页、文档、博客与简介页面，路径位于 /zh/。",
+      eyebrow: "中文",
     )
   ]
 ]

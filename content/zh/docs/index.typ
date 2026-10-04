@@ -2,30 +2,8 @@
 #import "./registry.typ": series-registry, note-registry
 #show: template.with(locale: "zh", route: "docs/", title: "文档")
 
-#let docs-card(entry, label: none) = content-card(
-  locale-url("zh", route: entry.route),
-  entry.thumbnail,
-  entry.title,
-  entry.summary,
-  label: label,
-)
-
 = 文档
 
 // TODO: 一句话介绍这个栏目。下面的系列和短文由 docs/registry.typ 渲染。
 
-== 系列
-
-#html.div(class: "content-grid")[
-  #for entry in series-registry [
-    #docs-card(entry, label: "系列")
-  ]
-]
-
-== 短文
-
-#html.div(class: "content-grid")[
-  #for entry in note-registry [
-    #docs-card(entry, label: entry.label)
-  ]
-]
+#docs-landing("zh", series-registry, note-registry)

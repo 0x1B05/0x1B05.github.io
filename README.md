@@ -62,8 +62,6 @@ Because this repository is the user-site repository `0x1B05.github.io`, the site
   Shared site shell, routing helpers, localized copy, and reusable content helpers
 - `Makefile`
   Build, preview, and Pages-oriented targets
-- `tests/`
-  Regression checks for generated shell behavior, build rules, and theme scripts
 
 ## Maintenance Notes
 

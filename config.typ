@@ -166,10 +166,20 @@
     #html.span(class: "language-switcher__option-label")[#label]
   ]
 
+  // These docs are currently published in English only. Keep their language
+  // switcher useful by taking readers to the translated docs landing page
+  // instead of emitting a link to a non-existent route.
+  let english-only-doc = route.starts-with("docs/arch-notes/") or route.starts-with("docs/ai-inference/")
+  let target-route = if target-locale == "zh" and english-only-doc {
+    "docs/"
+  } else {
+    route
+  }
+
   if locale == target-locale {
     html.elem("span", attrs: (class: "language-switcher__option is-active", role: "menuitem", "aria-current": "page"))[#body]
   } else {
-    html.a(href: locale-url(target-locale, route: route), class: "language-switcher__option", role: "menuitem")[#body]
+    html.a(href: locale-url(target-locale, route: target-route), class: "language-switcher__option", role: "menuitem")[#body]
   }
 }
 
@@ -671,10 +681,12 @@
         )
         // Deferred by placement: these attach via DOMContentLoaded, so loading
         // them after the content keeps the first paint unblocked.
-        html.script(src: site-url("assets/dropdown.js"))
-        html.script(src: site-url("assets/theme-switcher.js"))
-        html.script(src: site-url("assets/language-switcher.js"))
-        html.script(src: site-url("assets/search.js"))
+        if locale != none {
+          html.script(src: site-url("assets/dropdown.js"))
+          html.script(src: site-url("assets/theme-switcher.js"))
+          html.script(src: site-url("assets/language-switcher.js"))
+          html.script(src: site-url("assets/search.js"))
+        }
         for (script-link) in body-scripts {
           html.script(src: script-link)
         }

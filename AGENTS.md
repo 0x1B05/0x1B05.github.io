@@ -169,6 +169,20 @@ Other building blocks:
 - `#quote(block: true, attribution: […])[…]` — block quote; a template show rule keeps the attribution inside the quote as a small footer line instead of a detached paragraph.
 - Standard Typst markup works as usual: `= headings`, `- lists`, `` `code` ``, fenced code blocks, `#link(url)[…]`, `#image("imgs/…")`.
 
+### Tables
+
+Write content tables in the Markdown-like form (`three-line-table` from `@preview/tablem:0.3.0`, already imported by the arch-notes `_defs.typ`; import it per page elsewhere):
+
+```typst
+#three-line-table([
+  | Symbol | Value | Meaning |
+  | :----- | ----: | :------ |
+  | $d$    | 1024  | Hidden dimension |
+])
+```
+
+After any edit to table content, re-align the pipes with `scripts/align_tables.py <file>` (CJK-aware, idempotent; `--check` reports without writing). Header/body split comes from the separator row; an empty header cell must be written as `| #" " |` (tablem rejects a truly empty one).
+
 ### Adding a new callout kind
 
 The five kinds share one implementation (`callout-kind` in `config.typ`), so a new kind (say `important`) takes two small edits:

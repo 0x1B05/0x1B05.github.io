@@ -1,8 +1,9 @@
 /*******************************************************************************
 FONTS
 
-ET Book (MIT, see assets/fonts/et-book/LICENSE) — the serif face of the site.
-CJK and any missing glyphs fall through to the system serif stack in `body`.
+Preview: match the notes template's fonts (Tex Gyre Termes + Noto Serif CJK SC,
+FiraCode Nerd Font Mono for code). These are system fonts, so they only apply
+where installed; ET Book remains the self-hosted fallback.
 *******************************************************************************/
 
 @font-face {
@@ -97,7 +98,7 @@ body {
     margin: 0 auto;
     max-width: 46rem;
     padding-inline: 1.5rem;
-    font-family: et-book, Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-family: "TeX Gyre Termes", et-book, "Noto Serif CJK SC", Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
     font-size: 1rem;
     line-height: 1.7;
     color: var(--text-main);
@@ -188,7 +189,7 @@ svg {
 }
 
 code {
-    font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+    font-family: "FiraCode Nerd Font Mono", Consolas, "Liberation Mono", Menlo, Courier, monospace;
 }
 
 

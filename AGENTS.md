@@ -20,6 +20,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
 - `assets/` — CSS and JS copied verbatim to `_site/assets/`:
   - `site.css` — the only stylesheet (theme tokens via `light-dark()`, layout, component styles); there is no external CSS dependency.
   - `fonts/et-book/` — self-hosted ET Book serif (WOFF + MIT LICENSE) declared in `site.css`.
+  - `fonts/tex-gyre-termes-math/` — self-hosted TeX Gyre Termes Math (WOFF2 + GUST Font License), used for MathML output so formulas do not depend on system math fonts.
   - `theme-bootstrap.js` — runs in `<head>` before first paint to apply the stored/system theme.
   - `theme-switcher.js`, `language-switcher.js`, `language-redirect.js`, `dropdown.js` — header controls and root-gateway redirect; `dropdown.js` drives every dropdown menu (language, theme, search) via `data-dropdown` attributes; preferences are persisted in `localStorage` under keys like `site-theme`.
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.

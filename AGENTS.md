@@ -26,6 +26,7 @@ The site is written in **Typst** and compiled to static HTML with `typst compile
   - `search.js` — client-side search UI backed by the Pagefind index at `/pagefind/`.
   - Logos (`logo-light.svg`, `logo-dark.svg`), `profile.png`. Card thumbnails go in `assets/content-thumbnails/` (create it when you add the first card).
 - `Makefile` — the entire build pipeline (see below).
+- `scripts/preview.py` — single-page incremental preview server used by `make watch`; serves `_site`, watches the compiled page and `assets/`, and injects a live-reload client into HTML responses.
 - `.github/workflows/deploy.yml` — CI/CD to GitHub Pages.
 - `_site/` — generated build output; never edit by hand. `.deps/` (typst-generated Make depfiles), `node_modules/`, `.reference/`, and `plans/` are also local-only and gitignored.
 
@@ -206,6 +207,14 @@ Preview locally at `http://localhost:8000` (override with `make preview PORT=900
 make preview
 ```
 
+Incremental preview for one page, with live reload while editing (override the port with `PORT=9000`; run `make html` once first so the other routes and Pagefind index exist):
+
+```sh
+make watch PAGE=zh/blog/qwen3-0.6b-execution-flow
+```
+
+`PAGE` is a route relative to `content/`, without the trailing `/index.typ`. With no `PAGE`, `make watch` opens an `fzf` picker; if fzf is unavailable or cancelled, it reuses the last page stored in the gitignored `.preview-page`.
+
 Clean build for GitHub Pages (also creates `_site/.nojekyll`):
 
 ```sh
@@ -223,6 +232,7 @@ make clean
 - `TYP_FILES` are found with `find content -name '*.typ'` minus the metadata files above; each `content/<path>.typ` maps to `_site/<path>.html` via `typst compile --root .. --features html --format html`.
 - Rebuild dependencies are exact, not convention-based: each page compiles with `typst compile --deps .deps/<path>.d --deps-format make`, which records every file the compilation actually reads (`config.typ`, imports, `series.typ`, images, bibliographies, package files) as a Make rule; the Makefile then `-include`s those `.d` files. Missing `.d` files on a fresh build are expected (compiling generates them); if a stale `.d` ever references a deleted file, run `make clean`.
 - The `search-index` target runs Pagefind with `--force-language en` into `_site/pagefind/` and fails with a clear message if `node_modules/.bin/pagefind` is missing.
+- The `watch` target runs `scripts/preview.py`, which starts `typst watch --no-serve` for one page, serves `_site` with SSE live reload, and reads `/assets/` directly from the repository. `PAGE` is a route relative to `content/`; without it the script uses fzf or the last page in `.preview-page`. Other routes come from the last `make html` build, and Pagefind is not rebuilt; this target is for editing one page, not for a full-site preview.
 
 ## Code Style and Conventions
 

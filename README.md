@@ -38,6 +38,23 @@ The preview server listens on `http://localhost:8000` by default. To use a diffe
 make preview PORT=9000
 ```
 
+For an incremental preview of one page, with live reload while you edit:
+
+```sh
+make watch PAGE=zh/blog/qwen3-0.6b-execution-flow
+```
+
+`PAGE` is a route relative to `content/`, without the trailing `/index.typ`.
+With no `PAGE`, `make watch` opens an `fzf` picker; if fzf is unavailable or
+cancelled, it reuses the last page, which is remembered in the gitignored
+`.preview-page`.
+
+`make watch` runs `typst watch` for that page only and serves the result together
+with the existing `_site` build. `/assets/` is read from the repository, so CSS
+and JavaScript changes appear on the next reload. Run `make html` once first if
+you need the other routes and the Pagefind index to exist. The watch preview does
+not rebuild the search index.
+
 ## Deployment
 
 Build the GitHub Pages artifact locally:
@@ -62,6 +79,8 @@ Because this repository is the user-site repository `0x1B05.github.io`, the site
   Shared site shell, routing helpers, localized copy, and reusable content helpers
 - `Makefile`
   Build, preview, and Pages-oriented targets
+- `scripts/preview.py`
+  Single-page incremental preview server (`make watch`) with live reload
 
 ## Maintenance Notes
 

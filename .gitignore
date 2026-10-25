@@ -3,3 +3,5 @@ _site/
 .DS_Store
 .reference/
 node_modules/
+__pycache__/
+.preview-page

@@ -241,9 +241,9 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
   公式中 $dot.o$ 表示逐元素乘，$sum_i$ 表示沿对应维度求和。
 ]
 
-=== embedding -> logits 的数据流
+== 从 embedding 到 logits 的数据流
 
-下面先用 f32 写出每一步的数学定义。实际 kernel 中，权重以 q8s32 存放，激活在进入投影前也会量化；公式按反量化后的等价形式书写，量化细节见 q8s32 小节和算子部分。Qwen3-0.6B 的维度是 $D = 1024$、$d_"head" = 128$、$H_q = 16$、$H_"kv" = 8$、$D_"ff" = 3072$、$V = 151936$，共 28 层。
+下面先用 f32 写出每一步的数学定义。实际 kernel 中，权重以 q8s32 存放，激活在进入投影前也会量化；公式按反量化后的等价形式书写，量化细节见 q8s32 小节和各算子的实现。Qwen3-0.6B 的维度是 $D = 1024$、$d_"head" = 128$、$H_q = 16$、$H_"kv" = 8$、$D_"ff" = 3072$、$V = 151936$，共 28 层。
 
 公式里的主要记号：
 
@@ -254,6 +254,7 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
   | $j, c$                         | 输出/输入通道，$0 <= j < d_"out"$，$0 <= c < d_"in"$                                                                        |
   | $B, r$                         | prefill 本次 chunk 的 token 行数与行下标，$B <= 32$，$0 <= r < B$                                                           |
   | $p, t$                         | 当前 token 位置与 attention key 位置，$0 <= t <= p$                                                                         |
+  | $H_q, H_"kv"$                  | query / KV head 总数，Qwen3-0.6B 为 16 / 8                                                                                  |
   | $h, G, h_"kv"$                 | query head 编号、每个 KV head 的 query head 数、KV head 编号：#linebreak() $G = H_q / H_"kv" = 2$，$h_"kv" = floor(h / G)$  |
   | $W_(j,c), W^q_(j,c), s_(W,j)$  | 逻辑权重、量化后的 int8 权重、第 $j$ 个输出行的 weight scale                                                                |
   | $x_c, x^q_c, s_x$              | decode 的 f32 激活、int8 激活、激活 scale                                                                                   |
@@ -263,7 +264,16 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
 
 #note[代码里 GEMM 的 `n` / `k` 对应本文的 $d_"out"$ / $d_"in"$（其它 kernel 的 `n` 仍表示向量长度）；`h` / `kvh` 对应 $h$ / $h_"kv"$；32 宽的 tile 仍沿用代码里的 `nblock` / `kblock` 叫法。]
 
-==== Embedding
+=== 实现约定
+
+1. *配置先行*：每条 NPU 指令的 dtype/shape 都来自配置寄存器。核函数开头先通过 `cfg.seti` / `cfg.setx` 写配置；`npu.inc` 里的 `LI_CWV` / `LI_CWM` 只是把配置字拼在标量侧的辅助宏。这是"一次配置、循环复用"的模式——循环体里只有计算和访存指令。
+2. *描述符自增*：`vload v1` 的意思是"从 vm1.base 读 vc1.len 个元素到 v1，然后 base += 32×stride"。所以流式扫描（rmsnorm、softmax、加法和 epilogue）的循环体里没有任何地址运算，回绕时才 `cfg.setx ... CF_BASE` 重写 base。
+3. *标量↔向量摆渡*：`vinsert`（把一个 x 值塞进 lane）、`vbroadcast`（单 lane 铺全向量）负责标量进向量；`vreduce` 把归约结果直接广播到整条 Vec32；向量出标量走内存通道——把结果 `vstore` 落内存（常用 len-1 的"单 lane 存储"配置只写一个字），经 `fence.mem` 后由 `lw` 读回。`vextract` 只保留为低频调试通道。均值、scale、概率这类"标量"都按这套约定流动。
+4. *标量与NPU的访存fence*：模拟器按程序序执行所以 `fence.mem` 实现为 no-op，但微架构上 NPU store 对标量 load 的可见性由 `fence.mem` 建立, kernel 里每处"NPU 写、标量读"之间都需要`fence.mem`。
+
+寄存器名按 ISA 手册约定：`tN` 是 Tile，`aN` 是 Acc，`bN` 是 Vec8，`vN` 是 Vec32，`xN` 是 Scalar。RV64IM 标量一律写 `xN`，需要 ABI 名时写在注释里（如 `x5 = t0`、`x10 = a0`、`x22 = s6`），避免和 Tile 的 `tN`、Acc 的 `aN` 混淆。
+
+=== Embedding
 
 给定位置 $p$ 的 token id $id_p$，嵌入表 $bold(E) in ZZ^(V times D)$ 和逐行 scale $bold(s)_"emb" in RR^V$：
 
@@ -271,7 +281,28 @@ $
   bold(x)_0 = s_"emb"[id_p] bold(E)[id_p], quad bold(x)_0 in RR^D.
 $
 
-==== RMSNorm
+==== 实现
+
+嵌入表是 q8s32 存的。它在 blob 里按 32×32 tile 排成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放；对 token id $i$，$i/32$ 选 nblock、$i % 32$ 选 tile 内行，每个 kblock 取一条 32 字节的连续行。
+
+```asm
+lw                 x6, 0(x5)          # x6 ← embed_s[id]
+vfillx             v0, x6             # v0 ← s_i
+# nblocks = V/32, kblocks = D/32
+# tm0: base = table + (id/32)*kblocks*1024 + (id%32)*32
+#      row_stride = 0，col_stride = 1
+# 下一个 kblock 的步长 = 1024
+loop kblocks:
+    tload              t0             # t0 ← 1×32 i8 contiguous row
+    tdequant.rows.f32  a0, t0, v0     # a0 ← f32(t0) × s_i
+    astore             a0             # memory[am0] ← a0
+```
+
+`tdequant.rows.f32` 完成 int8→f32 并乘 scale；这里 `v0` 的 `len` 配成 1，所以整条 1×32 tile 都用同一个 $s_i$。`astore` 的 `am0` 按列自增，正好把 32 个 f32 连续写到输出。
+
+当前 embedding 没有用 `tload.gather`：tiled 布局下每个 token 的 hidden 分散在多个 kblock tile 里，按 kblock 取一条连续行更直接。
+
+=== RMSNorm
 
 对 $bold(x) in RR^n$、gain $bold(g) in RR^n$ 和 $epsilon > 0$：
 
@@ -281,7 +312,31 @@ $
 
 Qwen3 的 $epsilon = 10^(-6)$。它用在四处：每层 input RMSNorm、逐头 Q/K RMSNorm、post-attention RMSNorm、最终 RMSNorm；对应 $n = 1024$ 或 $128$。
 
-==== q8s32 量化
+==== 实现：RMSNorm
+
+实现分两遍：第一遍累加平方和，第二遍乘 `rsqrt` 和 $bold(gamma)$。
+
+```asm
+vfill          v0, 0           # v0 ← 0
+# 第一遍：n/32 次
+vload          v1              # v1 ← x 的下一块
+vfmadd         v0, v1, v1, v0  # v0 ← v0 + v1 · v1
+vreduce.sum    v2, v0          # v2 全 lane ← sum(v0)（归约直接广播）
+vmulx          v2, v2, x15     # v2 ← v2 × (1/n)   (x15 = a5)
+vaddx          v2, v2, x14     # v2 ← v2 + eps     (x14 = a4)
+vrsqrt.approx  v2, v2          # v2 ← 1/√v2
+# 第二遍：n/32 次
+vload          v1              # v1 ← x（回绕重读）
+vload          v3              # v3 ← γ
+vmul           v3, v3, v2      # v3 ← γ · rsqrt
+vmul           v1, v1, v3      # v1 ← x · (γ · rsqrt)
+vcopy          v4, v1          # v4 ← v1
+vstore         v4              # memory[vm4] ← v4
+```
+
+两个细节：`1/n` 不做除法——n 是 2 的幂，`inv_n_bits` 用 `(127−ctz(n))<<23` 直接拼出 f32 位模式；`rsqrt` 是硬件近似指令，所以这套实现的数值和参考 f32 的差异点被 probe/tiny 回归显式锁定。
+
+=== q8s32 量化
 
 权重在宿主机上按输出行量化：
 
@@ -312,175 +367,9 @@ $
   y_j = s_x s_(W,j) sum_c x^q_c W^q_(j,c).
 $
 
-==== Q/K/V 投影
+==== 实现：decode 激活量化
 
-$
-  bold(h)_1 = "RMSNorm"(bold(x)_0; bold(g)_1), quad
-  bold(q) = bold(W)_Q bold(h)_1, quad
-  bold(k) = bold(W)_K bold(h)_1, quad
-  bold(v) = bold(W)_V bold(h)_1,
-$
-
-其中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。实现里这三条投影分别走上一节的 q8s32 形式。
-
-==== QK-RMSNorm 与 RoPE
-
-每个 query head $h$ 和 KV head $h_"kv"$ 先做 head-dim RMSNorm：
-
-$
-  bold(q)_h' = "RMSNorm"(bold(q)_h; bold(g)_q), quad
-  bold(k)_(h_"kv")' = "RMSNorm"(bold(k)_(h_"kv"); bold(g)_k).
-$
-
-然后按位置 $p$ 做 rotate-half RoPE。把一头的向量分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head"/2)$，cos/sin 表行为 $bold(c)_p, bold(s)_p$：
-
-$
-  "RoPE"(bold(x), p)_"a" = bold(x)_"a" dot.o bold(c)_p - bold(x)_"b" dot.o bold(s)_p,
-$
-
-$
-  "RoPE"(bold(x), p)_"b" = bold(x)_"b" dot.o bold(c)_p + bold(x)_"a" dot.o bold(s)_p.
-$
-
-作用到 Q/K 上就是 $bold(q)_h^"rope" = "RoPE"(bold(q)_h', p)$、$bold(k)_(h_"kv")^"rope" = "RoPE"(bold(k)_(h_"kv")', p)$。
-
-==== KV cache 与 attention
-
-第 $p$ 个 token 的 K/V 追加到 cache：
-
-$
-  bold(K)_(h_"kv",p) = bold(k)_(h_"kv")^"rope", quad
-  bold(V)_(h_"kv",p) = bold(v)_(h_"kv").
-$
-
-第 $h$ 个 query head 使用第 $h_"kv" = floor(h / G)$ 个 KV head；对 $t = 0, dots, p$：
-
-$
-  s_(h,t) = (bold(q)_h^"rope" dot bold(K)_(h_"kv",t)) / sqrt(d_"head"), quad
-  alpha_(h,t) = "softmax"_t (s_(h,t)),
-$
-
-$
-  bold(o)_h = sum_(t=0)^p alpha_(h,t) bold(V)_(h_"kv",t).
-$
-
-==== O 投影与残差
-
-$
-  bold(a) = bold(W)_O "concat"(bold(o)_1, dots, bold(o)_(H_q)), quad
-  bold(x)_1 = bold(x)_0 + bold(a),
-$
-
-其中 $bold(W)_O in RR^(1024 times 2048)$。
-
-==== Post-LN、MLP 与残差
-
-$
-  bold(h)_2 = "RMSNorm"(bold(x)_1; bold(g)_2),
-$
-
-$
-  bold(g) = bold(W)_"gate" bold(h)_2, quad
-  bold(u) = bold(W)_"up" bold(h)_2,
-$
-
-$
-  bold(m) = "SiLU"(bold(g)) dot.o bold(u), quad
-  bold(d) = bold(W)_"down" bold(m),
-$
-
-$
-  bold(x)_2 = bold(x)_1 + bold(d).
-$
-
-其中 $bold(W)_"gate", bold(W)_"up" in RR^(3072 times 1024)$，$bold(W)_"down" in RR^(1024 times 3072)$，$"SiLU"(g) = g / (1 + e^(-g))$。
-
-==== 最终 logits
-
-28 层之后，做最终 RMSNorm、lm-head（与 embedding 共享权重）和 argmax：
-
-$
-  bold(z) = bold(W)_"embed" "RMSNorm"(bold(x)_2; bold(g)_"fin"), quad
-  i^* = arg max_i z_i.
-$
-
-其中 $bold(z) in RR^151936$。
-
-== 算子
-
-=== 算子共享的四种模式
-
-1. *配置先行*：每条 NPU 指令的 dtype/shape 都来自配置寄存器。核函数开头先通过 `cfg.seti` / `cfg.setx` 写配置；`npu.inc` 里的 `LI_CWV` / `LI_CWM` 只是把配置字拼在标量侧的辅助宏。这是"一次配置、循环复用"的模式——循环体里只有计算和访存指令。
-2. *描述符自增*：`vload v1` 的意思是"从 vm1.base 读 vc1.len 个元素到 v1，然后 base += 32×stride"。所以流式扫描（rmsnorm、softmax、加法和 epilogue）的循环体里没有任何地址运算，回绕时才 `cfg.setx ... CF_BASE` 重写 base。
-3. *标量↔向量摆渡*：`vinsert`（把一个 x 值塞进 lane）、`vbroadcast`（单 lane 铺全向量）负责标量进向量；`vreduce` 把归约结果直接广播到整条 Vec32；向量出标量走内存通道——把结果 `vstore` 落内存（常用 len-1 的"单 lane 存储"配置只写一个字），经 `fence.mem` 后由 `lw` 读回。`vextract` 只保留为低频调试通道。均值、scale、概率这类"标量"都按这套约定流动。
-4. *标量与NPU的访存fence*：模拟器按程序序执行所以 `fence.mem` 实现为 no-op，但微架构上 NPU store 对标量 load 的可见性由 `fence.mem` 建立, kernel 里每处"NPU 写、标量读"之间都需要`fence.mem`。
-
-寄存器名按 ISA 手册约定：`tN` 是 Tile，`aN` 是 Acc，`bN` 是 Vec8，`vN` 是 Vec32，`xN` 是 Scalar。RV64IM 标量一律写 `xN`，需要 ABI 名时写在注释里（如 `x5 = t0`、`x10 = a0`、`x22 = s6`），避免和 Tile 的 `tN`、Acc 的 `aN` 混淆。
-
-=== `qwen3_embed` — 查表 + 反量化
-
-给定 token id $i$，嵌入表 $bold(E) in ZZ^(V times D)$ 和逐行 scale $bold(s) in RR^V$。
-
-输出
-
-$ bold(o) = s_i bold(E)_i, quad bold(o) in RR^D. $
-
-嵌入表也是 q8s32 存的。它在 blob 里按 32×32 tile 排成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放；对 token id $i$，$i/32$ 选 nblock、$i % 32$ 选 tile 内行，每个 kblock 取一条 32 字节的连续行。
-
-```asm
-lw                 x6, 0(x5)          # x6 ← embed_s[id]
-vfillx             v0, x6             # v0 ← s_i
-# nblocks = V/32, kblocks = D/32
-# tm0: base = table + (id/32)*kblocks*1024 + (id%32)*32
-#      row_stride = 0，col_stride = 1
-# 下一个 kblock 的步长 = 1024
-loop kblocks:
-    tload              t0             # t0 ← 1×32 i8 contiguous row
-    tdequant.rows.f32  a0, t0, v0     # a0 ← f32(t0) × s_i
-    astore             a0             # memory[am0] ← a0
-```
-
-`tdequant.rows.f32` 完成 int8→f32 并乘 scale；这里 `v0` 的 `len` 配成 1，所以整条 1×32 tile 都用同一个 $s_i$。`astore` 的 `am0` 按列自增，正好把 32 个 f32 连续写到输出。
-
-当前 embedding 没有用 `tload.gather`：tiled 布局下每个 token 的 hidden 分散在多个 kblock tile 里，按 kblock 取一条连续行更直接。
-
-=== `qwen3_rmsnorm`
-
-给定 $bold(x) in RR^n$、$bold(gamma) in RR^n$ 和 $epsilon > 0$，输出 $bold(o) in RR^n$：
-
-$
-  bold(o) = bold(x) / sqrt((1/n) sum_(i=1)^n x_i^2 + epsilon) dot.o bold(gamma).
-$
-
-Qwen3 里用在三处：每层 input/post-attention layernorm(n=1024)、逐头 q/k norm(n=128)、最终 norm。
-
-```asm
-vfill          v0, 0           # v0 ← 0
-# 第一遍：n/32 次
-vload          v1              # v1 ← x 的下一块
-vfmadd         v0, v1, v1, v0  # v0 ← v0 + v1 · v1
-vreduce.sum    v2, v0          # v2 全 lane ← sum(v0)（归约直接广播）
-vmulx          v2, v2, x15     # v2 ← v2 × (1/n)   (x15 = a5)
-vaddx          v2, v2, x14     # v2 ← v2 + eps     (x14 = a4)
-vrsqrt.approx  v2, v2          # v2 ← 1/√v2
-# 第二遍：n/32 次
-vload          v1              # v1 ← x（回绕重读）
-vload          v3              # v3 ← γ
-vmul           v3, v3, v2      # v3 ← γ · rsqrt
-vmul           v1, v1, v3      # v1 ← x · (γ · rsqrt)
-vcopy          v4, v1          # v4 ← v1
-vstore         v4              # memory[vm4] ← v4
-```
-
-两个细节：`1/n` 不做除法——n 是 2 的幂，`inv_n_bits` 用 `(127−ctz(n))<<23` 直接拼出 f32 位模式；`rsqrt` 是硬件近似指令，所以这套实现的数值和参考 f32 的差异点被 probe/tiny 回归显式锁定。
-
-=== `qwen3_quant_act` — 激活动态量化
-
-给定一行激活 $bold(x) in RR^n$，动态量化得到 int8 向量 $bold(x)^q$ 和标量 scale $s_x$：
-
-$ s_x = (max_c abs(x_c)) / 127, quad x^q_c = "sat_rne"(x_c / s_x). $
-
-为下一步 int8 matvec 准备激活。均匀 scale（整个激活一个值），结果留在 Tile 寄存器不落内存。
+decode 的激活量化把整条激活压成一个 scale，结果留在 Tile 寄存器不落内存，直接给下一步 int8 matvec 用。
 
 ```asm
 vfill                    v0, 0       # v0 ← 0
@@ -501,7 +390,36 @@ tquant.rows.scale.q8s32  t2, a0, v2  # t2 ← quant(a0) with v2
 
 `tquant.rows.scale.q8s32` 是 QNT 族的外部 scale 行量化：Acc 源逐行用 vScale 的对应 lane 量化。这里 v2 全部 lane 相同（均匀 scale）。面板 t2/t3/t4 用标量 `t4` 计数器分支选择——量化完的激活驻留在 Tile 寄存器，下一个核函数直接消费，这是"寄存器驻留接力"，省一趟内存往返。$d_"in" <= 3072$，所以最多 3 块 32×32(1024×3)。
 
-=== `qwen3_matvec_q` — decode 投影
+==== 实现：prefill 激活量化
+
+prefill 的 `quant_rows` 按 token 行量化：先求每行 absmax 得到 scale，再逐块量化。
+
+```asm
+# pass 1：逐块折叠每行 absmax
+aload                    a0          # a0 ← 32×32 f32 块
+areduce.rows.absmax      v0, a0      # v0 ← 每行 absmax
+vmax                     v0, v0, v1  # v0 ← max(v0, v1)（后续块）
+vmulx                    v0, v0, x5  # v0 ← v0 × (1/127)
+vstore                   v0          # memory[vm0] ← 32 个 scale
+
+# pass 2：用逐行 scale 量化
+aload                    a0          # a0 ← 32×32 f32 块
+tquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
+tstore                   t0          # memory[tm0] ← t0
+```
+
+=== Q/K/V 投影
+
+$
+  bold(h)_1 = "RMSNorm"(bold(x)_0; bold(g)_1), quad
+  bold(q) = bold(W)_Q bold(h)_1, quad
+  bold(k) = bold(W)_K bold(h)_1, quad
+  bold(v) = bold(W)_V bold(h)_1,
+$
+
+其中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。实现里这三条投影分别走上一节的 q8s32 形式。
+
+==== 实现：decode 投影（matvec）
 
 给定 int8 激活 $bold(x)^q in ZZ^(d_"in")$、int8 权重 $bold(W)^q in ZZ^(d_"out" times d_"in")$、激活 scale $s_x in RR$ 和逐行权重 scale $bold(s)_W in RR^(d_"out")$，输出 $bold(o) in RR^(d_"out")$：
 
@@ -539,27 +457,7 @@ vstore        v8           # memory[vm8] ← v8
 
 关键设计：反量化的两个 scale 推到最后才乘——i8 域里只做纯整数乘加，f32 域只做三次乘法，顺序固定，所以和参考实现逐位对齐。
 
-=== `qwen3_quant_rows` + `qwen3_matmul_q` — prefill 批量版
-
-`quant_rows`：输入是 $bold(X) in RR^(B times d_"in")$，其中 $B <= 32$ 是本次 chunk 的有效行数；对每一行 $r$ 独立量化：
-
-$
-  s_(x,r) = (max_c abs(X_(r,c))) / 127, quad X^q_(r,c) = "sat_rne"(X_(r,c) / s_(x,r)).
-$
-
-```asm
-# pass 1：逐块折叠每行 absmax
-aload                    a0          # a0 ← 32×32 f32 块
-areduce.rows.absmax      v0, a0      # v0 ← 每行 absmax
-vmax                     v0, v0, v1  # v0 ← max(v0, v1)（后续块）
-vmulx                    v0, v0, x5  # v0 ← v0 × (1/127)
-vstore                   v0          # memory[vm0] ← 32 个 scale
-
-# pass 2：用逐行 scale 量化
-aload                    a0          # a0 ← 32×32 f32 块
-tquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
-tstore                   t0          # memory[tm0] ← t0
-```
+==== 实现：prefill 投影（matmul）
 
 `matmul_q`：给定 $bold(X)^q in ZZ^(B times d_"in")$、$bold(W)^q in ZZ^(d_"out" times d_"in")$、逐行激活 scale $bold(s)_x in RR^B$ 和权重 scale $bold(s)_W in RR^(d_"out")$，输出
 
@@ -592,20 +490,52 @@ astore              a8           # memory[am8] ← a8
 
 prefill 的收尾只处理最后一块的最后一行：取该行 hidden，跑 `fin_norm` → `quant_act` → `matvec_q`（与嵌入表共享权重）→ `argmax`，返回第一个新 token。
 
-=== `qwen3_rope`
+=== QK-RMSNorm 与 RoPE
 
-给定 $bold(x) in RR^(d_"head")$，把它分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head" / 2)$，rotate-half 形式是
+每个 query head $h$ 和 KV head $h_"kv"$ 先做 head-dim RMSNorm：
 
 $
-  bold(o)_"a" & = bold(x)_"a" dot.o bold(c) - bold(x)_"b" dot.o bold(s), \
-  bold(o)_"b" & = bold(x)_"b" dot.o bold(c) + bold(x)_"a" dot.o bold(s)
+  bold(q)_h' = "RMSNorm"(bold(q)_h; bold(g)_q), quad
+  bold(k)_(h_"kv")' = "RMSNorm"(bold(k)_(h_"kv"); bold(g)_k).
 $
 
-其中 $bold(c), bold(s)$ 是当前位置的 cos/sin 表行。Qwen3 的 $d_"head" = 128$，每半 64 维；cos/sin 表 convert 时预计算，按 pos 取行。
+然后按位置 $p$ 做 rotate-half RoPE。把一头的向量分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head"/2)$，cos/sin 表行为 $bold(c)_p, bold(s)_p$：
 
-纯向量流水线：8 条流描述符（cos/sin/x1/x2 各两个 chunk，hd=128 时每半 2 个 32-lane chunk），8 条 `vmul` 加 `vsub` / `vadd` 组合，4 条 `vstore` 原地写回。
+$
+  "RoPE"(bold(x), p)_"a" = bold(x)_"a" dot.o bold(c)_p - bold(x)_"b" dot.o bold(s)_p,
+$
 
-=== `qwen3_scores` — attention 的 $Q K^top$
+$
+  "RoPE"(bold(x), p)_"b" = bold(x)_"b" dot.o bold(c)_p + bold(x)_"a" dot.o bold(s)_p.
+$
+
+作用到 Q/K 上就是 $bold(q)_h^"rope" = "RoPE"(bold(q)_h', p)$、$bold(k)_(h_"kv")^"rope" = "RoPE"(bold(k)_(h_"kv")', p)$。
+
+==== 实现：RoPE
+
+实现上是一个纯向量流水线：8 条流描述符（cos/sin/x1/x2 各两个 chunk，hd=128 时每半 2 个 32-lane chunk），8 条 `vmul` 加 `vsub` / `vadd` 组合，4 条 `vstore` 原地写回。
+
+=== KV cache 与 attention
+
+第 $p$ 个 token 的 K/V 追加到 cache：
+
+$
+  bold(K)_(h_"kv",p) = bold(k)_(h_"kv")^"rope", quad
+  bold(V)_(h_"kv",p) = bold(v)_(h_"kv").
+$
+
+第 $h$ 个 query head 使用第 $h_"kv" = floor(h / G)$ 个 KV head；对 $t = 0, dots, p$：
+
+$
+  s_(h,t) = (bold(q)_h^"rope" dot bold(K)_(h_"kv",t)) / sqrt(d_"head"), quad
+  alpha_(h,t) = "softmax"_t (s_(h,t)),
+$
+
+$
+  bold(o)_h = sum_(t=0)^p alpha_(h,t) bold(V)_(h_"kv",t).
+$
+
+==== 实现：scores
 
 给定 query $bold(q) in RR^(d_"head")$ 和 key 矩阵 $bold(K) in RR^(n_"key" times d_"head")$，第 $t$ 个 key 的分数是
 
@@ -617,14 +547,14 @@ q 的 4 个 32-lane chunk 先驻留 v8..v11（描述符不自增）；对每个 
 
 ```asm
 vfill        v16, 0             # v16 ← 0
-# vm12.base = K_j 行首（自增流）
-vload        v12                # v12 ← K_j 的下一块
+# vm12.base = K_t 行首（自增流）
+vload        v12                # v12 ← K_t 的下一块
 vfmadd       v16, v12, v8, v16  # v16 ← v16 + v12 · v8（v9..v11 同理）
 vreduce.sum  v17, v16           # v17[0] ← sum(v16)（vc17 配成 len-1）
 vstore       v17                # 单 lane 写到 scores[t]（vm17 不自增）
 ```
 
-=== `qwen3_softmax_exp`
+==== 实现：softmax
 
 给定分数向量 $bold(s) in RR^n$，先减去最大值再取指数：
 
@@ -658,7 +588,7 @@ fence.mem                  # scores 和 rcp 之后由标量代码读取
 
 除法被推迟：这里不做逐元素除法，只算一个倒数，留给 pv 最后乘。`−inf` 经 `vsub` / `vmulx` / `vexp2.approx` 自然变 0，所以 padding key 不进 softmax。
 
-=== `qwen3_pv`
+==== 实现：PV
 
 给定未归一化概率 $tilde(p)_t$、value 向量 $bold(V)_t in RR^(d_"head")$ 和 softmax 返回的 $r = 1 / (sum_t tilde(p)_t)$，输出
 
@@ -685,29 +615,16 @@ vstore      v16                 # memory[vm16] ← v16
 
 attention 的三个核函数（scores/softmax/pv）加起来就是标准 flash 式两遍结构，只不过按这个 ISA 的原语（fmadd/reduce/exp2/rcp）表达。
 
-=== `qwen3_silu_mul`
-
-给定 $bold(g), bold(u) in RR^n$，输出 $bold(o) in RR^n$：
+=== O 投影与残差
 
 $
-  bold(o) = bold(g) dot.o sigma(bold(g)) dot.o bold(u), quad sigma(g) = 1 / (1 + e^(-g)).
+  bold(a) = bold(W)_O "concat"(bold(o)_1, dots, bold(o)_(H_q)), quad
+  bold(x)_1 = bold(x)_0 + bold(a),
 $
 
-其中 $sigma$ 是 SiLU 的 sigmoid 部分。
+其中 $bold(W)_O in RR^(1024 times 2048)$。
 
-```asm
-vmulx         v1, v0, x5  # v1 ← v0 × (-log2(e))   (x5 = t0)
-vexp2.approx  v1, v1      # v1 ← 2^v1 = e^(-v0)
-vaddx         v1, v1, x6  # v1 ← v1 + 1            (x6 = t1)
-vrcp.approx   v1, v1      # v1 ← 1 / v1 = σ(v0)
-vmul          v0, v0, v1  # v0 ← v0 × σ(v0)
-vload         v1          # v1 ← up
-vmul          v0, v0, v1  # v0 ← v0 × up
-vcopy         v2, v0      # v2 ← v0
-vstore        v2          # memory[vm2] ← v2
-```
-
-=== `qwen3_add`
+==== 实现：残差加法
 
 给定长度为 $n$ 的向量 $bold(x), bold(y)$，残差：
 
@@ -723,11 +640,56 @@ vstore  v2          # memory[vm2] ← v2
 
 三个自增描述符，循环 n/32 次，全算子里最简单的一个。
 
-=== `qwen3_argmax`
+=== Post-LN、MLP 与残差
 
-给定 logits $bold(z) in RR^V$，greedy 取样返回
+$
+  bold(h)_2 = "RMSNorm"(bold(x)_1; bold(g)_2),
+$
 
-$ i^* = arg max_i z_i. $
+$
+  bold(g) = bold(W)_"gate" bold(h)_2, quad
+  bold(u) = bold(W)_"up" bold(h)_2,
+$
+
+$
+  bold(m) = "SiLU"(bold(g)) dot.o bold(u), quad
+  bold(d) = bold(W)_"down" bold(m),
+$
+
+$
+  bold(x)_2 = bold(x)_1 + bold(d).
+$
+
+其中 $bold(W)_"gate", bold(W)_"up" in RR^(3072 times 1024)$，$bold(W)_"down" in RR^(1024 times 3072)$，$"SiLU"(g) = g / (1 + e^(-g))$。这里的残差仍然复用上面的 `qwen3_add`。
+
+==== 实现：SiLU·up
+
+`qwen3_silu_mul` 用 `vexp2` + `vrcp` 实现 sigmoid，再乘 gate 和 up。
+
+```asm
+vmulx         v1, v0, x5  # v1 ← v0 × (-log2(e))   (x5 = t0)
+vexp2.approx  v1, v1      # v1 ← 2^v1 = e^(-v0)
+vaddx         v1, v1, x6  # v1 ← v1 + 1            (x6 = t1)
+vrcp.approx   v1, v1      # v1 ← 1 / v1 = σ(v0)
+vmul          v0, v0, v1  # v0 ← v0 × σ(v0)
+vload         v1          # v1 ← up
+vmul          v0, v0, v1  # v0 ← v0 × up
+vcopy         v2, v0      # v2 ← v0
+vstore        v2          # memory[vm2] ← v2
+```
+
+=== 最终 logits
+
+28 层之后，做最终 RMSNorm、lm-head（与 embedding 共享权重）和 argmax：
+
+$
+  bold(z) = bold(W)_"embed" "RMSNorm"(bold(x)_2; bold(g)_"fin"), quad
+  i^* = arg max_i z_i.
+$
+
+其中 $bold(z) in RR^151936$。
+
+==== 实现：argmax
 
 难点是"跨 chunk 的全局 argmax"。chunk 内用 `vreduce.argmax`（双 Vec32 目的：索引广播到 `vIdx`、值广播到 `vVal`)；跨 chunk 用向量比较 + 选择做锦标赛，第一块直接做种子，免掉哨兵分支：
 
@@ -777,4 +739,4 @@ lw             x10, 0(sp)   # a0 ← 全局 argmax
   caption: [计算步骤到 NPU 指令族的映射],
 )
 
-#note[一个贯穿全局的设计要点：kernel 之间靠*寄存器驻留约定*协作（`t2..t4` 激活 tile、`v30` 的激活 scale、`tm1` 的 transform 用毕恢复），配置寄存器与访存描述符的自增模式（`inc_mode` 沿行/沿列）让一条 `tload`/`vload` 就把"加载下一块"的地址推进自动化；标量侧只做维度计算和循环控制，读 NPU 写出的结果时一律隔一条 `fence.mem` —— 这正是 ISA 设计里"配置与访存描述符绑定、访存自增、完成边界显式化"在真实负载上的用法。]
+#note[一个贯穿全局的设计要点：kernel 之间靠*寄存器驻留约定*协作（`t2..t4` 激活 tile、`v30` 的激活 scale、`tm1` 的权重 tile 布局），配置寄存器与访存描述符的自增模式（`inc_mode` 沿行/沿列）让一条 `tload`/`vload` 就把"加载下一块"的地址推进自动化；标量侧只做维度计算和循环控制，读 NPU 写出的结果时一律隔一条 `fence.mem` —— 这正是 ISA 设计里"配置与访存描述符绑定、访存自增、完成边界显式化"在真实负载上的用法。]

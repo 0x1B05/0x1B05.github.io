@@ -284,49 +284,71 @@ $
 
 ==== 实现
 
-嵌入表是 q8s32 存的。它在 blob 里按 32×32 tile 排成 $(V/32, D/32, 32, 32)$，每个 tile 内按 $(V, D)$ 存放；对 token id $i$，$i/32$ 选 V-block、$i % 32$ 选 tile 内行，每个 D-block 取该行里一段 32 字节的连续 hidden。
+嵌入表是 q8s32 存的。Qwen3-0.6B 的 $D = 1024$，一个 32×32 tile 正好装下一个 token 的 hidden。blob 里按 $(V/32, D/32, 32, 32)$ 排列：外层是 V-block，内层是 D-block，最后是一个 $32 times 32$ 的 tile。每个 tile 行对应 $V$、列对应 $D$，按行主序存放；tile 内的 $v_"inner"$ 是 token 行，$d_"inner"$ 是 hidden 列。对 token id $i$，$v_"block" = i/32$ 选 V-block、$v_"inner" = i mod 32$ 选 tile 内行，$d_"block"$ 选 D-block，每个 D-block 取该行里一段 32 字节的连续 hidden。
 
 #example(title: "V = D = 64")[
   一共有 $2 times 2 = 4$ 个 tile，每个 tile 1 KiB：
 
-  ```text
-  tile 0: V-block 0, D-block 0
-  tile 1: V-block 0, D-block 1
-  tile 2: V-block 1, D-block 0
-  tile 3: V-block 1, D-block 1
-  ```
+  - tile 0：$v_"block" = 0, d_"block" = 0$
+  - tile 1：$v_"block" = 0, d_"block" = 1$
+  - tile 2：$v_"block" = 1, d_"block" = 0$
+  - tile 3：$v_"block" = 1, d_"block" = 1$
 
   tile 内的元素满足：
 
-  ```text
-  tile[v_inner, d_inner] = E[V_block*32 + v_inner, D_block*32 + d_inner]
-  ```
+  $
+    "tile"[v_"inner", d_"inner"] = E[v_"block" dot 32 + v_"inner", d_"block" dot 32 + d_"inner"].
+  $
 
   对 token id 37：
 
-  - $37/32 = 1$，所以 `v_block = 1`; $37 % 32 = 5$，所以 `v_inner = 5`
-  - D-block 0 对应 tile 2 的第 5 行，取出 `hidden[0:32]`
-  - D-block 1 对应 tile 3 的第 5 行，取出 `hidden[32:64]`
+  - $37/32 = 1$，所以 $v_"block" = 1$；$37 mod 32 = 5$，所以 $v_"inner" = 5$
+  - $d_"block" = 0$ 对应 tile 2 的第 5 行，取出 `hidden[0:32]`
+  - $d_"block" = 1$ 对应 tile 3 的第 5 行，取出 `hidden[32:64]`
 ]
 
-嵌入表是 $[V, D]$ 矩阵，tile 打包器只是把它当成 $n = V$、$k = D$ 的一般矩阵。
-
 ```asm
+# dblocks = D/32
+# vblock = id/32, vinner = id%32
+# tm0: base = table + vblock*(dblocks*1024) + vinner*32
+#      row_stride = 1024   # 下一个 dblock
+#      col_stride = 1
+#      flags = 0           # 不自动递增
+# am0: base = out
+#      row_stride = 128    # 32 个 f32
+#      col_stride = 4
+#      flags = 0           # 不自动递增
+# tc0/ac0: rows = dblocks，cols = 32
+# vc0: len = dblocks
+
 lw                 x6, 0(x5)          # x6 ← embed_s[id]
 vfillx             v0, x6             # v0 ← s_i
-# V-blocks = V/32, D-blocks = D/32（代码里叫 nblocks / kblocks）
-# tm0: base = table + (id/32)*(D/32)*1024 + (id%32)*32
-#      row_stride = 0，col_stride = 1
-# 下一个 D-block 的步长 = 1024
-loop D-blocks:
-    tload              t0             # t0 ← 1×32 i8 contiguous row
-    tdequant.rows.f32  a0, t0, v0     # a0 ← f32(t0) × s_i
-    astore             a0             # memory[am0] ← a0
+
+tload               t0                # t0 ← dblocks×32 i8，一个 token
+tdequant.rows.f32   a0, t0, v0        # a0 ← f32(t0) × s_i
+astore              a0                # 写出 dblocks×32 个 f32
 ```
 
-`tdequant.rows.f32` 完成 int8→f32 并乘 scale；这里 `v0` 的 `len` 配成 1，所以整条 1×32 tile 都用同一个 $s_i$。`astore` 的 `am0` 按列自增，正好把 32 个 f32 连续写到输出。
+`tload` 按照上面的`tm0`配置：第 $r$ 行、第 $j$ 列访问
 
-当前 embedding 没有用 `tload.gather`：tiled 布局下每个 token 的 hidden 分散在多个 D-block tile 里，按 D-block 取一条连续行更直接。
+$
+  "addr"(r,j) &= "base" + r dot "row_stride" + j dot "col_stride" \
+  &= ("table" + v_"block" dot d_"blocks" dot 1024 + v_"inner" dot 32) + r dot 1024 + j,
+$
+
+其中 $0 <= r < d_"blocks"$ 是 dblock 下标，$0 <= j < 32$ 是 hidden 列。因此读进来的 tile 满足
+
+$
+  "tile"[r,j] = E[v_"block" dot 32 + v_"inner", r dot 32 + j].
+$
+
+`tdequant.rows.f32` 完成 int8→f32 并乘 scale；`vc0` 的 `len` 配成 $d_"blocks"$，`vfillx` 把同一个 $s_i$ 铺到所有 lane。
+
+`astore` 按上面的 `am0` 配置，一次把 $d_"blocks" times 32$ 个 f32 按行连续写成完整 hidden 向量：
+
+$
+  "out"[r dot 32 + j] = "f32"("tile"[r,j]) dot s_i.
+$
 
 === RMSNorm
 
@@ -361,8 +383,6 @@ vmul           v1, v1, v3      # v1 ← x · (γ · rsqrt)
 vcopy          v4, v1          # v4 ← v1
 vstore         v4              # memory[vm4] ← v4
 ```
-
-两个细节：`1/n` 不做除法——n 是 2 的幂，`inv_n_bits` 用 `(127−ctz(n))<<23` 直接拼出 f32 位模式；`rsqrt` 是硬件近似指令，所以这套实现的数值和参考 f32 的差异点被 probe/tiny 回归显式锁定。
 
 === q8s32 量化
 

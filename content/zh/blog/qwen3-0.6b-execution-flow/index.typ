@@ -32,7 +32,7 @@
 python3 scripts/qwen3/convert.py real external/qwen3 model.q3b
 ```
 
-`convert.py` 会把量化矩阵重排成 32×32 tile：$(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。这样 `tload` 一次取 1 KiB tile，`bdot.nt` / `mma.nt` 直接消费，不需要在转换阶段预先转置。
+`convert.py` 会把量化矩阵重排成 32×32 tile：$(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。这样 `tload` 一次取 1 KiB tile，`vmma.nt` / `mma.nt` 直接按行消费；它们的 `nt` 只表示数学形式 $A B^top$，转换阶段不需要预先转置，运行时也没有真正的转置动作。
 
 #example(title: "线性层权重离线量化")[
   - Input: `W`，shape `(out_dim, in_dim)`，dtype `bf16`
@@ -219,7 +219,7 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
     | :------------------- | :-------------------------------------------------- | :------------------------------------ |
     | 一次投影的 token 数  | 1 个 token（$1 times d_"in"$）                      | 最多 32 个（$"rows" times d_"in"$）   |
     | 激活量化             | `qwen3_quant_act`（全激活一个 scale）               | `qwen3_quant_rows`（每行一个 scale）  |
-    | 投影 kernel          | `qwen3_matvec_q`（*bdot*）                          | `qwen3_matmul_q`（*mma*）             |
+    | 投影 kernel          | `qwen3_matvec_q`（*vmma*）                          | `qwen3_matmul_q`（*mma*）             |
     | 输出 logits          | `fin_norm` + `matvec_q` + `argmax`                  | 只计算最后一个token的输出logits       |
     | 其余 kernel          | rmsnorm / rope / attention / silu / add 都按行调用  | 同左，逐行循环                        |
   ]),
@@ -467,7 +467,7 @@ $
   bold(v) = bold(W)_V bold(h)_1,
 $
 
-其中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。实现里这三条投影分别走上一节的 q8s32 形式。
+其中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。
 
 ==== 实现：decode 投影（matvec）
 
@@ -477,21 +477,20 @@ $
   o_j = s_x s_(W,j) sum_(c=0)^(d_"in"-1) x^q_c W^q_(j,c), quad 0 <= j < d_"out".
 $
 
-`W` 的逻辑形状是 $d_"out" times d_"in"$，但 q8s32 blob 里按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。`bdot.nt` 会把 tile 的 $(d_"out", d_"in")$ 布局逻辑转置成 $(d_"in", d_"out")$ 来用，所以转换阶段不需要预先转置。
+$W$ 的逻辑形状是 $d_"out" times d_"in"$，但 q8s32 blob 里按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。`vmma.nt` 的 `nt` 只表示数学形式是 $A B^top$：右 tile 按 $(d_"out", d_"in")$ 存放，第 $j$ 行就是输出通道 $j$ 的权重；指令直接按行读取这些行，与激活行做逐元素乘加。因此转换阶段不需要预先转置，运行时也没有真正的 tile 转置。
 
 分两个阶段。
 
-*阶段 A：i8 乘加*。每个激活块（最多 32 个 kblock）先把激活行抽到 b0..b31；对每个 nblock：
+*阶段 A：i8 乘加*。每个激活块（最多 32 个 kblock）的激活驻留在 Tile t2/t3/t4 中；对每个 nblock：
 
 ```asm
-# 每个激活块：R = 0..31 对应一个 kblock；t3/t4 对应后续激活块
-textract.row        bR, t2[R]          # bR ← t2[R, :]
+# 每个激活块：R = 0..31 对应一个 kblock；t2/t3/t4 是驻留的激活 Tile
 # 对每个 nblock：
 tload               t1                 # t1 ← W[nblock][kblock] (d_out, d_in)
-bdot.nt.acc.i8.i32  v4, bR, t1         # v4 ← v4 + bR · t1^T
+vmma.nt.acc.i8.i32  v4, t2[R], t1      # v4 ← v4 + t2[R] · t1^T
 ```
 
-`bdot.nt.acc.i8.i32` 是 MMA_BDOT 族的“向量×tile 点积，NT 表示右 tile 按 $(d_"out", d_"in")$ 存放、乘法时按转置形式使用，ACC 累加”：一条 = 32 输出 × 32 $d_"in"$ = 1024 次 MAC。一个激活块最多 32 个 kblock，所以是 32×1024。跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清。i32 累加是精确的——int8 乘积求和不会溢出也不舍入，数值误差只在量化那一步引入。
+`vmma.nt.acc.i8.i32` 是 MMA 族的“Tile 行×Tile 点积，NT 表示数学形式是 $A B^top$；右 tile 按 $(d_"out", d_"in")$ 存放，第 $j$ 行就是输出 $j$ 的权重，指令按行读取并与激活行逐元素乘加，ACC 累加”：一条 = 32 输出 × 32 $d_"in"$ = 1024 次 MAC。A 源直接是激活 Tile 的行（`row5` 选中该行），不需要先用 `textract.row` 搬到 Vec8。一个激活块最多 32 个 kblock，所以是 32×1024。跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清。i32 累加是精确的——int8 乘积求和不会溢出也不舍入，数值误差只在量化那一步引入。
 
 *阶段 B：epilogue*（每 32 个输出）：
 
@@ -513,7 +512,7 @@ vstore        v8           # memory[vm8] ← v8
 
 $ o_(r,j) = s_(x,r) s_(W,j) sum_(c=0)^(d_"in"-1) X^q_(r,c) W^q_(j,c). $
 
-`W` 同样按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，tile 内按 $(d_"out", d_"in")$ 存放；`tload` 直接得到 `mma.nt` 需要的右操作数（`mma.nt` 按转置形式使用这个 tile）。
+`W` 同样按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，tile 内按 $(d_"out", d_"in")$ 存放；`tload` 直接得到 `mma.nt` 需要的右操作数。`mma.nt` 的 `nt` 同样只描述 $A B^top$ 的数学形式，右操作数按行读取，不做显式转置。
 
 真矩阵乘按每 8 个 nblock 一组处理，`a0..a7` 分别保持 8 个输出块的累加器；同一个 `xq` tile 只加载一次，被这 8 个块复用：
 
@@ -767,26 +766,3 @@ lw             x10, 0(sp)   # a0 ← 全局 argmax
 ```
 
 这套锦标赛完整保留了手册的 argmax 规则：数值相等时 `vcmplt` 为假、保留较小下标；NaN 候选胜过数值 incumbent；已有 NaN 不被取代——和 numpy 取第一个 NaN 的行为一致。
-
-== 指令族落点总表
-
-#figure(
-  three-line-table([
-    | *计算*                                                  | *kernel*                    | *主要 NPU 指令族*                                                                           |
-    | :------------------------------------------------------ | :-------------------------- | :------------------------------------------------------------------------------------------ |
-    | RMSNorm / 残差 / softmax / SiLU                         | 向量逐元素                  | `vload`/`vstore`, `vadd`/`vsub`/`vmul`, `vfmadd`, `vexp2`/`vrsqrt`/`vrcp`, `vfill`/`fillx`  |
-    | 归约 (sumsq/max/sum)                                    | 同上                        | `vreduce.*`（广播到 Vec32）, `areduce.absmax`                                               |
-    | 激活量化                                                | `quant_act` / `quant_rows`  | `aload`, `aquant.rows` 外部 scale (QNT)                                                     |
-    | decode 投影（$1 times d_"in" times W$）                 | `matvec_q`                  | `tload`, `extract.row`, `bdot.nt.acc`, `vcvt`, `vmul(x)`                                    |
-    | prefill 投影（$32 times d_"in" times W$）               | `matmul_q`                  | `tload`, `mma.nt.zero/acc`, `acvt`, `amulv.byrow/col`, `astore`                             |
-    | prefill 最后一行 logits                                 | `matvec_q` + `argmax`       | 与 decode 收尾相同的 `fin_norm` / `bdot` / `argmax` 路径                                    |
-    | 嵌入查表                                                | `embed`                     | `tload`, `tdequant.rows` (QNT), `astore`                                                    |
-    | 采样                                                    | `argmax`                    | `vreduce.argmax`（双 Vec32 目的）, `vcmplt`/`vcmpunord` + `vselect` 跨块锦标赛              |
-    | NPU store → 标量 load 的可见性边界                      | 各 kernel 收尾              | `fence.mem`                                                                                 |
-    | 全部 kernel 的前奏                                      | 配置                        | `cfg.seti`/`setx`/`setw`/`copy`                                                             |
-    | KV 追加、prompt 镜像解析、EOS 判断、掩码补 $-infinity$  | —                           | 标量 RV64（刻意留标量侧的小工作量）                                                         |
-  ]),
-  caption: [计算步骤到 NPU 指令族的映射],
-)
-
-#note[一个贯穿全局的设计要点：kernel 之间靠*寄存器驻留约定*协作（`t2..t4` 激活 tile、`v30` 的激活 scale、`tm1` 的权重 tile 布局），配置寄存器与访存描述符的自增模式（`inc_mode` 沿行/沿列）让一条 `tload`/`vload` 就把"加载下一块"的地址推进自动化；标量侧只做维度计算和循环控制，读 NPU 写出的结果时一律隔一条 `fence.mem` —— 这正是 ISA 设计里"配置与访存描述符绑定、访存自增、完成边界显式化"在真实负载上的用法。]

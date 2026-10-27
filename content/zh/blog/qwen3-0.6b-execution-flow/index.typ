@@ -395,48 +395,25 @@ $
 
 逻辑上 $bold(W) in RR^(d_"out" times d_"in")$。
 
-激活在NPU硬件上动态量化。decode 时一整条激活共用一个 scale：
+激活在NPU硬件上动态量化。
 
-$
-  s_x = (max_c abs(x_c)) / 127, quad
-  x^q_c = "sat_rne"(x_c / s_x).
-$
+- decode 时一整条激活共用一个 scale：
+  $
+    s_x = (max_c abs(x_c)) / 127, quad
+    x^q_c = "sat_rne"(x_c / s_x).
+  $
 
-prefill 时按 token 行量化：
-
-$
-  s_(x,r) = (max_c abs(X_(r,c))) / 127, quad
-  X^q_(r,c) = "sat_rne"(X_(r,c) / s_(x,r)).
-$
+- prefill 时按 token 行量化：
+  $
+    s_(x,r) = (max_c abs(X_(r,c))) / 127, quad
+    X^q_(r,c) = "sat_rne"(X_(r,c) / s_(x,r)).
+  $
 
 反量化后的矩阵乘写成：
 
 $
   y_j = s_x s_(W,j) sum_c x^q_c W^q_(j,c).
 $
-
-==== 实现：decode 激活量化
-
-decode 的激活量化把整条激活压成一个 scale，结果留在 Tile 寄存器不落内存，直接给下一步 int8 matvec 用。
-
-```asm
-vfill                    v0, 0       # v0 ← 0
-# 第一遍：panels × 32 次
-vload                    v1          # v1 ← 下一块 x
-vabs                     v1, v1      # v1 ← |v1|
-vmax                     v0, v0, v1  # v0 ← max(v0, v1)
-vreduce.max              v30, v0     # v30[0] ← max(v0)     (vc30 配成 len-1)
-vmulx                    v30, v30, x6  # v30[0] ← absmax × (1/127)   (x6 = t1)
-vbroadcast               v2, v30[0]  # v2 ← broadcast(scale)
-vstore                   v30         # 单 lane 落栈
-fence.mem                            # NPU store 对标量可见的边界
-lw                       x7, 0(sp)   # x7 (t2) ← scale 位模式（经内存回标量）
-# 第二遍：每个 32×32 panel
-aload                    a0          # a0 ← 32×32 f32 激活块（am0 沿行自增）
-tquant.rows.scale.q8s32  t2, a0, v2  # t2 ← quant(a0) with v2
-```
-
-`tquant.rows.scale.q8s32` 是 QNT 族的外部 scale 行量化：Acc 源逐行用 vScale 的对应 lane 量化。这里 v2 全部 lane 相同（均匀 scale）。面板 t2/t3/t4 用标量 `t4` 计数器分支选择——量化完的激活驻留在 Tile 寄存器，下一个核函数直接消费，这是"寄存器驻留接力"，省一趟内存往返。$d_"in" <= 3072$，所以最多 3 块 32×32(1024×3)。
 
 ==== 实现：prefill 激活量化
 
@@ -452,9 +429,34 @@ vstore                   v0          # memory[vm0] ← 32 个 scale
 
 # pass 2：用逐行 scale 量化
 aload                    a0          # a0 ← 32×32 f32 块
-tquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
+aquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
 tstore                   t0          # memory[tm0] ← t0
 ```
+
+==== 实现：decode 激活量化
+
+decode 的激活量化把整条激活压成一个 scale，结果留在 Tile 寄存器，直接给下一步 int8 matvec 用。
+
+这里把内存里的 $d_"in"$ 个 f32 激活元素按 1024 个一组切成若干*输入激活块*；量化时每个输入块先 `aload` 到 Acc，再写成 Tile 里的 int8 *量化块*。输入块和量化块都对应一个 $32 times 32$ tile。块数 $n_"blocks" = ceil(d_"in"/1024)$。
+
+```asm
+vfill                    v0, 0         # v0 ← 0
+# 第一遍：n_blocks × 32 次
+vload                    v1            # v1 ← 下一块 x
+vabs                     v1, v1        # v1 ← |v1|
+vmax                     v0, v0, v1    # v0 ← max(v0, v1)
+vreduce.max              v30, v0       # v30[0] ← max(v0)     (vc30 配成 len-1)
+vmulx                    v30, v30, x6  # v30[0] ← absmax × (1/127)   (x6 = t1)
+vbroadcast               v2, v30[0]    # v2 ← broadcast(scale)
+vstore                   v30           # 单 lane 落栈
+fence.mem                              # NPU store 对标量可见的边界
+lw                       x7, 0(sp)     # x7 (t2) ← scale 位模式（经内存回标量）
+# 第二遍：逐个激活块（每块 32×32）
+aload                    a0            # a0 ← 32×32 f32 激活块（am0 沿行自增）
+aquant.rows.scale.q8s32  t2, a0, v2    # t2 ← quant(a0) with v2
+```
+
+`aquant.rows.scale.q8s32` 是 QNT 族外部 scale 行量化：Acc 源逐行用 vScale 的对应 lane 量化。这里 v2 全部 lane 相同（均匀 scale）。
 
 === Q/K/V 投影
 
@@ -479,17 +481,17 @@ $
 
 分两个阶段。
 
-*阶段 A：i8 乘加*。每个 panel（最多 32 个 kblock）先把激活行抽到 b0..b31；对每个 nblock：
+*阶段 A：i8 乘加*。每个激活块（最多 32 个 kblock）先把激活行抽到 b0..b31；对每个 nblock：
 
 ```asm
-# 每个 panel：R = 0..31 对应一个 kblock；t3/t4 对应后续 panel
+# 每个激活块：R = 0..31 对应一个 kblock；t3/t4 对应后续激活块
 textract.row        bR, t2[R]          # bR ← t2[R, :]
 # 对每个 nblock：
 tload               t1                 # t1 ← W[nblock][kblock] (d_out, d_in)
 bdot.nt.acc.i8.i32  v4, bR, t1         # v4 ← v4 + bR · t1^T
 ```
 
-`bdot.nt.acc.i8.i32` 是 MMA_BDOT 族的“向量×tile 点积，NT 表示右 tile 按 $(d_"out", d_"in")$ 存放、乘法时按转置形式使用，ACC 累加”：一条 = 32 输出 × 32 $d_"in"$ = 1024 次 MAC。一个 panel 最多 32 个 kblock，所以是 32×1024。跨 panel 的部分和存在内存 `qwen3_accbuf` (i32)，下个 panel 用 `vload v4` 续上；新 panel 第一块用 `vfill v4, 0` 清。i32 累加是精确的——int8 乘积求和不会溢出也不舍入，数值误差只在量化那一步引入。
+`bdot.nt.acc.i8.i32` 是 MMA_BDOT 族的“向量×tile 点积，NT 表示右 tile 按 $(d_"out", d_"in")$ 存放、乘法时按转置形式使用，ACC 累加”：一条 = 32 输出 × 32 $d_"in"$ = 1024 次 MAC。一个激活块最多 32 个 kblock，所以是 32×1024。跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清。i32 累加是精确的——int8 乘积求和不会溢出也不舍入，数值误差只在量化那一步引入。
 
 *阶段 B：epilogue*（每 32 个输出）：
 
@@ -774,7 +776,7 @@ lw             x10, 0(sp)   # a0 ← 全局 argmax
     | :------------------------------------------------------ | :-------------------------- | :------------------------------------------------------------------------------------------ |
     | RMSNorm / 残差 / softmax / SiLU                         | 向量逐元素                  | `vload`/`vstore`, `vadd`/`vsub`/`vmul`, `vfmadd`, `vexp2`/`vrsqrt`/`vrcp`, `vfill`/`fillx`  |
     | 归约 (sumsq/max/sum)                                    | 同上                        | `vreduce.*`（广播到 Vec32）, `areduce.absmax`                                               |
-    | 激活量化                                                | `quant_act` / `quant_rows`  | `aload`, `tquant.rows` 外部 scale (QNT)                                                     |
+    | 激活量化                                                | `quant_act` / `quant_rows`  | `aload`, `aquant.rows` 外部 scale (QNT)                                                     |
     | decode 投影（$1 times d_"in" times W$）                 | `matvec_q`                  | `tload`, `extract.row`, `bdot.nt.acc`, `vcvt`, `vmul(x)`                                    |
     | prefill 投影（$32 times d_"in" times W$）               | `matmul_q`                  | `tload`, `mma.nt.zero/acc`, `acvt`, `amulv.byrow/col`, `astore`                             |
     | prefill 最后一行 logits                                 | `matvec_q` + `argmax`       | 与 decode 收尾相同的 `fin_norm` / `bdot` / `argmax` 路径                                    |

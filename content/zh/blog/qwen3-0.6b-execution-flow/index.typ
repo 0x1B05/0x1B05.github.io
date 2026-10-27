@@ -260,9 +260,10 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
   | $x_c, x^q_c, s_x$              | decode 的 f32 激活、int8 激活、激活 scale                                                                                   |
   | $X_(r,c), X^q_(r,c), s_(x,r)$  | prefill 的 f32 激活、int8 激活、逐 token 行的激活 scale                                                                     |
   | $id_p, bold(E)$                | 位置 $p$ 的 token id 与 embedding 表                                                                                        |
+  | $bold(gamma)$                  | RMSNorm 的逐元素 gain（Qwen3 里的 norm weight）                                                                             |
 ])
 
-#note[代码里 GEMM 的 `n` / `k` 对应本文的 $d_"out"$ / $d_"in"$（其它 kernel 的 `n` 仍表示向量长度）；`h` / `kvh` 对应 $h$ / $h_"kv"$；32 宽的 tile 仍沿用代码里的 `nblock` / `kblock` 叫法。]
+#note[代码里 GEMM 的 `n` / `k` 对应本文的 $d_"out"$ / $d_"in"$（其它 kernel 的 `n` 仍表示向量长度）；`h` / `kvh` 对应 $h$ / $h_"kv"$；32 宽的 tile 在投影里仍沿用代码的 `nblock` / `kblock`，embedding 小节按 $V$ / $D$ 方向叫 V-block / D-block。]
 
 === 实现约定
 
@@ -283,16 +284,41 @@ $
 
 ==== 实现
 
-嵌入表是 q8s32 存的。它在 blob 里按 32×32 tile 排成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放；对 token id $i$，$i/32$ 选 nblock、$i % 32$ 选 tile 内行，每个 kblock 取一条 32 字节的连续行。
+嵌入表是 q8s32 存的。它在 blob 里按 32×32 tile 排成 $(V/32, D/32, 32, 32)$，每个 tile 内按 $(V, D)$ 存放；对 token id $i$，$i/32$ 选 V-block、$i % 32$ 选 tile 内行，每个 D-block 取该行里一段 32 字节的连续 hidden。
+
+#example(title: "V = D = 64")[
+  一共有 $2 times 2 = 4$ 个 tile，每个 tile 1 KiB：
+
+  ```text
+  tile 0: V-block 0, D-block 0
+  tile 1: V-block 0, D-block 1
+  tile 2: V-block 1, D-block 0
+  tile 3: V-block 1, D-block 1
+  ```
+
+  tile 内的元素满足：
+
+  ```text
+  tile[v_inner, d_inner] = E[V_block*32 + v_inner, D_block*32 + d_inner]
+  ```
+
+  对 token id 37：
+
+  - $37/32 = 1$，所以 `v_block = 1`; $37 % 32 = 5$，所以 `v_inner = 5`
+  - D-block 0 对应 tile 2 的第 5 行，取出 `hidden[0:32]`
+  - D-block 1 对应 tile 3 的第 5 行，取出 `hidden[32:64]`
+]
+
+嵌入表是 $[V, D]$ 矩阵，tile 打包器只是把它当成 $n = V$、$k = D$ 的一般矩阵。
 
 ```asm
 lw                 x6, 0(x5)          # x6 ← embed_s[id]
 vfillx             v0, x6             # v0 ← s_i
-# nblocks = V/32, kblocks = D/32
-# tm0: base = table + (id/32)*kblocks*1024 + (id%32)*32
+# V-blocks = V/32, D-blocks = D/32（代码里叫 nblocks / kblocks）
+# tm0: base = table + (id/32)*(D/32)*1024 + (id%32)*32
 #      row_stride = 0，col_stride = 1
-# 下一个 kblock 的步长 = 1024
-loop kblocks:
+# 下一个 D-block 的步长 = 1024
+loop D-blocks:
     tload              t0             # t0 ← 1×32 i8 contiguous row
     tdequant.rows.f32  a0, t0, v0     # a0 ← f32(t0) × s_i
     astore             a0             # memory[am0] ← a0
@@ -300,19 +326,21 @@ loop kblocks:
 
 `tdequant.rows.f32` 完成 int8→f32 并乘 scale；这里 `v0` 的 `len` 配成 1，所以整条 1×32 tile 都用同一个 $s_i$。`astore` 的 `am0` 按列自增，正好把 32 个 f32 连续写到输出。
 
-当前 embedding 没有用 `tload.gather`：tiled 布局下每个 token 的 hidden 分散在多个 kblock tile 里，按 kblock 取一条连续行更直接。
+当前 embedding 没有用 `tload.gather`：tiled 布局下每个 token 的 hidden 分散在多个 D-block tile 里，按 D-block 取一条连续行更直接。
 
 === RMSNorm
 
-对 $bold(x) in RR^n$、gain $bold(g) in RR^n$ 和 $epsilon > 0$：
+对 $bold(x) in RR^n$、gain $bold(gamma) in RR^n$ 和 $epsilon > 0$：
 
 $
-  "RMSNorm"(bold(x); bold(g)) = bold(x) / sqrt(1/n sum_(i=1)^n x_i^2 + epsilon) dot.o bold(g).
+  "RMSNorm"(bold(x); bold(gamma)) = bold(x) / sqrt(1/n sum_(i=1)^n x_i^2 + epsilon) dot.o bold(gamma).
 $
+
+$bold(gamma)$ 是 RMSNorm 的可学习 gain：先把 $bold(x)$ 归一到单位 RMS，再逐元素乘回 $bold(gamma)$，让每个通道保留自己的缩放。Qwen3 里对应 `inln` / `ptln` / `qn` / `kn` / `fin_norm` 这些 `f32` 参数。
 
 Qwen3 的 $epsilon = 10^(-6)$。它用在四处：每层 input RMSNorm、逐头 Q/K RMSNorm、post-attention RMSNorm、最终 RMSNorm；对应 $n = 1024$ 或 $128$。
 
-==== 实现：RMSNorm
+==== 实现
 
 实现分两遍：第一遍累加平方和，第二遍乘 `rsqrt` 和 $bold(gamma)$。
 
@@ -411,7 +439,7 @@ tstore                   t0          # memory[tm0] ← t0
 === Q/K/V 投影
 
 $
-  bold(h)_1 = "RMSNorm"(bold(x)_0; bold(g)_1), quad
+  bold(h)_1 = "RMSNorm"(bold(x)_0; bold(gamma)_1), quad
   bold(q) = bold(W)_Q bold(h)_1, quad
   bold(k) = bold(W)_K bold(h)_1, quad
   bold(v) = bold(W)_V bold(h)_1,
@@ -495,8 +523,8 @@ prefill 的收尾只处理最后一块的最后一行：取该行 hidden，跑 `
 每个 query head $h$ 和 KV head $h_"kv"$ 先做 head-dim RMSNorm：
 
 $
-  bold(q)_h' = "RMSNorm"(bold(q)_h; bold(g)_q), quad
-  bold(k)_(h_"kv")' = "RMSNorm"(bold(k)_(h_"kv"); bold(g)_k).
+  bold(q)_h' = "RMSNorm"(bold(q)_h; bold(gamma)_q), quad
+  bold(k)_(h_"kv")' = "RMSNorm"(bold(k)_(h_"kv"); bold(gamma)_k).
 $
 
 然后按位置 $p$ 做 rotate-half RoPE。把一头的向量分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head"/2)$，cos/sin 表行为 $bold(c)_p, bold(s)_p$：
@@ -643,16 +671,16 @@ vstore  v2          # memory[vm2] ← v2
 === Post-LN、MLP 与残差
 
 $
-  bold(h)_2 = "RMSNorm"(bold(x)_1; bold(g)_2),
+  bold(h)_2 = "RMSNorm"(bold(x)_1; bold(gamma)_2),
 $
 
 $
-  bold(g) = bold(W)_"gate" bold(h)_2, quad
+  bold(g)_"gate" = bold(W)_"gate" bold(h)_2, quad
   bold(u) = bold(W)_"up" bold(h)_2,
 $
 
 $
-  bold(m) = "SiLU"(bold(g)) dot.o bold(u), quad
+  bold(m) = "SiLU"(bold(g)_"gate") dot.o bold(u), quad
   bold(d) = bold(W)_"down" bold(m),
 $
 
@@ -683,7 +711,7 @@ vstore        v2          # memory[vm2] ← v2
 28 层之后，做最终 RMSNorm、lm-head（与 embedding 共享权重）和 argmax：
 
 $
-  bold(z) = bold(W)_"embed" "RMSNorm"(bold(x)_2; bold(g)_"fin"), quad
+  bold(z) = bold(W)_"embed" "RMSNorm"(bold(x)_2; bold(gamma)_"fin"), quad
   i^* = arg max_i z_i.
 $
 

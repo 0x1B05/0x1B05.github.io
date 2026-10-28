@@ -417,17 +417,23 @@ $
 
 ==== 实现：prefill 激活量化
 
-prefill 的 `quant_rows` 按 token 行量化：先求每行 absmax 得到 scale，再逐块量化。
+prefill 的 `quant_rows` 按 token 行量化：先求每行 absmax 得到 scale，再逐块量化。这里一块是 $32 times 32$；沿 $d_"in"$ 方向共有 $d_"in"/32$ 块，所以两遍各循环 `k/32` 次（`k` 就是这一层的 $d_"in"$）。
 
 ```asm
-# pass 1：逐块折叠每行 absmax
-aload                    a0          # a0 ← 32×32 f32 块
-areduce.rows.absmax      v0, a0      # v0 ← 每行 absmax
-vmax                     v0, v0, v1  # v0 ← max(v0, v1)（后续块）
-vmulx                    v0, v0, x5  # v0 ← v0 × (1/127)
-vstore                   v0          # memory[vm0] ← 32 个 scale
+# pass 1：逐块折叠每行 absmax（共 k/32 块）
+aload                    a0          # a0 ← 第一块 32×32 f32
+areduce.rows.absmax      v0, a0      # v0 ← 第一块每行 absmax
 
-# pass 2：用逐行 scale 量化
+# 其余 k/32 - 1 块：循环
+aload                    a0          # a0 ← 下一块
+areduce.rows.absmax      v1, a0      # v1 ← 当前块每行 absmax
+vmax                     v0, v0, v1  # v0 ← max(累计, 当前块)
+
+# 循环结束后做一次
+vmulx                    v0, v0, x5  # v0 ← absmax × (1/127)
+vstore                   v0          # memory[vm0] ← 每行一个 scale（共 rows 个）
+
+# pass 2：用逐行 scale 量化（同样 k/32 块）
 aload                    a0          # a0 ← 32×32 f32 块
 aquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
 tstore                   t0          # memory[tm0] ← t0
@@ -442,21 +448,42 @@ decode 的激活量化把整条激活压成一个 scale，结果留在 Tile 寄�
 ```asm
 vfill                    v0, 0         # v0 ← 0
 # 第一遍：n_blocks × 32 次
+
+# 求全局 absmax
 vload                    v1            # v1 ← 下一块 x
 vabs                     v1, v1        # v1 ← |v1|
 vmax                     v0, v0, v1    # v0 ← max(v0, v1)
-vreduce.max              v30, v0       # v30[0] ← max(v0)     (vc30 配成 len-1)
-vmulx                    v30, v30, x6  # v30[0] ← absmax × (1/127)   (x6 = t1)
+vreduce.max              v30, v0       # v30[0] ← max(v0)
+
+# scale -> v2
+vmulx                    v30, v30, x6  # v30[0] ← absmax × (1/127)
 vbroadcast               v2, v30[0]    # v2 ← broadcast(scale)
 vstore                   v30           # 单 lane 落栈
 fence.mem                              # NPU store 对标量可见的边界
 lw                       x7, 0(sp)     # x7 (t2) ← scale 位模式（经内存回标量）
+
 # 第二遍：逐个激活块（每块 32×32）
-aload                    a0            # a0 ← 32×32 f32 激活块（am0 沿行自增）
+# am0: row_stride = 128, col_stride = 4，访存后沿行自增
+aload                    a0            # a0 ← 32×32 f32 激活块
 aquant.rows.scale.q8s32  t2, a0, v2    # t2 ← quant(a0) with v2
 ```
 
-`aquant.rows.scale.q8s32` 是 QNT 族外部 scale 行量化：Acc 源逐行用 vScale 的对应 lane 量化。这里 v2 全部 lane 相同（均匀 scale）。
+这段的输入、输出和寄存器：
+
+#figure(
+  three-line-table([
+    | 对象                | 位置            | 作用                                      |
+    | :------------------ | :-------------- | :---------------------------------------- |
+    | $bold(x)$           | 内存，f32       | 输入激活，长度 $d_"in"$                   |
+    | `v0` / `v1`         | Vec32           | 第一遍的逐 lane 最大值 / 当前 32-lane 块  |
+    | `v30`               | Vec32，`len=1`  | 全局 absmax，之后变成 scale               |
+    | `v2`                | Vec32           | broadcast 后的 scale，供 `aquant` 使用    |
+    | `a0`                | Acc，32×32 f32  | 第二遍的临时输入块                        |
+    | `t2` / `t3` / `t4`  | Tile，32×32 i8  | 量化块，留在寄存器                        |
+    | `x6` / `x7`         | Scalar          | `1/127` 的位模式 / scale 的位模式         |
+  ]),
+  caption: [decode 激活量化的数据位置],
+)
 
 === Q/K/V 投影
 

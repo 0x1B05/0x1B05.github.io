@@ -32,7 +32,21 @@
 python3 scripts/qwen3/convert.py real external/qwen3 model.q3b
 ```
 
-`convert.py` 会把量化矩阵重排成 32×32 tile：$(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。这样 `tload` 一次取 1 KiB tile，`vmma.nt` / `mma.nt` 直接按行消费；它们的 `nt` 只表示数学形式 $A B^top$，转换阶段不需要预先转置，运行时也没有真正的转置动作。
+`convert.py` 会把量化矩阵重排成 32×32 tile：$(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。这样 `tload` 一次取 1 KiB tile，`vmma.nt` / `mma.nt` 直接按行消费。
+
+```
+W: d_out 行 × d_in 列
+
+          kblock 0    kblock 1    kblock 2 ...
+        ┌──────────┬──────────┬──────────┐
+nblock 0│ tile(0,0)│ tile(0,1)│ tile(0,2)│  ← 32 行
+        ├──────────┼──────────┼──────────┤
+nblock 1│ tile(1,0)│ tile(1,1)│ tile(1,2)│  ← 32 行
+        ├──────────┼──────────┼──────────┤
+...     │          │          │          │
+        └──────────┴──────────┴──────────┘
+             ↑ 32 列
+```
 
 #example(title: "线性层权重离线量化")[
   - Input: `W`，shape `(out_dim, in_dim)`，dtype `bf16`
@@ -56,6 +70,17 @@ python3 scripts/qwen3/convert.py real external/qwen3 model.q3b
 
 接着，转换脚本根据模型参数中的 `max_pos`、`head_dim` 和 `rope_theta` 预计算 RoPE 表 `rope_cos`以及 `rope_sin`, 形状为 `(max_pos, head_dim / 2)`, 数据类型为`f32`.
 
+最终得到的 `Q3B` 模型 blob 包含：
+
+- header：魔数 `Q3B`、模型维度、`max_pos`、`eps`、section 数量和 `layout`（1 表示 32×32 tiled 权重）
+- section directory：每个 section 的名称、偏移和大小
+- `rope_cos` / `rope_sin`：RoPE 表
+- `embed` 和 `embed_s`：token embedding 的 `int8` 权重和 `f32` 行 scale
+- 每层的 `qw` / `kw` / `vw` / `ow`，以及对应的 `qws` / `kws` / `vws` / `ows`：Q/K/V/O 投影的 `int8` 权重和 `f32` 行 scale
+- 每层的 `inln` / `ptln` / `qn` / `kn`：RMSNorm 参数，`f32`
+- 每层的 `gw` / `uw` / `dw`，以及对应的 `gws` / `uws` / `dws`：MLP 的 `int8` 权重和 `f32` 行 scale
+- `fin_norm`：最终 RMSNorm 参数，`f32`
+
 === 打包prompt镜像
 
 prompt 由 tokenizer 转成 token id 后，单独打包成一个 Q3P 运行时镜像：
@@ -70,17 +95,6 @@ python3 scripts/qwen3/tokenize_prompt.py "你好" --out build/apps/prompt.bin
 ```
 
 它随后被加载到 guest 的固定地址 `0x80F00000`。
-
-最终得到的 `Q3B` 模型 blob 包含：
-
-- header：魔数 `Q3B`、模型维度、`max_pos`、`eps`、section 数量和 `layout`（1 表示 32×32 tiled 权重）
-- section directory：每个 section 的名称、偏移和大小
-- `rope_cos` / `rope_sin`：RoPE 表
-- `embed` 和 `embed_s`：token embedding 的 `int8` 权重和 `f32` 行 scale
-- 每层的 `qw` / `kw` / `vw` / `ow`，以及对应的 `qws` / `kws` / `vws` / `ows`：Q/K/V/O 投影的 `int8` 权重和 `f32` 行 scale
-- 每层的 `inln` / `ptln` / `qn` / `kn`：RMSNorm 参数，`f32`
-- 每层的 `gw` / `uw` / `dw`，以及对应的 `gws` / `uws` / `dws`：MLP 的 `int8` 权重和 `f32` 行 scale
-- `fin_norm`：最终 RMSNorm 参数，`f32`
 
 == 交叉编译
 
@@ -417,11 +431,11 @@ $
 
 ==== 实现：prefill 激活量化
 
-prefill 的 `quant_rows` 按 token 行量化：先求每行 absmax 得到 scale，再逐块量化。这里一块是 $32 times 32$；沿 $d_"in"$ 方向共有 $d_"in"/32$ 块，所以两遍各循环 `k/32` 次（`k` 就是这一层的 $d_"in"$）。
+prefill 的 `quant_rows` 按 token 行量化：先求每行 absmax 得到 scale，再逐块量化。这里一块是 `rows`×32（最多 32×32）；沿 $d_"in"$ 方向共有 $d_"in"/32$ 块，所以两遍各循环 `k/32` 次（`k` 就是这一层的 $d_"in"$）。
 
 ```asm
 # pass 1：逐块折叠每行 absmax（共 k/32 块）
-aload                    a0          # a0 ← 第一块 32×32 f32
+aload                    a0          # a0 ← 第一块 rows×32 f32（最多 32×32）
 areduce.rows.absmax      v0, a0      # v0 ← 第一块每行 absmax
 
 # 其余 k/32 - 1 块：循环
@@ -434,7 +448,7 @@ vmulx                    v0, v0, x5  # v0 ← absmax × (1/127)
 vstore                   v0          # memory[vm0] ← 每行一个 scale（共 rows 个）
 
 # pass 2：用逐行 scale 量化（同样 k/32 块）
-aload                    a0          # a0 ← 32×32 f32 块
+aload                    a0          # a0 ← rows×32 f32 块（最多 32×32）
 aquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
 tstore                   t0          # memory[tm0] ← t0
 ```
@@ -494,9 +508,77 @@ $
   bold(v) = bold(W)_V bold(h)_1,
 $
 
-其中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。
+Qwen3-0.6B 中 $bold(W)_Q in RR^(2048 times 1024)$，$bold(W)_K, bold(W)_V in RR^(1024 times 1024)$。$bold(q)$ 按头切成 16 个 $RR^128$，$bold(k), bold(v)$ 切成 8 个 $RR^128$。
 
-==== 实现：decode 投影（matvec）
+==== 实现：prefill 投影（`matmul`）
+
+`matmul_q`：给定 $bold(X)^q in ZZ^(B times d_"in")$、$bold(W)^q in ZZ^(d_"out" times d_"in")$、逐行激活 scale $bold(s)_x in RR^B$ 和权重 scale $bold(s)_W in RR^(d_"out")$，输出
+
+$ o_(r,j) = s_(x,r) s_(W,j) sum_(c=0)^(d_"in"-1) X^q_(r,c) W^q_(j,c). $
+
+$W$ 在内存中以 $32 times 32$ tile 为粒度存放为 $(d_"out"/32, d_"in"/32, 32, 32)$，tile 内按 $(d_"out", d_"in")$ 存放, 这样`tload`一次取一个连续的1KiB tile, 直接得到了 `mma.nt` 需要的右操作数。
+
+`X_tile(kblock)` 是 $X_q$ 的第 `kblock` 个 `rows × 32` 块（`kblock = 0` 覆盖输入通道 `0..31`）；`W_tile(nblock, kblock)` 是权重的 32×32 tile。以 Q 投影（$d_"out" = 2048$，$d_"in" = 1024$）为例：$W_q$被切分成$64 times 32$个tile, 行方向每 8 行一组，共8组`g = 0..7`,`g=0` 对应 `nb=0..7`，..，`g=7` 对应 `56..63`。
+
+下面以 `g = 0` 为例，这一组是 `nb = 0..7`；先看第一个输出 tile `nb = 0`（累加器 `a0`）。
+
+记 $X^q in RR^(B times 1024)$ 为量化激活，$W^q in RR^(2048 times 1024)$ 为量化权重($W^q$按行切分成$W^q_0, W^q_1, .., W^q_(63) in RR^(32 times 1024)$)。矩阵乘就是：
+
+$
+  a_0 = X^q (W^q_0)^top, quad a_0 in RR^(B times 32)
+$
+
+实现时沿 $d_"in"$ 每 32 列切一个 kblock，上式拆成 kblock 的累加：
+
+$
+  a_0 = sum_("kb"=0)^(31) X^q_("kb") (W^q_(0,"kb"))^top, quad X^q_("kb") in RR^(B times 32), quad W^q_(0,"kb") in RR^(32 times 32),
+$
+
+epilogue 乘回两个 scale：
+
+$
+  O_0 = "diag"(s_x) a_0 "diag"(s_(W,0)), quad O_0 in RR^(B times 32),
+$
+
+其中 $s_x$ 是 $B$ 个激活 scale(行激活)，$s_(W,0)$ 是输出通道 `0..31` 的 32 个 weight scale(列激活)。
+
+循环外先 `vload v30`，把 `xs` 常驻在 `v30`，epilogue 里用。循环嵌套：
+
+```text
+for g = 0..7:                    # Q: 8 组
+  base = 8g                      # 本组第一个 nblock
+
+  for kblock = 0..31:            # Q: 32 个输入块
+    t0 = X_tile(kblock)          # 每个 kblock 只加载一次
+
+    for G = 0..7:                # 组内 8 个输出 tile（复用 t0）
+      t1 = W_tile(base+G, kblock)
+
+      if kblock == 0:
+        aG = t0 * t1^T           # mma.nt.zero
+      else:
+        aG += t0 * t1^T          # mma.nt.acc
+
+  # 32 个 kblock 走完，做 epilogue
+  for G = 0..7:
+    O_tile(base+G) = epilogue(aG)
+```
+
+32 个 kblock 走完后，对 `aG = a0..a7` 做 epilogue：
+
+```asm
+acvt.i32.f32        a8, aG       # a8 ← f32(aG)
+amulv.bycol         a8, a8, v29  # a8 ← a8 × ws[j]
+amulv.byrow         a8, a8, v30  # a8 ← a8 × xs[t]
+astore              a8           # memory[am8] ← a8
+```
+
+- MMA:            $8 × 32 × 8 = 2048$ 次
+- X_tile 加载:    $8 × 32 = 256$ 次
+- W_tile 加载:    $8 × 32 × 8 = 2048$ 次
+- epilogue/store: $64$ 个输出 tile = $64$ 次
+
+==== 实现：decode 投影（`matvec`）
 
 给定 int8 激活 $bold(x)^q in ZZ^(d_"in")$、int8 权重 $bold(W)^q in ZZ^(d_"out" times d_"in")$、激活 scale $s_x in RR$ 和逐行权重 scale $bold(s)_W in RR^(d_"out")$，输出 $bold(o) in RR^(d_"out")$：
 
@@ -504,20 +586,20 @@ $
   o_j = s_x s_(W,j) sum_(c=0)^(d_"in"-1) x^q_c W^q_(j,c), quad 0 <= j < d_"out".
 $
 
-$W$ 的逻辑形状是 $d_"out" times d_"in"$，但 q8s32 blob 里按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，每个 tile 内按 $(d_"out", d_"in")$ 存放。`vmma.nt` 的 `nt` 只表示数学形式是 $A B^top$：右 tile 按 $(d_"out", d_"in")$ 存放，第 $j$ 行就是输出通道 $j$ 的权重；指令直接按行读取这些行，与激活行做逐元素乘加。因此转换阶段不需要预先转置，运行时也没有真正的 tile 转置。
+decode的投影分两个阶段。
 
-分两个阶段。
-
-*阶段 A：i8 乘加*。每个激活块（最多 32 个 kblock）的激活驻留在 Tile t2/t3/t4 中；对每个 nblock：
+*阶段 A：i8 乘加*。`quant_act` 把激活量化成 1–3 个 32×32 Tile（t2/t3/t4）：每个 tile 有 32 行，第 R 行（`R = 0..31`）就是一个 kblock 的 32 个输入通道；`t2[R]` 取第 R 行。对每个 nblock：
 
 ```asm
-# 每个激活块：R = 0..31 对应一个 kblock；t2/t3/t4 是驻留的激活 Tile
+# t2/t3/t4 是驻留的 32×32 激活 Tile；R 是行号，第 R 行就是一个 kblock
 # 对每个 nblock：
-tload               t1                 # t1 ← W[nblock][kblock] (d_out, d_in)
+tload               t1                 # t1 ← W[nblock][kblock]
 vmma.nt.acc.i8.i32  v4, t2[R], t1      # v4 ← v4 + t2[R] · t1^T
 ```
 
-`vmma.nt.acc.i8.i32` 是 MMA 族的“Tile 行×Tile 点积，NT 表示数学形式是 $A B^top$；右 tile 按 $(d_"out", d_"in")$ 存放，第 $j$ 行就是输出 $j$ 的权重，指令按行读取并与激活行逐元素乘加，ACC 累加”：一条 = 32 输出 × 32 $d_"in"$ = 1024 次 MAC。A 源直接是激活 Tile 的行（`row5` 选中该行），不需要先用 `textract.row` 搬到 Vec8。一个激活块最多 32 个 kblock，所以是 32×1024。跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清。i32 累加是精确的——int8 乘积求和不会溢出也不舍入，数值误差只在量化那一步引入。
+decode 是单 token GEMV，所以用 `vmma`（一行激活 × 一个权重 tile），而不是需要 32 行 token 的 `mma`；一条 `vmma` 只覆盖一个 kblock（32 个输入通道），R 循环把 32 个 kblock 的部分和累加完。
+
+跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清
 
 *阶段 B：epilogue*（每 32 个输出）：
 
@@ -532,39 +614,6 @@ vstore        v8           # memory[vm8] ← v8
 ```
 
 关键设计：反量化的两个 scale 推到最后才乘——i8 域里只做纯整数乘加，f32 域只做三次乘法，顺序固定，所以和参考实现逐位对齐。
-
-==== 实现：prefill 投影（matmul）
-
-`matmul_q`：给定 $bold(X)^q in ZZ^(B times d_"in")$、$bold(W)^q in ZZ^(d_"out" times d_"in")$、逐行激活 scale $bold(s)_x in RR^B$ 和权重 scale $bold(s)_W in RR^(d_"out")$，输出
-
-$ o_(r,j) = s_(x,r) s_(W,j) sum_(c=0)^(d_"in"-1) X^q_(r,c) W^q_(j,c). $
-
-`W` 同样按 32×32 tile 存成 $(d_"out"/32, d_"in"/32, 32, 32)$，tile 内按 $(d_"out", d_"in")$ 存放；`tload` 直接得到 `mma.nt` 需要的右操作数。`mma.nt` 的 `nt` 同样只描述 $A B^top$ 的数学形式，右操作数按行读取，不做显式转置。
-
-真矩阵乘按每 8 个 nblock 一组处理，`a0..a7` 分别保持 8 个输出块的累加器；同一个 `xq` tile 只加载一次，被这 8 个块复用：
-
-```asm
-vload               v30          # v30 ← xs（有效行）
-# 对每组 8 个 nblock：
-tload               t0           # t0 ← xq 的 (rows, kblock) tile
-tload               t1           # t1 ← W[nblock][kblock] (d_out, d_in)
-mma.nt.zero.i8.i32  a0, t0, t1   # a0 ← t0 · t1^T
-mma.nt.zero.i8.i32  a1, t0, t1   # a1 ← t0 · t1^T
-# …… a2..a7 同理
-# 后续 kblock：
-mma.nt.acc.i8.i32   a0, t0, t1   # a0 ← a0 + t0 · t1^T
-mma.nt.acc.i8.i32   a1, t0, t1   # a1 ← a1 + t0 · t1^T
-# …… a2..a7 同理
-# epilogue（每个 G = 0..7）：
-acvt.i32.f32        a8, a0       # a8 ← f32(a0)
-amulv.bycol         a8, a8, v29  # a8 ← a8 × ws[j]
-amulv.byrow         a8, a8, v30  # a8 ← a8 × xs[t]
-astore              a8           # memory[am8] ← a8
-```
-
-`rows < 32` 或不足 8 个 nblock 时走单累加器路径：`a0` 累加，`a8` 做 epilogue，逻辑相同。`rows` 由 `quant_rows` / `matmul_q` 的调用方传入，短 prompt 只计算有效行。
-
-prefill 的收尾只处理最后一块的最后一行：取该行 hidden，跑 `fin_norm` → `quant_act` → `matvec_q`（与嵌入表共享权重）→ `argmax`，返回第一个新 token。
 
 === QK-RMSNorm 与 RoPE
 
@@ -792,4 +841,4 @@ fence.mem
 lw             x10, 0(sp)   # a0 ← 全局 argmax
 ```
 
-这套锦标赛完整保留了手册的 argmax 规则：数值相等时 `vcmplt` 为假、保留较小下标；NaN 候选胜过数值 incumbent；已有 NaN 不被取代——和 numpy 取第一个 NaN 的行为一致。
+手册的 argmax 规则：数值相等时 `vcmplt` 为假、保留较小下标；NaN 候选胜过数值 incumbent；已有 NaN 不被取代——和 numpy 取第一个 NaN 的行为一致。

@@ -617,14 +617,14 @@ vstore        v8           # memory[vm8] ← v8
 
 === QK-RMSNorm 与 RoPE
 
-每个 query head $h$ 和 KV head $h_"kv"$ 先做 head-dim RMSNorm：
+对每个 query head $h$ 的 $bold(q)_h$，以及每个 KV head $h_"kv"$ 里的 $bold(k)_(h_"kv")$，先做 head-dim RMSNorm：
 
 $
-  bold(q)_h' = "RMSNorm"(bold(q)_h; bold(gamma)_q), quad
-  bold(k)_(h_"kv")' = "RMSNorm"(bold(k)_(h_"kv"); bold(gamma)_k).
+  bold(q)'_h = "RMSNorm"(bold(q)_h; bold(gamma)_q), quad
+  bold(k)'_(h_"kv") = "RMSNorm"(bold(k)_(h_"kv"); bold(gamma)_k).
 $
 
-然后按位置 $p$ 做 rotate-half RoPE。把一头的向量分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head"/2)$，cos/sin 表行为 $bold(c)_p, bold(s)_p$：
+然后按位置 $p$ 做 rotate-half RoPE。把一头的向量分成两半 $bold(x)_"a", bold(x)_"b" in RR^(d_"head"/2)$，cos/sin 表对应行分别为 $bold(c)_p, bold(s)_p$：
 
 $
   "RoPE"(bold(x), p)_"a" = bold(x)_"a" dot.o bold(c)_p - bold(x)_"b" dot.o bold(s)_p,
@@ -634,11 +634,60 @@ $
   "RoPE"(bold(x), p)_"b" = bold(x)_"b" dot.o bold(c)_p + bold(x)_"a" dot.o bold(s)_p.
 $
 
-作用到 Q/K 上就是 $bold(q)_h^"rope" = "RoPE"(bold(q)_h', p)$、$bold(k)_(h_"kv")^"rope" = "RoPE"(bold(k)_(h_"kv")', p)$。
+作用到 Q/K 上就是 $bold(q)_h^"rope" = "RoPE"(bold(q)'_h, p)$、$bold(k)_(h_"kv")^"rope" = "RoPE"(bold(k)'_(h_"kv"), p)$。
 
 ==== 实现：RoPE
 
-实现上是一个纯向量流水线：8 条流描述符（cos/sin/x1/x2 各两个 chunk，hd=128 时每半 2 个 32-lane chunk），8 条 `vmul` 加 `vsub` / `vadd` 组合，4 条 `vstore` 原地写回。
+实现上是一个纯向量流水线。`hd = 128` 时，每半 64 个 f32 分成 2 个 32-lane chunk；12 条描述符按 6 组分工如下（base 偏移按字节，`stride = 4`，`len = 32`）：
+
+#figure(
+  three-line-table([
+    | 数据  | VM（c0/c1）      | base c0    | base c1        | inc  |
+    | :---- | :--------------- | :--------- | :------------- | ---: |
+    | cos   | `vm0` / `vm1`    | `cos_h`    | `cos_h + 128`  | 1    |
+    | sin   | `vm2` / `vm3`    | `sin_h`    | `sin_h + 128`  | 1    |
+    | x1    | `vm4` / `vm5`    | `x`        | `x + 128`      | 1    |
+    | x2    | `vm6` / `vm7`    | `x + 256`  | `x + 384`      | 1    |
+    | out1  | `vm12` / `vm13`  | `x`        | `x + 128`      | 0    |
+    | out2  | `vm14` / `vm15`  | `x + 256`  | `x + 384`      | 0    |
+  ]),
+  caption: [RoPE 的描述符分配（`hd = 128`）],
+)
+
+`inc = 1` 的 8 条是流式读入，`inc = 0` 的 4 条原地写回；`x2` 从 `x + hd*2` 字节开始（`hd = 128` 时是 `x + 256`）。内层计算：
+
+```asm
+# vm0..vm7: 自增流；vm12..vm15: 原地写回
+vload         v0            # cos c0
+vload         v1            # cos c1
+vload         v2            # sin c0
+vload         v3            # sin c1
+vload         v4            # x1 c0
+vload         v5            # x1 c1
+vload         v6            # x2 c0
+vload         v7            # x2 c1
+
+# out1 = x1*cos - x2*sin
+vmul          v8, v4, v0
+vmul          v9, v6, v2
+vsub          v12, v8, v9
+vmul          v8, v5, v1
+vmul          v9, v7, v3
+vsub          v13, v8, v9
+
+# out2 = x2*cos + x1*sin
+vmul          v8, v6, v0
+vmul          v9, v4, v2
+vadd          v14, v8, v9
+vmul          v8, v7, v1
+vmul          v9, v5, v3
+vadd          v15, v8, v9
+
+vstore        v12           # x1 c0
+vstore        v13           # x1 c1
+vstore        v14           # x2 c0
+vstore        v15           # x2 c1
+```
 
 === KV cache 与 attention
 
@@ -652,21 +701,21 @@ $
 第 $h$ 个 query head 使用第 $h_"kv" = floor(h / G)$ 个 KV head；对 $t = 0, dots, p$：
 
 $
-  s_(h,t) = (bold(q)_h^"rope" dot bold(K)_(h_"kv",t)) / sqrt(d_"head"), quad
-  alpha_(h,t) = "softmax"_t (s_(h,t)),
+  s_(h,t) = bold(q)_h^"rope" dot bold(K)_(h_"kv",t), quad
+  alpha_(h,t) = "softmax"_t (s_(h,t) / sqrt(d_"head")),
 $
 
 $
   bold(o)_h = sum_(t=0)^p alpha_(h,t) bold(V)_(h_"kv",t).
 $
 
+下面三个实现小节都只描述一个 head，省略 head 下标：$s_t = s_(h,t)$、$bold(K)_t = bold(K)_(h_"kv",t)$、$bold(V)_t = bold(V)_(h_"kv",t)$、$bold(o) = bold(o)_h$。
+
 ==== 实现：scores
 
 给定 query $bold(q) in RR^(d_"head")$ 和 key 矩阵 $bold(K) in RR^(n_"key" times d_"head")$，第 $t$ 个 key 的分数是
 
 $ s_t = sum_(d=1)^(d_"head") K_(t,d) q_d. $
-
-这里不除 $sqrt(d_"head")$——这个 scale 折进 softmax。
 
 q 的 4 个 32-lane chunk 先驻留 v8..v11（描述符不自增）；对每个 key t:
 
@@ -687,7 +736,17 @@ $
   tilde(p)_t = exp((s_t - max_u s_u) / sqrt(d_"head")), quad r = 1 / (sum_t tilde(p)_t).
 $
 
-$tilde(p)_t$ 原地写回，$r$ 作为标量返回。技巧是把 $1/sqrt(d_"head")$ 换成乘 `scale_log2e = log2(e)/√hd`，这样 `exp(z) = 2^(z·log2e)` 能用 `vexp2.approx`：
+这里的 $tilde(p)_t$ 是未归一化概率，$r$ 是归一化因子的倒数；对应上面的 $alpha_(h,t) = r_h tilde(p)_(h,t)$。
+
+由于 ISA 中只有 `vexp2.approx` 指令，这里用 $exp(z) = 2^(z log_2(e))$ 把以 e 为底的指数换成以 2 为底，并把 $1/sqrt(d_"head")$ 合进 $c = log_2(e) / sqrt(d_"head"),$
+
+于是
+
+$
+  exp((s_t - max_u s_u) / sqrt(d_"head")) = 2^((s_t - max_u s_u) dot c).
+$
+
+kernel 里对应 `vsub` → `vmulx c` → `vexp2.approx`（`x12` 存的是 $c$ 的 f32 位模式）：
 
 ```asm
 vfillx        v0, x5       # v0 ← -inf
@@ -710,8 +769,6 @@ vrcp.approx   v4, v4       # v4[0] ← 1/sum
 vstore        v4           # *rcp_out ← rcp(sum)
 fence.mem                  # scores 和 rcp 之后由标量代码读取
 ```
-
-除法被推迟：这里不做逐元素除法，只算一个倒数，留给 pv 最后乘。`−inf` 经 `vsub` / `vmulx` / `vexp2.approx` 自然变 0，所以 padding key 不进 softmax。
 
 ==== 实现：PV
 
@@ -738,8 +795,6 @@ vmulx       v16, v16, x16       # v16 ← v16 × rcp   (x16 = a6)
 vstore      v16                 # memory[vm16] ← v16
 ```
 
-attention 的三个核函数（scores/softmax/pv）加起来就是标准 flash 式两遍结构，只不过按这个 ISA 的原语（fmadd/reduce/exp2/rcp）表达。
-
 === O 投影与残差
 
 $
@@ -749,7 +804,7 @@ $
 
 其中 $bold(W)_O in RR^(1024 times 2048)$。
 
-==== 实现：残差加法
+==== 实现：残差加法（`qwen3_add`）
 
 给定长度为 $n$ 的向量 $bold(x), bold(y)$，残差：
 
@@ -763,7 +818,7 @@ vcopy   v2, v0      # v2 ← v0
 vstore  v2          # memory[vm2] ← v2
 ```
 
-三个自增描述符，循环 n/32 次，全算子里最简单的一个。
+这个算子就是 `qwen3_add`。三个自增描述符，循环 n/32 次，全算子里最简单的一个。
 
 === Post-LN、MLP 与残差
 
@@ -785,7 +840,7 @@ $
   bold(x)_2 = bold(x)_1 + bold(d).
 $
 
-其中 $bold(W)_"gate", bold(W)_"up" in RR^(3072 times 1024)$，$bold(W)_"down" in RR^(1024 times 3072)$，$"SiLU"(g) = g / (1 + e^(-g))$。这里的残差仍然复用上面的 `qwen3_add`。
+其中 $bold(W)_"gate", bold(W)_"up" in RR^(3072 times 1024)$，$bold(W)_"down" in RR^(1024 times 3072)$，$"SiLU"(g) = g / (1 + e^(-g))$。这里的残差复用上面的 `qwen3_add`。
 
 ==== 实现：SiLU·up
 
@@ -826,28 +881,43 @@ areduce.rows.argmax    v3, v4, a0            # v3[i] = 第 i 行 argmax 列号
 vreduce.argmax         v5, v6, v4            # v5 = 最佳行，v6 = block 最大值
 ```
 
-block 之间还是同一个锦标赛。`v0` 是当前 best value，`v11` 是 winning block 的行号向量，`v12` 是 winning row，`v13` 是 winning block base：
+每个 block 算完后，和当前最优比较并更新。用到的状态是：
+
+#figure(
+  three-line-table([
+    | 寄存器  | 含义                       | 类型  |
+    | :------ | :------------------------- | :---- |
+    | `v0`    | 当前最优值                 | f32   |
+    | `v11`   | 最优 block 的行内下标向量  | u32   |
+    | `v12`   | 最优行                     | u32   |
+    | `v13`   | 最优 block 的 base         | u32   |
+    | `v14`   | 当前 block 的 base         | u32   |
+  ]),
+  caption: [argmax 的状态寄存器],
+)
+
+更新逻辑：
 
 ```asm
 # x29 = t4 = 当前 block base
-vfillx         v14, x29    # v14 ← 当前 block base
-vcmplt         v8, v0, v6   # best < candidate
-vcmpunord      v9, v0, v0   # best 是 NaN
-vcmpunord      v10, v6, v6  # candidate 是 NaN
-vnot           v10, v10     # candidate 是数值
-vand           v9, v9, v10  # best 是 NaN 且 candidate 是数值
-vor            v8, v8, v9   # 更新掩码
-vselect        v0, v8, v6, v0    # best value
-vselect        v11, v8, v3, v11  # winning index vector
-vselect        v12, v8, v5, v12  # winning row
-vselect        v13, v8, v14, v13 # winning block base
+vfillx         v14, x29          # v14 ← 当前 block base
+vcmplt         v8, v0, v6        # 当前最优 < 候选
+vcmpunord      v9, v0, v0        # 当前最优是 NaN
+vcmpunord      v10, v6, v6       # 候选是 NaN
+vnot           v10, v10          # 候选是数值
+vand           v9, v9, v10       # 当前最优是 NaN 且候选是数值
+vor            v8, v8, v9        # 更新掩码
+vselect        v0, v8, v6, v0    # 当前最优值
+vselect        v11, v8, v3, v11  # 最优 block 的行内下标
+vselect        v12, v8, v5, v12  # 最优行
+vselect        v13, v8, v14, v13 # 最优 block base
 ```
 
-这里不再需要“chunk 0 做种子”：`v0` 初始化为全 NaN，`v11/v12/v13` 初始化为 0；第一个数值 block 会通过 `best 是 NaN 且 candidate 是数值` 这个 mask 替换它。
+`v0` 初始化为全 NaN，`v11/v12/v13` 初始化为 0；第一个数值 block 会通过“当前最优是 NaN 且候选是数值”这个 mask 替换它。
 
-tail 只有 12 行：把 `ac0.rows`、`vc3.len`、`vc4.len` 都设成 12，`areduce` 只写 12 个有效行；之后把 `vc3.len` 恢复成 32，供 `vselect` 复制整个 index vector。
+tail 只有 12 行：把 `ac0.rows`、`vc3.len`、`vc4.len` 都设成 12，`areduce` 只写 12 个有效行；之后把 `vc3.len` 恢复成 32，供 `vselect` 复制整个行内下标向量。
 
-收尾把 winning row、base、index vector 写到栈上，再用标量算出全局下标：
+收尾把最优行、base、行内下标向量写到栈上，再用标量算出全局下标：
 
 ```asm
 # vc12/vc13 配成 len-1

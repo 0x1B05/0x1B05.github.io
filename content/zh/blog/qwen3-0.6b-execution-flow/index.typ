@@ -11,7 +11,7 @@
 
 = #post.title
 
-笔者最近在做一款基于 Tile 的 NPU（Tile-NPU），并为其设计了指令集#link("https://github.com/0x1B05/Tile-NPU-ISA")[Tile-NPU-ISA]和配套的功能模拟器#link("https://github.com/0x1B05/Tile-NPU-Sim")[Tile-NPU-Sim]。本文以 Qwen3-0.6B 为例，梳理它在 Tile-NPU 模拟器上的执行流程：从 guest 程序、模型权重与运行时 prompt 镜像的加载开始，沿着一次前向推理经过的计算步骤，说明这些计算如何转化为具体的 NPU 指令上。(目前的算子为ai生成的汇编指令, 流程仅供参考)
+笔者最近在做一款基于 Tile 的 NPU（Tile-NPU），并为其设计了指令集#link("https://github.com/0x1B05/Tile-NPU-ISA")[Tile-NPU-ISA]和配套的功能模拟器#link("https://github.com/0x1B05/Tile-NPU-Sim")[Tile-NPU-Sim]。本文以 Qwen3-0.6B 为例，梳理它在 Tile-NPU 模拟器上的执行流程：从 guest 程序、模型权重与运行时 prompt 镜像的加载开始，沿着一次前向推理经过的计算步骤，说明这些计算如何转化为具体的 NPU 指令。(目前的算子为 AI 生成的汇编指令, 流程仅供参考)
 
 == 宿主机准备模型与 prompt
 
@@ -126,7 +126,7 @@ riscv64-linux-gnu-gcc -march=rv64im -mabi=lp64 -O2 \
 C 代码只会被编译成 RV64IM 指令；NPU 指令主要由 `kernels.S` 通过 `npu.inc` 里的宏生成。
 
 #example(title: "TADD 5, 6, 7为例")[
-  `npu.inc`中定义宏`EBIN`以及`TADD`
+  `npu.inc`中定义宏`E_BIN`以及`TADD`
   ```asm
   .macro E_BIN sel3, funct4, dest, src1, src2
       .word ((\sel3 << 25) | (\funct4 << 21) | (\src2 << 12) | (\src1 << 7) | (\dest << 2))
@@ -155,7 +155,7 @@ C 代码只会被编译成 RV64IM 指令；NPU 指令主要由 `kernels.S` 通�
   ```
 ]
 
-`kernels.S` 的扩展名是大写 `.S`，GCC 因此按 `assembler-with-cpp` 处理：先做 C 预处理，再交给汇编器。若写成小写 `.s`，GCC 会直接调用汇编器，`#include`/`#define` 不会被展开（可用 `-x assembler-with-cpp` 显式指定）。`#include "dims.h"` 由预处理器处理，`.include "npu.inc"` 和 `.macro` 和 `.word` 由 GNU as 处理。内部大致相当于：
+`kernels.S` 的扩展名是大写 `.S`，GCC 因此按 `assembler-with-cpp` 处理：先做 C 预处理，再交给汇编器。若写成小写 `.s`，GCC 会直接调用汇编器，`#include`/`#define` 不会被展开（可用 `-x assembler-with-cpp` 显式指定）。`#include "dims.h"` 由预处理器处理，`.include "npu.inc"`、`.macro` 和 `.word` 由 GNU as 处理。内部大致相当于：
 
 ```sh
 cc1 -E -lang-asm ... kernels.S -o kernels.s
@@ -225,7 +225,7 @@ xmake run qwen3_run "你好"
 
 === prefill 与 decode
 
-Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数量（单 token vs 最多 32 token）。核心差异在于投影算子：从 Prefill 阶段的 GEMM（GEneral Matrix-Matrix multiplication），变成了 Decode 阶段的 GEMV（GEneral Matrix-Vector multiplication，相当于 Batch=1 的退化 GEMM）。
+Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数量（单 token vs 最多 32 token）。核心差异在于投影算子：从 Prefill 阶段的 GEMM（General Matrix-Matrix multiplication），变成了 Decode 阶段的 GEMV（General Matrix-Vector multiplication，相当于 Batch=1 的退化 GEMM）。
 
 #figure(
   three-line-table([
@@ -457,7 +457,7 @@ tstore                   t0          # memory[tm0] ← t0
 
 decode 的激活量化把整条激活压成一个 scale，结果留在 Tile 寄存器，直接给下一步 int8 matvec 用。
 
-这里把内存里的 $d_"in"$ 个 f32 激活元素按 1024 个一组切成若干*输入激活块*；量化时每个输入块先 `aload` 到 Acc，再写成 Tile 里的 int8 *量化块*。输入块和量化块都对应一个 $32 times 32$ tile。块数 $n_"blocks" = ceil(d_"in"/1024)$。
+这里把内存里的 $d_"in"$ 个 f32 激活元素按 1024 个一组切成若干*输入激活块*（activation block）；量化时每个输入块先 `aload` 到 Acc，再写成 Tile 里的 int8 *量化块*（quant block）。输入块和量化块都对应一个 $32 times 32$ tile。块数 $n_"blocks" = ceil(d_"in"/1024)$。
 
 ```asm
 vfill                    v0, 0         # v0 ← 0
@@ -518,7 +518,7 @@ $ o_(r,j) = s_(x,r) s_(W,j) sum_(c=0)^(d_"in"-1) X^q_(r,c) W^q_(j,c). $
 
 $W$ 在内存中以 $32 times 32$ tile 为粒度存放为 $(d_"out"/32, d_"in"/32, 32, 32)$，tile 内按 $(d_"out", d_"in")$ 存放, 这样`tload`一次取一个连续的1KiB tile, 直接得到了 `mma.nt` 需要的右操作数。
 
-`X_tile(kblock)` 是 $X_q$ 的第 `kblock` 个 `rows × 32` 块（`kblock = 0` 覆盖输入通道 `0..31`）；`W_tile(nblock, kblock)` 是权重的 32×32 tile。以 Q 投影（$d_"out" = 2048$，$d_"in" = 1024$）为例：$W_q$被切分成$64 times 32$个tile, 行方向每 8 行一组，共8组`g = 0..7`,`g=0` 对应 `nb=0..7`，..，`g=7` 对应 `56..63`。
+`X_tile(kblock)` 是 $X_q$ 的第 `kblock` 个 `rows × 32` 块（`kblock = 0` 覆盖输入通道 `0..31`）；`W_tile(nblock, kblock)` 是权重的 32×32 tile。以 Q 投影（$d_"out" = 2048$，$d_"in" = 1024$）为例：$W_q$被切分成$64 times 32$个tile, 行方向每 8 行一组，共8组`g = 0..7`,`g=0` 对应 `nb=0..7`，……，`g=7` 对应 `56..63`。
 
 下面以 `g = 0` 为例，这一组是 `nb = 0..7`；先看第一个输出 tile `nb = 0`（累加器 `a0`）。
 
@@ -534,7 +534,7 @@ $
   a_0 = sum_("kb"=0)^(31) X^q_("kb") (W^q_(0,"kb"))^top, quad X^q_("kb") in RR^(B times 32), quad W^q_(0,"kb") in RR^(32 times 32),
 $
 
-两个 scale 在最后一个 kblock 的 drain 上融合：
+两个 scale 在最后一个（或唯一的）K 块上由 `adequant` 完成反量化：
 
 $
   O_0 = "diag"(s_x) a_0 "diag"(s_(W,0)), quad O_0 in RR^(B times 32),
@@ -548,41 +548,35 @@ $
 for g = 0..7:                    # Q: 8 组
   base = 8g                      # 本组第一个 nblock
 
-  for kblock = 0..kblocks-1:     # Q: 32 个输入块
+  for kblock = 0..kblocks-2:     # 除最后一个 K 块
     t0 = X_tile(kblock)          # 每个 kblock 只加载一次
 
     for G = 0..7:                # 组内 8 个输出 tile（复用 t0）
       t1 = W_tile(base+G, kblock)
 
-      if kblocks == 1:
-        aG = dequant(t0 * t1^T, v29, v30)       # mma.nt.dequant.zero
-      elif kblock == 0:
-        aG = t0 * t1^T                          # mma.nt.zero
-      elif kblock == kblocks-1:
-        aG = dequant(aG + t0 * t1^T, v29, v30)  # mma.nt.dequant.acc
+      if kblock == 0:
+        aG = t0 * t1^T           # mma.nt.zero
       else:
-        aG += t0 * t1^T                         # mma.nt.acc
-
-  for G = 0..7:
-    astore aG                    # 已经是 f32
+        aG += t0 * t1^T          # mma.nt.acc
 ```
 
-最后一个 kblock 先 `vload v29` 取当前输出块的 32 个 weight scale，再用 `mma.nt.dequant.acc` 在 drain 时乘 `v29[j]` 和 `v30[t]`，直接写 f32 Acc；32 个 kblock 走完后只需要 `astore`，不再单独跑 `acvt`/`amulv`：
+最后一个（或唯一的）K 块使用固定的 drain 序列：先 `vload v29`，再 `mma.nt.acc`（单 K 块用 `mma.nt.zero`），紧接着 `adequant`，最后 `astore`。scale 加载放在 MMA 前、MMA 与 `adequant` 相邻，便于微架构识别并融合：
 
 ```asm
-# 最后一个 kblock（aG 以 a0 为例）：
+# 最后一个/唯一的 K 块（aG 以 a0 为例）：
+tload               t1
 vload               v29                      # v29 ← 32 个 weight scale
-mma.nt.dequant.acc  a0, t0, t1, v29, v30     # a0 ← f32(a0) * v29[j] * v30[t]
-...
-# 32 个 kblock 走完后：
-astore              a0
+mma.nt.acc          a0, t0, t1               # 单 K 块用 mma.nt.zero
+adequant            a8, a0, v29, v30         # a8 ← f32(a0) * v29[j] * v30[t]
+astore              a8
 ```
 
-如果只有一个 kblock，用 `mma.nt.dequant.zero`，不累加旧值。
+`group`（8 个 nblock 一组）和 `tail`（不足 8 个 nblock）都使用这个固定序列。
 
 - MMA:            $8 × 32 × 8 = 2048$ 次
 - X_tile 加载:    $8 × 32 = 256$ 次
 - W_tile 加载:    $8 × 32 × 8 = 2048$ 次
+- adequant:       $64$ 个输出 tile = $64$ 次
 - astore:         $64$ 个输出 tile = $64$ 次
 
 ==== 实现：decode 投影（`matvec`）
@@ -593,28 +587,28 @@ $
   o_j = s_x s_(W,j) sum_(c=0)^(d_"in"-1) x^q_c W^q_(j,c), quad 0 <= j < d_"out".
 $
 
-decode 的投影把跨 panel 的 i32 部分和放在 `qwen3_accbuf`，只有最后一个 panel 的最后一个 kblock 用融合反量化。
+decode 的投影把跨 activation block 的 i32 部分和放在 `qwen3_accbuf`；非最后 kblock 用 `vmma.nt.acc` 累加，最后一个 activation block 的最后一个 kblock 用固定 drain 序列。
 
-`quant_act` 把激活量化成 1–3 个 32×32 Tile（t2/t3/t4）：每个 tile 有 32 行，第 R 行（`R = 0..31`）就是一个 kblock 的 32 个输入通道；`t2[R]` 取第 R 行。对每个 panel 的每个 nblock、每个有效 R：
+`quant_act` 把激活量化成 1–3 个 32×32 量化块（quant block，Tile t2/t3/t4）：每个 tile 有 32 行，第 R 行（`R = 0..31`）就是一个 kblock 的 32 个输入通道；`t2[R]` 取第 R 行。对每个 activation block 的每个 nblock、每个有效 R：
 
 ```asm
-# 除最后一个 panel 的最后一个 kblock 外：i32 累加
+# 非最后 kblock：i32 累加
 tload               t1                 # t1 ← W[nblock][kblock]
 vmma.nt.acc          v4, t2[R], t1     # v4 ← v4 + t2[R] · t1^T
 
-# 最后一个 panel 的最后一个 kblock：
+# 最后一个 activation block 的最后一个 kblock：
 tload               t1
 vload               v6                 # v6 ← 32 个 weight scale
-vmma.nt.dequant.acc v4, t2[R], t1, v6  # v4 ← f32(partial) * v6[j] * v7[0]
-vcopy               v8, v4
+vmma.nt.acc          v4, t2[R], t1     # v4 ← v4 + t2[R] · t1^T
+vdequant            v8, v4, v6, v7     # v8 ← f32(v4) * v6[j] * v7[0]
 vstore              v8                 # 写 f32 输出
 ```
 
-decode 是单 token GEMV，所以用 `vmma`（一行激活 × 一个权重 tile），而不是需要 32 行 token 的 `mma`；一条 `vmma` 只覆盖一个 kblock，R 循环把部分和累加完。
+decode 是单 token GEMV，所以用 `vmma`（一行激活 × 一个权重 tile）；一条 `vmma` 只覆盖一个 kblock，R 循环把部分和累加完。
 
-`v6` 是当前 nblock 的 32 个 weight scale，`v7[0]` 是激活 scale；两者组成连续的 Vec32 对，`vmma.nt.dequant.acc` 直接写 f32 v4。第一个 panel 先 `vfill v4, 0`；后续 panel 用 `vload v4` 从 `qwen3_accbuf` 续上；非最后 panel 结束时 `vstore v4` 写回。最后一个 kblock 不再经过单独的 epilogue。
+`v6` 是当前 nblock 的 32 个 weight scale，`v7[0]` 是激活 scale；`vdequant` 把 i32 `v4` 反量化到独立的 f32 `v8`，直接写 `v8`。`v6` 在 `vmma.nt.acc` 前加载，`vdequant` 紧邻其后，便于微架构检测并融合。第一个 activation block 先 `vfill v4, 0`；后续 activation block 用 `vload v4` 从 `qwen3_accbuf` 续上；非最后 activation block 结束时 `vstore v4` 写回。
 
-关键设计：反量化仍然推到最后——i8 域只做纯整数乘加，最后一个 kblock 的 drain 乘 `v6`/`v7` 并写 f32。
+关键设计：反量化仍然推到最后——i8 域只做纯整数乘加，最后一个 kblock 的 `vdequant` 紧邻 MMA，乘 `v6`/`v7` 并写 f32。
 
 === QK-RMSNorm 与 RoPE
 
@@ -718,7 +712,7 @@ $
 
 $ s_t = sum_(d=1)^(d_"head") K_(t,d) q_d. $
 
-q 的 4 个 32-lane chunk 先驻留 v8..v11（描述符不自增）；对每个 key t:
+q 的 4 个 32-lane chunk 先驻留 v8..v11；对每个 key t:
 
 ```asm
 vfill        v16, 0             # v16 ← 0
@@ -726,7 +720,7 @@ vfill        v16, 0             # v16 ← 0
 vload        v12                # v12 ← K_t 的下一块
 vfmadd       v16, v12, v8, v16  # v16 ← v16 + v12 · v8（v9..v11 同理）
 vreduce.sum  v17, v16           # v17[0] ← sum(v16)（vc17 配成 len-1）
-vstore       v17                # 单 lane 写到 scores[t]（vm17 不自增）
+vstore       v17                # 单 lane 写到 scores[t]
 ```
 
 ==== 实现：softmax

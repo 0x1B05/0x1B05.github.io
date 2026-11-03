@@ -282,11 +282,11 @@ Decode 和 prefill 计算的是同一组公式，但是一次处理的 token 数
 === 实现约定
 
 1. *配置先行*：每条 NPU 指令的 dtype/shape 都来自配置寄存器。核函数开头先通过 `cfg.seti` / `cfg.setx` 写配置；`npu.inc` 里的 `LI_CWV` / `LI_CWM` 只是把配置字拼在标量侧的辅助宏。这是"一次配置、循环复用"的模式——循环体里只有计算和访存指令。
-2. *描述符自增*：`vload v1` 的意思是"从 vm1.base 读 vc1.len 个元素到 v1，然后 base += 32×stride"。所以流式扫描（rmsnorm、softmax、加法和 epilogue）的循环体里没有任何地址运算，回绕时才 `cfg.setx ... CF_BASE` 重写 base。
+2. *描述符自增*：`vload v1` 的意思是"从 vm1.base 读 vc1.len 个元素到 v1，然后 base += 32×stride"。所以流式扫描（rmsnorm、softmax、加法和输出写回）的循环体里没有任何地址运算，回绕时才 `cfg.setx ... CF_BASE` 重写 base。
 3. *标量↔向量摆渡*：`vinsert`（把一个 x 值塞进 lane）、`vbroadcast`（单 lane 铺全向量）负责标量进向量；`vreduce` 把归约结果直接广播到整条 Vec32；向量出标量走内存通道——把结果 `vstore` 落内存（常用 len-1 的"单 lane 存储"配置只写一个字），经 `fence.mem` 后由 `lw` 读回。`vextract` 只保留为低频调试通道。均值、scale、概率这类"标量"都按这套约定流动。
 4. *标量与NPU的访存fence*：模拟器按程序序执行所以 `fence.mem` 实现为 no-op，但微架构上 NPU store 对标量 load 的可见性由 `fence.mem` 建立, kernel 里每处"NPU 写、标量读"之间都需要`fence.mem`。
 
-寄存器名按 ISA 手册约定：`tN` 是 Tile，`aN` 是 Acc，`bN` 是 Vec8，`vN` 是 Vec32，`xN` 是 Scalar。RV64IM 标量一律写 `xN`，需要 ABI 名时写在注释里（如 `x5 = t0`、`x10 = a0`、`x22 = s6`），避免和 Tile 的 `tN`、Acc 的 `aN` 混淆。
+寄存器名按 ISA 手册约定：`tN` 是 Tile，`aN` 是 Acc，`vN` 是 Vec32，`xN` 是 Scalar。RV64IM 标量一律写 `xN`，需要 ABI 名时写在注释里（如 `x5 = t0`、`x10 = a0`、`x22 = s6`），避免和 Tile 的 `tN`、Acc 的 `aN` 混淆。
 
 === Embedding
 
@@ -449,7 +449,7 @@ vstore                   v0          # memory[vm0] ← 每行一个 scale（共 
 
 # pass 2：用逐行 scale 量化（同样 k/32 块）
 aload                    a0          # a0 ← rows×32 f32 块（最多 32×32）
-aquant.rows.scale.q8s32  t0, a0, v0  # t0 ← quant(a0) with v0
+aquant.rows.q8s32        t0, a0, v0  # t0 ← quant(a0) with v0
 tstore                   t0          # memory[tm0] ← t0
 ```
 
@@ -479,7 +479,7 @@ lw                       x7, 0(sp)     # x7 (t2) ← scale 位模式（经内存
 # 第二遍：逐个激活块（每块 32×32）
 # am0: row_stride = 128, col_stride = 4，访存后沿行自增
 aload                    a0            # a0 ← 32×32 f32 激活块
-aquant.rows.scale.q8s32  t2, a0, v2    # t2 ← quant(a0) with v2
+aquant.rows.q8s32        t2, a0, v2    # t2 ← quant(a0) with v2
 ```
 
 这段的输入、输出和寄存器：
@@ -534,7 +534,7 @@ $
   a_0 = sum_("kb"=0)^(31) X^q_("kb") (W^q_(0,"kb"))^top, quad X^q_("kb") in RR^(B times 32), quad W^q_(0,"kb") in RR^(32 times 32),
 $
 
-epilogue 乘回两个 scale：
+两个 scale 在最后一个 kblock 的 drain 上融合：
 
 $
   O_0 = "diag"(s_x) a_0 "diag"(s_(W,0)), quad O_0 in RR^(B times 32),
@@ -542,41 +542,48 @@ $
 
 其中 $s_x$ 是 $B$ 个激活 scale(行激活)，$s_(W,0)$ 是输出通道 `0..31` 的 32 个 weight scale(列激活)。
 
-循环外先 `vload v30`，把 `xs` 常驻在 `v30`，epilogue 里用。循环嵌套：
+循环外先 `vload v30`，把 `xs` 常驻在 `v30`。这里 `kblocks = d_in/32`，Q 投影是 32；循环嵌套：
 
 ```text
 for g = 0..7:                    # Q: 8 组
   base = 8g                      # 本组第一个 nblock
 
-  for kblock = 0..31:            # Q: 32 个输入块
+  for kblock = 0..kblocks-1:     # Q: 32 个输入块
     t0 = X_tile(kblock)          # 每个 kblock 只加载一次
 
     for G = 0..7:                # 组内 8 个输出 tile（复用 t0）
       t1 = W_tile(base+G, kblock)
 
-      if kblock == 0:
-        aG = t0 * t1^T           # mma.nt.zero
+      if kblocks == 1:
+        aG = dequant(t0 * t1^T, v29, v30)       # mma.nt.dequant.zero
+      elif kblock == 0:
+        aG = t0 * t1^T                          # mma.nt.zero
+      elif kblock == kblocks-1:
+        aG = dequant(aG + t0 * t1^T, v29, v30)  # mma.nt.dequant.acc
       else:
-        aG += t0 * t1^T          # mma.nt.acc
+        aG += t0 * t1^T                         # mma.nt.acc
 
-  # 32 个 kblock 走完，做 epilogue
   for G = 0..7:
-    O_tile(base+G) = epilogue(aG)
+    astore aG                    # 已经是 f32
 ```
 
-32 个 kblock 走完后，对 `aG = a0..a7` 做 epilogue：
+最后一个 kblock 先 `vload v29` 取当前输出块的 32 个 weight scale，再用 `mma.nt.dequant.acc` 在 drain 时乘 `v29[j]` 和 `v30[t]`，直接写 f32 Acc；32 个 kblock 走完后只需要 `astore`，不再单独跑 `acvt`/`amulv`：
 
 ```asm
-acvt.i32.f32        a8, aG       # a8 ← f32(aG)
-amulv.bycol         a8, a8, v29  # a8 ← a8 × ws[j]
-amulv.byrow         a8, a8, v30  # a8 ← a8 × xs[t]
-astore              a8           # memory[am8] ← a8
+# 最后一个 kblock（aG 以 a0 为例）：
+vload               v29                      # v29 ← 32 个 weight scale
+mma.nt.dequant.acc  a0, t0, t1, v29, v30     # a0 ← f32(a0) * v29[j] * v30[t]
+...
+# 32 个 kblock 走完后：
+astore              a0
 ```
+
+如果只有一个 kblock，用 `mma.nt.dequant.zero`，不累加旧值。
 
 - MMA:            $8 × 32 × 8 = 2048$ 次
 - X_tile 加载:    $8 × 32 = 256$ 次
 - W_tile 加载:    $8 × 32 × 8 = 2048$ 次
-- epilogue/store: $64$ 个输出 tile = $64$ 次
+- astore:         $64$ 个输出 tile = $64$ 次
 
 ==== 实现：decode 投影（`matvec`）
 
@@ -586,34 +593,28 @@ $
   o_j = s_x s_(W,j) sum_(c=0)^(d_"in"-1) x^q_c W^q_(j,c), quad 0 <= j < d_"out".
 $
 
-decode的投影分两个阶段。
+decode 的投影把跨 panel 的 i32 部分和放在 `qwen3_accbuf`，只有最后一个 panel 的最后一个 kblock 用融合反量化。
 
-*阶段 A：i8 乘加*。`quant_act` 把激活量化成 1–3 个 32×32 Tile（t2/t3/t4）：每个 tile 有 32 行，第 R 行（`R = 0..31`）就是一个 kblock 的 32 个输入通道；`t2[R]` 取第 R 行。对每个 nblock：
+`quant_act` 把激活量化成 1–3 个 32×32 Tile（t2/t3/t4）：每个 tile 有 32 行，第 R 行（`R = 0..31`）就是一个 kblock 的 32 个输入通道；`t2[R]` 取第 R 行。对每个 panel 的每个 nblock、每个有效 R：
 
 ```asm
-# t2/t3/t4 是驻留的 32×32 激活 Tile；R 是行号，第 R 行就是一个 kblock
-# 对每个 nblock：
+# 除最后一个 panel 的最后一个 kblock 外：i32 累加
 tload               t1                 # t1 ← W[nblock][kblock]
-vmma.nt.acc.i8.i32  v4, t2[R], t1      # v4 ← v4 + t2[R] · t1^T
+vmma.nt.acc          v4, t2[R], t1     # v4 ← v4 + t2[R] · t1^T
+
+# 最后一个 panel 的最后一个 kblock：
+tload               t1
+vload               v6                 # v6 ← 32 个 weight scale
+vmma.nt.dequant.acc v4, t2[R], t1, v6  # v4 ← f32(partial) * v6[j] * v7[0]
+vcopy               v8, v4
+vstore              v8                 # 写 f32 输出
 ```
 
-decode 是单 token GEMV，所以用 `vmma`（一行激活 × 一个权重 tile），而不是需要 32 行 token 的 `mma`；一条 `vmma` 只覆盖一个 kblock（32 个输入通道），R 循环把 32 个 kblock 的部分和累加完。
+decode 是单 token GEMV，所以用 `vmma`（一行激活 × 一个权重 tile），而不是需要 32 行 token 的 `mma`；一条 `vmma` 只覆盖一个 kblock，R 循环把部分和累加完。
 
-跨激活块的部分和存在内存 `qwen3_accbuf` (i32)，下个激活块用 `vload v4` 续上；新激活块第一块用 `vfill v4, 0` 清
+`v6` 是当前 nblock 的 32 个 weight scale，`v7[0]` 是激活 scale；两者组成连续的 Vec32 对，`vmma.nt.dequant.acc` 直接写 f32 v4。第一个 panel 先 `vfill v4, 0`；后续 panel 用 `vload v4` 从 `qwen3_accbuf` 续上；非最后 panel 结束时 `vstore v4` 写回。最后一个 kblock 不再经过单独的 epilogue。
 
-*阶段 B：epilogue*（每 32 个输出）：
-
-```asm
-vload         v4           # v4 ← 读回 i32 部分和
-vcvt.i32.f32  v4, v4       # v4 ← f32(v4)
-vload         v6           # v6 ← 32 个权重行 scale
-vmul          v4, v4, v6   # v4 ← v4 × ws[j]
-vmulx         v4, v4, x22  # v4 ← v4 × xs   (x22 = s6，激活 scale)
-vcopy         v8, v4       # v8 ← v4
-vstore        v8           # memory[vm8] ← v8
-```
-
-关键设计：反量化的两个 scale 推到最后才乘——i8 域里只做纯整数乘加，f32 域只做三次乘法，顺序固定，所以和参考实现逐位对齐。
+关键设计：反量化仍然推到最后——i8 域只做纯整数乘加，最后一个 kblock 的 drain 乘 `v6`/`v7` 并写 f32。
 
 === QK-RMSNorm 与 RoPE
 
